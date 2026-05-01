@@ -1,0 +1,78 @@
+@utility kleri-bg {
+	background: linear-gradient(90deg, var(--color-kleri-green-1), var(--color-kleri-green-2));
+}
+
+@utility kleri-text {
+	background: linear-gradient(
+		to right,
+		var(--color-kleri-green-1),
+		var(--color-kleri-green-2),
+		var(--color-kleri-green-3)
+	);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+
+@utility kleri-border {
+	--bg-size: 200%;
+	border: 2px solid transparent;
+	background:
+		linear-gradient(rgba(255, 255, 255), rgb(255, 255, 255)) padding-box,
+		linear-gradient(
+				90deg,
+				var(--color-kleri-green-1),
+				var(--color-kleri-green-2),
+				var(--color-kleri-green-1)
+			)
+			0% / 100% 100% border-box;
+	background-size: 200% 200%;
+	animation: move-bg 5s linear infinite;
+}
+
+@utility kleri-border-dark {
+	--bg-size: 200%;
+	background:
+		linear-gradient(rgba(0, 0, 0, 0.95), rgb(0, 0, 0, 0.95)) padding-box,
+		linear-gradient(
+				90deg,
+				var(--color-kleri-green-1),
+				var(--color-kleri-green-2),
+				var(--color-kleri-green-1)
+			)
+			0% / 100% 100% border-box;
+	background-size: 200% 200%;
+	animation: move-bg 5s linear infinite;
+}
+
+@utility kleri-text-animation {
+	--bg-size: 500%;
+	background: linear-gradient(
+			90deg,
+			var(--color-kleri-green-1),
+			var(--color-kleri-green-2),
+			var(--color-kleri-green-1)
+		)
+		0 0 / var(--bg-size) 200%;
+	color: transparent;
+	background-clip: text;
+
+	@media (prefers-reduced-motion: no-preference) {
+		animation: move-bg 15s linear infinite;
+	}
+}
+
+@utility bg-kleri_blur {
+	@apply bg-background/30;
+	backdrop-filter: blur(40px);
+}
+
+@layer utilities {
+	@media (prefers-reduced-motion: no-preference) {
+		@keyframes move-bg {
+			from {
+				background-position: var(--bg-size) 0;
+			}
+		}
+	}
+}
