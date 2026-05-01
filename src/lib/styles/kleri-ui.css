@@ -1,6 +1,8 @@
 @import "./fonts.css";
 @import "./kleri-theme.css";
 
+@source "..";
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -188,6 +190,7 @@
 
 @layer base {
 	* {
-		@apply border-border outline-ring/50;
+		border-color: var(--border);
+		outline-color: color-mix(in oklch, var(--ring) 50%, transparent);
 	}
 }
