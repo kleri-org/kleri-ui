@@ -1,7 +1,7 @@
 <script module>
   // @ts-nocheck
   import { defineMeta } from '@storybook/addon-svelte-csf';
-  import KleriInput from '$lib/input-text/KleriInput.svelte';
+  import KleriInput from '$lib/input/KleriInput.svelte';
   import { User, Lock, Mail } from '@lucide/svelte';
 
   const { Story } = defineMeta({

@@ -1,10 +1,10 @@
 <script module>
   // @ts-nocheck
   import { defineMeta } from '@storybook/addon-svelte-csf';
-  import SubHeading from '$lib/text/SubHeading.svelte';
+  import SubHeading from '$lib/heading/SubHeading.svelte';
 
   const { Story } = defineMeta({
-    title: 'Text/SubHeading',
+    title: 'Heading/SubHeading',
     component: SubHeading,
     tags: ['autodocs'],
     argTypes: {

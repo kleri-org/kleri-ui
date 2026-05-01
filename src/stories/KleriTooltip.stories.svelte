@@ -1,10 +1,10 @@
 <script module>
   // @ts-nocheck
   import { defineMeta } from '@storybook/addon-svelte-csf';
-  import KleriTooltip from '$lib/info/kleri-tooltip.svelte';
+  import KleriTooltip from '$lib/tooltip/KleriTooltip.svelte';
 
   const { Story } = defineMeta({
-    title: 'Info/KleriTooltip',
+    title: 'Tooltip/KleriTooltip',
     component: KleriTooltip,
     tags: ['autodocs'],
     argTypes: {

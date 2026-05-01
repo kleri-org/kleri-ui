@@ -1,7 +1,7 @@
 <script module>
   // @ts-nocheck
   import { defineMeta } from '@storybook/addon-svelte-csf';
-  import KleriSwitch from '$lib/input-text/KleriSwitch.svelte';
+  import KleriSwitch from '$lib/input/KleriSwitch.svelte';
   import { fn } from 'storybook/test';
 
   const { Story } = defineMeta({

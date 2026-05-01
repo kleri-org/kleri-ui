@@ -2,7 +2,7 @@
 	import type { HTMLButtonAttributes } from "svelte/elements";
 	import type { WithElementRef } from "$lib/utils";
 	import { cn } from "$lib/utils";
-	import KleriTooltip from "$lib/info/kleri-tooltip.svelte";
+	import KleriTooltip from "$lib/tooltip/KleriTooltip.svelte";
 
 	type ButtonProps = WithElementRef<HTMLButtonAttributes>;
 

@@ -1,11 +1,11 @@
 <script module>
   // @ts-nocheck
   import { defineMeta } from '@storybook/addon-svelte-csf';
-  import SettingsOption from '$lib/input-text/SettingsOption.svelte';
-  import KleriSwitch from '$lib/input-text/KleriSwitch.svelte';
+  import SettingsOption from '$lib/settings/SettingsOption.svelte';
+  import KleriSwitch from '$lib/input/KleriSwitch.svelte';
 
   const { Story } = defineMeta({
-    title: 'Input/SettingsOption',
+    title: 'Settings/SettingsOption',
     component: SettingsOption,
     tags: ['autodocs'],
     argTypes: {
