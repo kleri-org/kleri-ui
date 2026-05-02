@@ -3,34 +3,38 @@
 	import { type Snippet } from "svelte";
 
 	type Props = Tooltip.RootProps & {
-		trigger: Snippet<[]>;
+		trigger: Snippet<[Record<string, unknown>]>;
 		children?: Snippet<[]>;
 		triggerProps?: Tooltip.TriggerProps;
 		side?: "top" | "right" | "bottom" | "left";
 		sideOffset?: number;
 		arrow?: boolean;
+		disabled?: boolean;
 	};
 
 	let {
 		open = $bindable(false),
-		arrow,
+		arrow = false,
 		children,
 		side = "bottom",
 		sideOffset,
 		triggerProps = {},
 		trigger,
+		disabled = false,
 	}: Props = $props();
 </script>
 
-<Tooltip.Root bind:open>
+<Tooltip.Root bind:open {disabled}>
 	<Tooltip.Trigger {...triggerProps}>
-		{@render trigger()}
+		{#snippet child({ props })}
+			{@render trigger(props)}
+		{/snippet}
 	</Tooltip.Trigger>
 	<Tooltip.Portal>
 		<Tooltip.Content
-			class="z-50 text-sm font-spacemono 
-	    bg-background/40 text-foreground p-2 pointer-events-none
-		  backdrop-blur-xl rounded-lg border border-border transition-transform"
+			class="z-50 text-sm font-spacemono font-normal
+	    bg-background/60 text-foreground p-2 pointer-events-none
+		  backdrop-blur-lg rounded-kleri border-2 border-border transition-transform"
 			{side}
 			{sideOffset}
 		>

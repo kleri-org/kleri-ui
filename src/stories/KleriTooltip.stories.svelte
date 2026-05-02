@@ -26,8 +26,8 @@
 <Story name="Default">
   {#snippet children(args)}
     <KleriTooltip {...args}>
-      {#snippet trigger()}
-        <button class="btn rounded-kleri border-2 border-black bg-primary px-4 py-2">Hover me</button>
+      {#snippet trigger(props)}
+        <button class="btn rounded-kleri border-2 border-black bg-primary px-4 py-2" {...props}>Hover me</button>
       {/snippet}
       <p>This is a tooltip</p>
     </KleriTooltip>
@@ -37,8 +37,8 @@
 <Story name="With Arrow" args={{ arrow: true }}>
   {#snippet children(args)}
     <KleriTooltip {...args}>
-      {#snippet trigger()}
-        <button class="btn rounded-kleri border-2 border-black bg-primary px-4 py-2">Hover me</button>
+      {#snippet trigger(props)}
+        <button class="btn rounded-kleri border-2 border-black bg-primary px-4 py-2" {...props}>Hover me</button>
       {/snippet}
       <p>Tooltip with arrow</p>
     </KleriTooltip>
@@ -48,8 +48,8 @@
 <Story name="Top" args={{ side: 'top' }}>
   {#snippet children(args)}
     <KleriTooltip {...args}>
-      {#snippet trigger()}
-        <button class="btn rounded-kleri border-2 border-black bg-primary px-4 py-2">Hover me</button>
+      {#snippet trigger(props)}
+        <button class="btn rounded-kleri border-2 border-black bg-primary px-4 py-2" {...props}>Hover me</button>
       {/snippet}
       <p>Tooltip on top</p>
     </KleriTooltip>
