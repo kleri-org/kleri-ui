@@ -2,6 +2,7 @@
   // @ts-nocheck
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import KleriMagicButton from '$lib/magic/KleriMagicButton.svelte';
+  import { KLERI_GREEN_1, KLERI_GREEN_2, KLERI_GREEN_3 } from '$lib/constants';
   import { fn } from 'storybook/test';
 
   const { Story } = defineMeta({
@@ -30,9 +31,9 @@
   {#snippet children(args)}
     <div class="flex min-h-[120px] w-full items-center justify-center p-8">
       <KleriMagicButton
-        gradientFrom="rgb(35, 145, 144)"
-        gradientTo="rgb(132, 204, 184)"
-        gradientColor="rgb(25, 96, 114)"
+        gradientFrom={KLERI_GREEN_3}
+        gradientTo={KLERI_GREEN_2}
+        gradientColor={KLERI_GREEN_1}
         {...args}
       >
         Custom Glow

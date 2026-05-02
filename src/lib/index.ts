@@ -1,5 +1,7 @@
 export { cn, type WithElementRef, type WithoutChild, type WithoutChildren, type WithoutChildrenOrChild } from "./utils.js";
 
+export { KLERI_GREEN_1, KLERI_GREEN_2, KLERI_GREEN_3 } from "./constants.js";
+
 export { default as PrimaryHeading } from "./heading/PrimaryHeading.svelte";
 export { default as SecondaryHeading } from "./heading/SecondaryHeading.svelte";
 export { default as SubHeading } from "./heading/SubHeading.svelte";

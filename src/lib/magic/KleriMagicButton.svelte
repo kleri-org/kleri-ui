@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { motion, useMotionTemplate, useMotionValue } from 'motion-sv';
 	import { cn } from '$lib/utils';
+	import { KLERI_GREEN_1, KLERI_GREEN_2 } from '$lib/constants';
 	import type { HTMLButtonAttributes } from 'svelte/elements';
 	import type { Snippet } from 'svelte';
 
@@ -23,10 +24,10 @@
 		children,
 		class: className,
 		gradientSize = 150,
-		gradientColor = 'rgb(132, 204, 184)',
+		gradientColor = KLERI_GREEN_2,
 		gradientOpacity = 0.25,
-		gradientFrom = 'rgb(132, 204, 184)',
-		gradientTo = 'rgb(25, 96, 114)',
+		gradientFrom = KLERI_GREEN_2,
+		gradientTo = KLERI_GREEN_1,
 		...restProps
 	}: KleriMagicButtonProps = $props();
 
