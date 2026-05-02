@@ -12,3 +12,6 @@ export { default as KleriUtilityButton } from "./button/KleriUtilityButton.svelt
 
 export { default as KleriSwitch } from "./input/KleriSwitch.svelte";
 export { default as KleriInput } from "./input/KleriInput.svelte";
+
+export { default as KleriMagicCard } from "./magic/KleriMagicCard.svelte";
+export { default as KleriMagicButton } from "./magic/KleriMagicButton.svelte";
