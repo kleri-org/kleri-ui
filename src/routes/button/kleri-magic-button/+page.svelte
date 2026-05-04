@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { base } from '$app/paths';
 	import KleriMagicButton from '$lib/magic/KleriMagicButton.svelte';
 	import { PropControls, CodePreview } from '$lib/preview';
 
@@ -26,9 +25,9 @@
 	<!-- Header -->
 	<div class="space-y-2">
 		<div class="flex items-center gap-2 text-sm text-muted-foreground font-spacemono mb-2">
-			<a href="{base}/" class="hover:text-kleri-green-2 transition-colors">Kleri UI</a>
+			<a href="/" class="hover:text-kleri-green-2 transition-colors">Kleri UI</a>
 			<span>/</span>
-			<a href="{base}/button" class="hover:text-kleri-green-2 transition-colors">Button</a>
+			<a href="/button" class="hover:text-kleri-green-2 transition-colors">Button</a>
 			<span>/</span>
 			<span class="text-foreground">KleriMagicButton</span>
 		</div>

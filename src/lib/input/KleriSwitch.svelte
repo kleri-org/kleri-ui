@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { Switch } from "bits-ui";
-	import type { ClassValue } from "clsx";
-	import { cn } from "$lib/utils";
+	import { Switch } from 'bits-ui';
+	import type { ClassValue } from 'clsx';
+	import { cn } from '$lib/utils';
 
 	// Props
 	interface Props {
@@ -17,7 +17,7 @@
 		onChecked,
 		disabled = false,
 		class: className,
-		ariaLabel = "Toggle switch",
+		ariaLabel = 'Toggle switch'
 	}: Props = $props();
 
 	// Handler
@@ -27,7 +27,7 @@
 </script>
 
 <Switch.Root
-	class={cn("scale-125 ml-3", className)}
+	class={cn('ml-3 scale-125', className)}
 	bind:checked
 	onCheckedChange={handleChange}
 	{disabled}
@@ -54,8 +54,8 @@
 		flex-shrink: 0;
 	}
 
-	:global([data-switch-root][data-state="checked"]) {
-		background: linear-gradient(90deg, var(--color-kleri-green-1), var(--color-kleri-green-2));
+	:global([data-switch-root][data-state='checked']) {
+		background: var(--color-kleri-green-2);
 	}
 
 	:global([data-switch-root][data-disabled]) {
@@ -75,7 +75,7 @@
 		flex-shrink: 0;
 	}
 
-	:global([data-switch-root][data-state="checked"] [data-switch-thumb]) {
+	:global([data-switch-root][data-state='checked'] [data-switch-thumb]) {
 		transform: translateX(1.125rem);
 	}
 </style>

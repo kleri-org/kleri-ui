@@ -1,25 +1,60 @@
 <script lang="ts">
 	import './layout.css';
 	import { page } from '$app/state';
-	import MeteorAnimation from '$lib/animation/MeteorAnimation.svelte';
+	import { Tooltip } from 'bits-ui';
 
 	const { children } = $props();
 
 	const categories = [
-		{ name: 'Heading', items: [], comingSoon: true },
+		{
+			name: 'Heading',
+			comingSoon: false,
+			items: [
+				{ name: 'PrimaryHeading', route: '/heading/primary-heading' },
+				{ name: 'SecondaryHeading', route: '/heading/secondary-heading' },
+				{ name: 'SubHeading', route: '/heading/sub-heading' }
+			]
+		},
 		{
 			name: 'Button',
 			comingSoon: false,
 			items: [
 				{ name: 'KleriButton', route: '/button/kleri-button' },
+				{ name: 'KleriUtilityButton', route: '/button/kleri-utility-button' },
 				{ name: 'KleriMagicButton', route: '/button/kleri-magic-button' }
 			]
 		},
-		{ name: 'Input', items: [], comingSoon: true },
-		{ name: 'Tooltip', items: [], comingSoon: true },
-		{ name: 'Animation', items: [], comingSoon: true },
-		{ name: 'Settings', items: [], comingSoon: true },
-		{ name: 'Magic', items: [], comingSoon: true }
+		{
+			name: 'Input',
+			comingSoon: false,
+			items: [
+				{ name: 'KleriSwitch', route: '/input/kleri-switch' },
+				{ name: 'KleriInput', route: '/input/kleri-input' }
+			]
+		},
+		{
+			name: 'Tooltip',
+			comingSoon: false,
+			items: [{ name: 'KleriTooltip', route: '/tooltip/kleri-tooltip' }]
+		},
+		{
+			name: 'Animation',
+			comingSoon: false,
+			items: [{ name: 'MeteorAnimation', route: '/animation/meteor-animation' }]
+		},
+		{
+			name: 'Settings',
+			comingSoon: false,
+			items: [{ name: 'SettingsOption', route: '/settings/settings-option' }]
+		},
+		{
+			name: 'Magic',
+			comingSoon: false,
+			items: [
+				{ name: 'KleriMagicCard', route: '/magic/kleri-magic-card' },
+				{ name: 'KleriMagicButton', route: '/magic/kleri-magic-button' }
+			]
+		}
 	];
 
 	function isActive(route: string) {
@@ -31,11 +66,6 @@
 	<title>Kleri UI — Component Preview</title>
 	<meta name="description" content="Interactive component preview for @kleri/ui" />
 </svelte:head>
-
-<!-- Background -->
-<div class="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-	<MeteorAnimation number={60} />
-</div>
 
 <!-- Layout -->
 <div class="relative z-10 flex min-h-screen">
@@ -109,7 +139,9 @@
 	<!-- Main Content -->
 	<main class="flex-1 overflow-y-auto">
 		<div class="mx-auto max-w-5xl p-8">
-			{@render children()}
+			<Tooltip.Provider>
+				{@render children()}
+			</Tooltip.Provider>
 		</div>
 	</main>
 </div>
