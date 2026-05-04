@@ -2,7 +2,10 @@
 	"$schema": "./node_modules/wrangler/config-schema.json",
 	"name": "kleri-ui",
 	"compatibility_date": "2026-05-01",
-	"compatibility_flags": ["nodejs_als"],
+	"compatibility_flags": ["nodejs_compat"],
+	"observability": {
+		"enabled": true
+	},
 	"main": ".svelte-kit/cloudflare/_worker.js",
 	"assets": {
 		"binding": "ASSETS",
