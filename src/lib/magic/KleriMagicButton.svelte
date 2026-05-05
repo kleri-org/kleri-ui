@@ -25,7 +25,7 @@
 		class: className,
 		gradientSize = 150,
 		gradientColor = KLERI_GREEN_2,
-		gradientOpacity = 0.25,
+		gradientOpacity = 0.1,
 		gradientFrom = KLERI_GREEN_2,
 		gradientTo = KLERI_GREEN_1,
 		...restProps
@@ -114,7 +114,7 @@
 </script>
 
 <motion.div
-	class={cn('rounded-kleri relative inline-flex overflow-hidden p-0.5', className)}
+	class={cn('relative inline-flex overflow-hidden rounded-kleri p-0.5', className)}
 	style={{ background: borderGradient }}
 	onpointermove={handleWrapperPointerMove}
 	onpointerenter={handlePointerEnter}
@@ -122,7 +122,7 @@
 	role="presentation"
 >
 	<button
-		class="rounded-kleri relative flex w-full items-center justify-center overflow-hidden bg-transparent px-6 py-2 text-base font-normal text-white ring-0 transition-colors duration-300 select-none hover:bg-stone-900 disabled:cursor-not-allowed disabled:opacity-50"
+		class="relative flex w-full items-center justify-center overflow-hidden rounded-kleri bg-muted/80 px-6 py-2 text-base font-normal text-foreground ring-0 transition-colors duration-300 select-none disabled:cursor-not-allowed disabled:opacity-50"
 		onpointermove={handleButtonPointerMove}
 		{...restProps}
 	>

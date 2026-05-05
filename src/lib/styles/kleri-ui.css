@@ -1,7 +1,7 @@
-@import "./fonts.css";
-@import "./kleri-theme.css";
+@import './fonts.css';
+@import './kleri-theme.css';
 
-@source "..";
+@source '..';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -25,14 +25,14 @@
 	--secondary-foreground: oklch(0.205 0 0);
 
 	--muted: oklch(0.9 0 0);
-	--muted-foreground: oklch(0.756 0 0);
+	--muted-foreground: oklch(0.356 0 0);
 
 	--accent: var(--color-kleri-green-2);
 	--accent-foreground: oklch(0.205 0 0);
 
 	--destructive: oklch(0.577 0.245 27.325);
 
-	--border: oklch(0.822 0 0);
+	--border: oklch(0.422 0 0);
 
 	--input: oklch(0.922 0 0);
 
@@ -109,8 +109,8 @@
 	--font-spacemono: Space Mono, monospace;
 	--font-liter: Liter, serif;
 	--font-roboto: Roboto, serif;
-	--font-open: "Open Sans", serif;
-	--font-noto: "Noto Sans", serif;
+	--font-open: 'Open Sans', serif;
+	--font-noto: 'Noto Sans', serif;
 
 	--radius-kleri: var(--radius-xl);
 	--radius-sm: calc(var(--radius) - 4px);
