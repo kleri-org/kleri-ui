@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="static/KleriUiLogo.svg" alt="KleriUI Logo" />
+</p>
+
 # @kleri/ui
 
 A Svelte 5 component library built with Tailwind CSS 4, bits-ui, and motion-sv. Features brand-consistent components with Kleri green theming, animated effects, and accessible primitives.
