@@ -30,7 +30,7 @@
 	const categories = [
 		{
 			name: 'Heading',
-			route: '/heading',
+			route: '/components/heading',
 			icon: Heading1,
 			items: [
 				{ name: 'PrimaryHeading', id: 'primary-heading', icon: Type },
@@ -40,7 +40,7 @@
 		},
 		{
 			name: 'Button',
-			route: '/button',
+			route: '/components/button',
 			icon: MousePointerClick,
 			items: [
 				{ name: 'KleriButton', id: 'kleri-button', icon: MousePointerClick },
@@ -50,7 +50,7 @@
 		},
 		{
 			name: 'Input',
-			route: '/input',
+			route: '/components/input',
 			icon: TextCursorInput,
 			items: [
 				{ name: 'KleriSwitch', id: 'kleri-switch', icon: ToggleLeft },
@@ -59,25 +59,25 @@
 		},
 		{
 			name: 'Tooltip',
-			route: '/tooltip',
+			route: '/components/tooltip',
 			icon: MessageCircle,
 			items: [{ name: 'KleriTooltip', id: 'kleri-tooltip', icon: MessageCircle }]
 		},
 		{
 			name: 'Animation',
-			route: '/animation',
+			route: '/components/animation',
 			icon: Zap,
 			items: [{ name: 'MeteorAnimation', id: 'meteor-animation', icon: Zap }]
 		},
 		{
 			name: 'Settings',
-			route: '/settings',
+			route: '/components/settings',
 			icon: Settings,
 			items: [{ name: 'SettingsOption', id: 'settings-option', icon: SlidersHorizontal }]
 		},
 		{
 			name: 'Magic',
-			route: '/magic',
+			route: '/components/magic',
 			icon: Wand2,
 			items: [
 				{ name: 'KleriMagicCard', id: 'kleri-magic-card', icon: CreditCard },

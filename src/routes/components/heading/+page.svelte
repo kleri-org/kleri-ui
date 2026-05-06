@@ -24,6 +24,8 @@
 		<div class="mb-2 flex items-center gap-2 font-spacemono text-sm text-muted-foreground">
 			<a href="/" class="transition-colors hover:text-kleri-green-2">Kleri UI</a>
 			<span>/</span>
+			<a href="/components" class="transition-colors hover:text-kleri-green-2">Components</a>
+			<span>/</span>
 			<span class="text-foreground">Heading</span>
 		</div>
 		<h1 class="text-4xl font-bold text-foreground">Heading</h1>

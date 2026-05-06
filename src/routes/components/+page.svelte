@@ -16,7 +16,7 @@
 			description: 'Primary, secondary, and sub headings',
 			count: 3,
 			comingSoon: false,
-			route: '/heading',
+			route: '/components/heading',
 			icon: Heading1
 		},
 		{
@@ -24,7 +24,7 @@
 			description: 'Interactive buttons and magic effects',
 			count: 3,
 			comingSoon: false,
-			route: '/button',
+			route: '/components/button',
 			icon: MousePointerClick
 		},
 		{
@@ -32,7 +32,7 @@
 			description: 'Switches, text inputs, and form controls',
 			count: 2,
 			comingSoon: false,
-			route: '/input',
+			route: '/components/input',
 			icon: TextCursorInput
 		},
 		{
@@ -40,7 +40,7 @@
 			description: 'Contextual information overlays',
 			count: 1,
 			comingSoon: false,
-			route: '/tooltip',
+			route: '/components/tooltip',
 			icon: MessageCircle
 		},
 		{
@@ -48,7 +48,7 @@
 			description: 'Motion and visual effects',
 			count: 1,
 			comingSoon: false,
-			route: '/animation',
+			route: '/components/animation',
 			icon: Sparkles
 		},
 		{
@@ -56,7 +56,7 @@
 			description: 'Configuration and preference controls',
 			count: 1,
 			comingSoon: false,
-			route: '/settings',
+			route: '/components/settings',
 			icon: Settings
 		},
 		{
@@ -64,7 +64,7 @@
 			description: 'Enchanted interactive components',
 			count: 2,
 			comingSoon: false,
-			route: '/magic',
+			route: '/components/magic',
 			icon: Wand2
 		}
 	];
