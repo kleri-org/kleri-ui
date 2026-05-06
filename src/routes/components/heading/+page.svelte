@@ -10,11 +10,21 @@
 	let secondaryProps = $state({ children: 'Secondary Heading' });
 	const secondarySchema = { children: { type: 'string' as const, label: 'Heading Text' } };
 
-	let subProps = $state({ children: 'Sub Heading', info: '', warning: '' });
+	let subProps = $state({
+		children: 'Sub Heading',
+		info: 'This and the warning are optional',
+		warning: 'Keeping them empty will make them disappear'
+	});
 	const subSchema = {
 		children: { type: 'string' as const, label: 'Heading Text' },
-		info: { type: 'string' as const, label: 'Info Message' },
-		warning: { type: 'string' as const, label: 'Warning Message' }
+		info: {
+			type: 'string' as const,
+			label: 'Info Message'
+		},
+		warning: {
+			type: 'string' as const,
+			label: 'Warning Message'
+		}
 	};
 </script>
 

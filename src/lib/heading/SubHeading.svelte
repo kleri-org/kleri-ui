@@ -18,7 +18,7 @@
 	{@render children?.()}
 
 	{#if info}
-		<div class="flex flex-row items-center gap-x-2 pb-2 font-spacemono text-sm text-foreground">
+		<div class="flex flex-row items-center gap-x-2 py-1 font-spacemono text-sm text-foreground">
 			<InfoIcon size={14} class="text-foreground" />
 			{info}
 		</div>
@@ -27,7 +27,7 @@
 
 	{#if warning}
 		<div
-			class="flex flex-row items-center gap-x-2 pb-2 font-spacemono text-sm text-yellow-600 dark:text-yellow-500"
+			class="mt-1 flex flex-row items-center gap-x-2 py-1 font-spacemono text-sm text-yellow-600 dark:text-yellow-500"
 		>
 			<TriangleAlert size={14} />
 			{warning}
