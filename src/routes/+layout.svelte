@@ -86,12 +86,122 @@
 		}
 	];
 
+	const allItemIds = $derived(categories.flatMap((c) => c.items.map((i) => i.id)));
+
 	function isActivePath(route: string) {
 		return page.url.pathname === route || page.url.pathname === route + '/';
 	}
 
 	let mainEl: HTMLElement;
 	let currentHash = $state(page.url.hash);
+	let isScrollingProgrammatically = $state(false);
+
+	let observer: IntersectionObserver | null = null;
+	let intersectingIds = new Set<string>();
+	let scrollSpyScrollHandler: (() => void) | null = null;
+
+	function setupScrollSpy() {
+		if (!mainEl) return;
+
+		if (observer) {
+			observer.disconnect();
+			observer = null;
+		}
+		if (scrollSpyScrollHandler) {
+			mainEl.removeEventListener('scroll', scrollSpyScrollHandler);
+			scrollSpyScrollHandler = null;
+		}
+		intersectingIds.clear();
+
+		const path = page.url.pathname;
+		if (!path.startsWith('/components/') || path === '/components' || path === '/components/')
+			return;
+
+		const sections = mainEl.querySelectorAll('section[id]');
+		if (sections.length === 0) return;
+
+		scrollSpyScrollHandler = () => {
+			if (isScrollingProgrammatically) return;
+
+			const scrollTop = mainEl.scrollTop;
+			const clientHeight = mainEl.clientHeight;
+			const scrollHeight = mainEl.scrollHeight;
+			const centerY = scrollTop + clientHeight / 2;
+
+			// Near top: highlight first section
+			if (scrollTop < 120) {
+				const firstId = (sections[0] as HTMLElement).id;
+				if (currentHash !== '#' + firstId) {
+					currentHash = '#' + firstId;
+					history.replaceState(null, '', `${path}#${firstId}`);
+				}
+				return;
+			}
+
+			// Near bottom: highlight last section
+			if (scrollTop + clientHeight >= scrollHeight - 120) {
+				const lastId = (sections[sections.length - 1] as HTMLElement).id;
+				if (currentHash !== '#' + lastId) {
+					currentHash = '#' + lastId;
+					history.replaceState(null, '', `${path}#${lastId}`);
+				}
+				return;
+			}
+
+			// Fallback: if nothing is intersecting, pick the section whose
+			// vertical center is closest to the viewport center.
+			if (intersectingIds.size === 0) {
+				let closestId = '';
+				let closestDist = Infinity;
+				for (const section of sections) {
+					const el = section as HTMLElement;
+					const elCenter = el.offsetTop + el.offsetHeight / 2;
+					const dist = Math.abs(elCenter - centerY);
+					if (dist < closestDist) {
+						closestDist = dist;
+						closestId = el.id;
+					}
+				}
+				if (closestId && currentHash !== '#' + closestId) {
+					currentHash = '#' + closestId;
+					history.replaceState(null, '', `${path}#${closestId}`);
+				}
+			}
+		};
+		mainEl.addEventListener('scroll', scrollSpyScrollHandler, { passive: true });
+
+		observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					const id = entry.target.id;
+					if (entry.isIntersecting) {
+						intersectingIds.add(id);
+					} else {
+						intersectingIds.delete(id);
+					}
+				}
+
+				if (isScrollingProgrammatically) return;
+
+				for (const id of allItemIds) {
+					if (intersectingIds.has(id)) {
+						if (currentHash !== '#' + id) {
+							currentHash = '#' + id;
+							history.replaceState(null, '', `${path}#${id}`);
+						}
+						break;
+					}
+				}
+			},
+			{
+				root: mainEl,
+				rootMargin: '-40% 0px -40% 0px',
+				threshold: 0
+			}
+		);
+
+		sections.forEach((section) => observer!.observe(section));
+	}
 
 	function isActiveHash(hash: string) {
 		return currentHash === '#' + hash;
@@ -103,6 +213,7 @@
 
 	function smoothScrollTo(targetY: number, duration = 500) {
 		if (!mainEl) return;
+		isScrollingProgrammatically = true;
 		const startY = mainEl.scrollTop;
 		const diff = targetY - startY;
 		let startTime: number | null = null;
@@ -114,6 +225,8 @@
 			mainEl.scrollTop = startY + diff * eased;
 			if (progress < 1) {
 				requestAnimationFrame(step);
+			} else {
+				isScrollingProgrammatically = false;
 			}
 		}
 
@@ -146,10 +259,17 @@
 					scrollToId(to.url.hash.slice(1));
 				});
 			});
+		} else {
+			currentHash = '';
 		}
+
+		requestAnimationFrame(() => {
+			setupScrollSpy();
+		});
 	});
 
 	onMount(() => {
+		setupScrollSpy();
 		if (page.url.hash && mainEl) {
 			requestAnimationFrame(() => {
 				requestAnimationFrame(() => {
