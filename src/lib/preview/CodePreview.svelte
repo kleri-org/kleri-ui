@@ -3,11 +3,13 @@
 
 	interface Props {
 		component: string;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		props: Record<string, any>;
 	}
 
 	let { component, props }: Props = $props();
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	function formatValue(value: any): string {
 		if (typeof value === 'boolean') return `{${value}}`;
 		if (typeof value === 'number') return `{${value}}`;

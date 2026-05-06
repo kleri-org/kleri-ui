@@ -3,7 +3,7 @@
 	import { cn } from '$lib/utils';
 
 	interface Props {
-		children: any;
+		children: import('svelte').Snippet;
 		class?: ClassValue | null | undefined;
 	}
 

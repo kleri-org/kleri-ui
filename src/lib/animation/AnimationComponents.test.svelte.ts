@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from '@testing-library/svelte';
+import { cleanup, render, waitFor } from '@testing-library/svelte';
 import { afterEach, describe, expect, it } from 'vitest';
 import AnimatedGridPattern from './AnimatedGridPattern.svelte';
 import MeteorAnimation from './MeteorAnimation.svelte';

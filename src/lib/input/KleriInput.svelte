@@ -8,7 +8,7 @@
 	import { Eye, EyeOff } from '@lucide/svelte';
 
 	type Props = {
-		// biome-ignore lint/suspicious/noExplicitAny: input value can be any type
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		value?: any;
 		label?: string;
 		errors?: string[];
@@ -30,7 +30,6 @@
 		withBorder = true,
 		placeholder = '',
 		required,
-		shake = false,
 		type = 'text',
 		...restProps
 	}: Props = $props();
@@ -54,7 +53,7 @@
 			</p>
 		{/if}
 		{#if errors}
-			{#each errors as error}
+			{#each errors as error, i (i)}
 				<p class="indent-2 font-spacemono text-xs text-red-400">
 					({error})
 				</p>

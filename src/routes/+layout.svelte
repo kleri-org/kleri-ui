@@ -307,7 +307,7 @@
 					Components
 				</p>
 				<ul class="space-y-1">
-					{#each categories as category}
+					{#each categories as category (category.name)}
 						<li>
 							<a
 								href={category.route}
@@ -322,7 +322,7 @@
 							</a>
 							{#if category.items.length > 0}
 								<ul class="mt-1 ml-3 space-y-0.5 border-l border-border/30 pl-3">
-									{#each category.items as item}
+									{#each category.items as item (item.id)}
 										<li>
 											<a
 												href="{category.route}#{item.id}"

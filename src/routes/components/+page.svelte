@@ -101,7 +101,7 @@
 		</div>
 
 		<div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-			{#each categories as category, i}
+			{#each categories as category, i (category.name)}
 				{#if category.comingSoon}
 					<div
 						class="card-enter group relative rounded-xl border-2 border-border/50 bg-card/50 p-6 opacity-60"

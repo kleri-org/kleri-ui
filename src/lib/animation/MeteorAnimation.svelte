@@ -50,7 +50,7 @@
 	let { number = 100 }: Props = $props();
 </script>
 
-{#each meteorStylesLeft as style, idx}
+{#each meteorStylesLeft as style, idx (idx)}
 	<span
 		id="meteor-{idx + 1}"
 		class={cn(
@@ -66,7 +66,7 @@
 	</span>
 {/each}
 
-{#each meteorStylesRight as style, idx}
+{#each meteorStylesRight as style, idx (idx)}
 	<span
 		id="meteor-{idx + 1}"
 		class={cn(

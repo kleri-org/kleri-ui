@@ -13,6 +13,7 @@
 
 	interface Props {
 		schema: PropSchema;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		values: Record<string, any>;
 	}
 
@@ -20,7 +21,7 @@
 </script>
 
 <div class="space-y-4">
-	{#each Object.entries(schema) as [key, config]}
+	{#each Object.entries(schema) as [key, config] (key)}
 		{#if config.type === 'boolean'}
 			<div class="space-y-1.5">
 				<p class="text-sm font-medium text-foreground">
