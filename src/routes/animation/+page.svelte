@@ -1,35 +1,50 @@
 <script lang="ts">
-	const animations = [
-		{
-			name: 'MeteorAnimation',
-			description: 'Animated meteor shower effect with random trajectories and glowing tails.',
-			route: '/animation/meteor-animation'
-		}
-	];
+	import MeteorAnimation from '$lib/animation/MeteorAnimation.svelte';
+	import { PropControls, CodePreview } from '$lib/preview';
+
+	let meteorProps = $state({ number: 20 });
+	const meteorSchema = {
+		number: { type: 'number' as const, label: 'Meteor Count' }
+	};
 </script>
 
-<div class="space-y-8">
+<div class="space-y-16">
+	<!-- Page header -->
 	<div class="space-y-2">
-		<div class="flex items-center gap-2 text-sm text-muted-foreground font-spacemono mb-2">
-			<a href="/" class="hover:text-kleri-green-2 transition-colors">Kleri UI</a>
+		<div class="mb-2 flex items-center gap-2 font-spacemono text-sm text-muted-foreground">
+			<a href="/" class="transition-colors hover:text-kleri-green-2">Kleri UI</a>
 			<span>/</span>
 			<span class="text-foreground">Animation</span>
 		</div>
 		<h1 class="text-4xl font-bold text-foreground">Animation</h1>
-		<p class="text-muted-foreground text-lg">Motion and visual effects for dynamic UIs.</p>
+		<p class="text-lg text-muted-foreground">Motion and visual effects for dynamic UIs.</p>
 	</div>
 
-	<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-		{#each animations as animation}
-			<a
-				href="{animation.route}"
-				class="group rounded-xl border-2 border-border/50 bg-card/50 p-6 hover:border-kleri-green-2/50 hover:bg-card transition-all"
-			>
-				<h3 class="font-semibold text-foreground group-hover:text-kleri-green-2 transition-colors mb-2">
-					{animation.name}
-				</h3>
-				<p class="text-sm text-muted-foreground">{animation.description}</p>
-			</a>
-		{/each}
-	</div>
+	<!-- MeteorAnimation -->
+	<section id="meteor-animation" class="scroll-mt-8 space-y-6">
+		<div class="space-y-2">
+			<h2 class="text-2xl font-bold text-foreground">MeteorAnimation</h2>
+			<p class="text-muted-foreground">
+				Animated meteor shower effect with random trajectories and glowing green tails.
+			</p>
+		</div>
+		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+			<div class="space-y-4 lg:col-span-2">
+				<div
+					class="relative flex min-h-60 items-center justify-center overflow-hidden rounded-xl border-2 border-border/50 bg-card/30 p-12"
+				>
+					<MeteorAnimation number={meteorProps.number} />
+				</div>
+				<CodePreview component="MeteorAnimation" props={meteorProps} />
+			</div>
+			<div class="h-fit rounded-xl border-2 border-border/50 bg-card/30 p-6">
+				<h2
+					class="mb-4 font-spacemono text-sm font-semibold tracking-wider text-foreground uppercase"
+				>
+					Props
+				</h2>
+				<PropControls schema={meteorSchema} bind:values={meteorProps} />
+			</div>
+		</div>
+	</section>
 </div>

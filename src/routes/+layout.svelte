@@ -2,63 +2,94 @@
 	import './layout.css';
 	import { page } from '$app/state';
 	import { Tooltip } from 'bits-ui';
+	import KleriUiLogo from '../assetes/KleriUiLogo.svelte';
+	import {
+		Heading1,
+		Heading2,
+		Heading3,
+		Type,
+		MousePointerClick,
+		Wrench,
+		Sparkles,
+		TextCursorInput,
+		ToggleLeft,
+		MessageCircle,
+		Zap,
+		Settings,
+		SlidersHorizontal,
+		Wand2,
+		CreditCard
+	} from 'lucide-svelte';
 
 	const { children } = $props();
+
+	const isHome = $derived(page.url.pathname === '/');
 
 	const categories = [
 		{
 			name: 'Heading',
-			comingSoon: false,
+			route: '/heading',
+			icon: Heading1,
 			items: [
-				{ name: 'PrimaryHeading', route: '/heading/primary-heading' },
-				{ name: 'SecondaryHeading', route: '/heading/secondary-heading' },
-				{ name: 'SubHeading', route: '/heading/sub-heading' }
+				{ name: 'PrimaryHeading', id: 'primary-heading', icon: Type },
+				{ name: 'SecondaryHeading', id: 'secondary-heading', icon: Heading2 },
+				{ name: 'SubHeading', id: 'sub-heading', icon: Heading3 }
 			]
 		},
 		{
 			name: 'Button',
-			comingSoon: false,
+			route: '/button',
+			icon: MousePointerClick,
 			items: [
-				{ name: 'KleriButton', route: '/button/kleri-button' },
-				{ name: 'KleriUtilityButton', route: '/button/kleri-utility-button' },
-				{ name: 'KleriMagicButton', route: '/button/kleri-magic-button' }
+				{ name: 'KleriButton', id: 'kleri-button', icon: MousePointerClick },
+				{ name: 'KleriUtilityButton', id: 'kleri-utility-button', icon: Wrench },
+				{ name: 'KleriMagicButton', id: 'kleri-magic-button', icon: Sparkles }
 			]
 		},
 		{
 			name: 'Input',
-			comingSoon: false,
+			route: '/input',
+			icon: TextCursorInput,
 			items: [
-				{ name: 'KleriSwitch', route: '/input/kleri-switch' },
-				{ name: 'KleriInput', route: '/input/kleri-input' }
+				{ name: 'KleriSwitch', id: 'kleri-switch', icon: ToggleLeft },
+				{ name: 'KleriInput', id: 'kleri-input', icon: TextCursorInput }
 			]
 		},
 		{
 			name: 'Tooltip',
-			comingSoon: false,
-			items: [{ name: 'KleriTooltip', route: '/tooltip/kleri-tooltip' }]
+			route: '/tooltip',
+			icon: MessageCircle,
+			items: [{ name: 'KleriTooltip', id: 'kleri-tooltip', icon: MessageCircle }]
 		},
 		{
 			name: 'Animation',
-			comingSoon: false,
-			items: [{ name: 'MeteorAnimation', route: '/animation/meteor-animation' }]
+			route: '/animation',
+			icon: Zap,
+			items: [{ name: 'MeteorAnimation', id: 'meteor-animation', icon: Zap }]
 		},
 		{
 			name: 'Settings',
-			comingSoon: false,
-			items: [{ name: 'SettingsOption', route: '/settings/settings-option' }]
+			route: '/settings',
+			icon: Settings,
+			items: [{ name: 'SettingsOption', id: 'settings-option', icon: SlidersHorizontal }]
 		},
 		{
 			name: 'Magic',
-			comingSoon: false,
+			route: '/magic',
+			icon: Wand2,
 			items: [
-				{ name: 'KleriMagicCard', route: '/magic/kleri-magic-card' },
-				{ name: 'KleriMagicButton', route: '/magic/kleri-magic-button' }
+				{ name: 'KleriMagicCard', id: 'kleri-magic-card', icon: CreditCard },
+				{ name: 'KleriMagicButton', id: 'kleri-magic-button', icon: Sparkles }
 			]
 		}
 	];
 
-	function isActive(route: string) {
+	function isActivePath(route: string) {
 		return page.url.pathname === route || page.url.pathname === route + '/';
+	}
+
+	function isActiveHash(hash: string) {
+		return page.url.hash === '#' + hash;
 	}
 </script>
 
@@ -69,76 +100,72 @@
 
 <!-- Layout -->
 <div class="relative z-10 flex min-h-screen">
-	<!-- Sidebar -->
-	<aside class="flex w-64 flex-col border-r border-border/20 bg-background/80 backdrop-blur-xl">
-		<div class="border-b border-border/20 p-6">
-			<a href="/" class="flex items-center gap-3">
-				<div
-					class="flex h-8 w-8 items-center justify-center rounded-lg bg-linear-to-br from-kleri-green-2 to-kleri-green-1"
-				>
-					<span class="text-sm font-bold text-white">K</span>
-				</div>
-				<div>
-					<h1 class="text-lg leading-tight font-bold">Kleri UI</h1>
-					<p class="font-spacemono text-xs text-muted-foreground">Component Preview</p>
-				</div>
-			</a>
-		</div>
+	{#if !isHome}
+		<!-- Sidebar -->
+		<aside class="sticky top-0 flex h-screen w-64 flex-col border-r border-border/20 bg-background/80 backdrop-blur-xl">
+			<div class="border-b border-border/20 p-6">
+				<a href="/" class="flex items-center gap-3">
+					<KleriUiLogo class="h-8 w-auto" />
+					<div>
+						<h1 class="text-lg leading-tight font-bold">Kleri UI</h1>
+						<p class="font-spacemono text-xs text-muted-foreground">Component Preview</p>
+					</div>
+				</a>
+			</div>
 
-		<nav class="flex-1 overflow-y-auto p-4">
-			<p class="mb-3 px-2 font-spacemono text-xs tracking-wider text-muted-foreground uppercase">
-				Components
-			</p>
-			<ul class="space-y-1">
-				{#each categories as category}
-					<li>
-						{#if category.comingSoon}
-							<div
-								class="flex items-center justify-between rounded-lg px-3 py-2 text-sm text-muted-foreground opacity-60"
+			<nav class="flex-1 overflow-y-auto p-4">
+				<p class="mb-3 px-2 font-spacemono text-xs tracking-wider text-muted-foreground uppercase">
+					Components
+				</p>
+				<ul class="space-y-1">
+					{#each categories as category}
+						<li>
+							<a
+								href={category.route}
+								class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors {isActivePath(
+									category.route
+								)
+									? 'bg-kleri-green-3/20 text-kleri-green-2'
+									: 'text-foreground hover:bg-muted/30'}"
 							>
-								<span>{category.name}</span>
-								<span class="rounded bg-muted/50 px-1.5 py-0.5 font-spacemono text-[10px]"
-									>Soon</span
-								>
-							</div>
-						{:else}
-							<div class="rounded-lg px-3 py-2 text-sm font-medium text-foreground">
+								<category.icon class="h-4 w-4" />
 								{category.name}
-							</div>
+							</a>
 							{#if category.items.length > 0}
 								<ul class="mt-1 ml-3 space-y-0.5 border-l border-border/30 pl-3">
 									{#each category.items as item}
 										<li>
 											<a
-												href={item.route}
-												class="block rounded-md px-3 py-1.5 text-sm transition-colors {isActive(
-													item.route
+												href="{category.route}#{item.id}"
+												class="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors {isActiveHash(
+													item.id
 												)
 													? 'bg-kleri-green-3/20 font-medium text-kleri-green-2'
 													: 'text-muted-foreground hover:bg-muted/30 hover:text-foreground'}"
 											>
+												<item.icon class="h-3.5 w-3.5" />
 												{item.name}
 											</a>
 										</li>
 									{/each}
 								</ul>
 							{/if}
-						{/if}
-					</li>
-				{/each}
-			</ul>
-		</nav>
+						</li>
+					{/each}
+				</ul>
+			</nav>
 
-		<div class="border-t border-border/20 p-4">
-			<p class="text-center font-spacemono text-[10px] text-muted-foreground">
-				© {new Date().getFullYear()} Kleri
-			</p>
-		</div>
-	</aside>
+			<div class="border-t border-border/20 p-4">
+				<p class="text-center font-spacemono text-[10px] text-muted-foreground">
+					© {new Date().getFullYear()} Kleri
+				</p>
+			</div>
+		</aside>
+	{/if}
 
 	<!-- Main Content -->
 	<main class="flex-1 overflow-y-auto">
-		<div class="mx-auto max-w-5xl p-8">
+		<div class="mx-auto {isHome ? '' : 'max-w-5xl p-8'}">
 			<Tooltip.Provider>
 				{@render children()}
 			</Tooltip.Provider>
