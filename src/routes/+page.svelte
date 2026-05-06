@@ -41,7 +41,7 @@
 			initial={{ opacity: 0, y: 20 }}
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ duration: 0.6, delay: 0.5, ease: 'easeOut' }}
-			class="max-w-lg text-lg text-muted-foreground sm:text-xl"
+			class="max-w-lg text-lg text-foreground sm:text-xl"
 		>
 			A handcrafted component library built with Svelte&nbsp;5 and Tailwind&nbsp;CSS.
 		</motion.p>
