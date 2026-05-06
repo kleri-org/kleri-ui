@@ -27,29 +27,16 @@
 					{config.label}
 				</p>
 				<div class="flex items-center gap-3">
-					<KleriSwitch
-						ariaLabel={config.label}
-						bind:value={values[key]}
-					/>
+					<KleriSwitch ariaLabel={config.label} bind:value={values[key]} />
 					<span class="font-spacemono text-sm text-muted-foreground">
 						{values[key] ? 'true' : 'false'}
 					</span>
 				</div>
 			</div>
 		{:else if config.type === 'string'}
-			<KleriInput
-				label={config.label}
-				type="text"
-				bind:value={values[key]}
-				InputIcon={Type}
-			/>
+			<KleriInput label={config.label} type="text" bind:value={values[key]} InputIcon={Type} />
 		{:else if config.type === 'number'}
-			<KleriInput
-				label={config.label}
-				type="number"
-				bind:value={values[key]}
-				InputIcon={Hash}
-			/>
+			<KleriInput label={config.label} type="number" bind:value={values[key]} InputIcon={Hash} />
 		{/if}
 	{/each}
 </div>

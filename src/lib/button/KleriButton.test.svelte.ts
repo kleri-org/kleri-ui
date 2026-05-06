@@ -9,7 +9,6 @@ describe('KleriButton', () => {
 
 	it('renders children', () => {
 		render(KleriButton, {
-			// @ts-expect-error testing-library snippet typing
 			props: { children: () => 'Click me' }
 		});
 		expect(screen.getByRole('button')).toBeInTheDocument();

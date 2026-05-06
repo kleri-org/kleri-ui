@@ -24,26 +24,28 @@
 	}: Props = $props();
 </script>
 
-<Tooltip.Root bind:open {disabled}>
-	<Tooltip.Trigger {...triggerProps}>
-		{#snippet child({ props })}
-			{@render trigger(props)}
-		{/snippet}
-	</Tooltip.Trigger>
-	<Tooltip.Portal>
-		<Tooltip.Content
-			class="pointer-events-none z-50 rounded-kleri border-2
-	    border-border bg-background/60 p-2 font-spacemono
-		  text-sm font-normal text-foreground backdrop-blur-lg transition-transform"
-			{side}
-			{sideOffset}
-		>
-			{#if arrow}
-				<Tooltip.Arrow class="pointer-events-none text-foreground/40 transition-transform" />
-			{/if}
-			<div class="pointer-events-none text-xs">
-				{@render children?.()}
-			</div>
-		</Tooltip.Content>
-	</Tooltip.Portal>
-</Tooltip.Root>
+<Tooltip.Provider>
+	<Tooltip.Root bind:open {disabled}>
+		<Tooltip.Trigger {...triggerProps}>
+			{#snippet child({ props })}
+				{@render trigger(props)}
+			{/snippet}
+		</Tooltip.Trigger>
+		<Tooltip.Portal>
+			<Tooltip.Content
+				class="pointer-events-none z-50 rounded-kleri border-2
+		    border-border bg-background/60 p-2 font-spacemono
+			  text-sm font-normal text-foreground backdrop-blur-lg transition-transform"
+				{side}
+				{sideOffset}
+			>
+				{#if arrow}
+					<Tooltip.Arrow class="pointer-events-none text-foreground/40 transition-transform" />
+				{/if}
+				<div class="pointer-events-none text-xs">
+					{@render children?.()}
+				</div>
+			</Tooltip.Content>
+		</Tooltip.Portal>
+	</Tooltip.Root>
+</Tooltip.Provider>

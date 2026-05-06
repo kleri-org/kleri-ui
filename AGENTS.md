@@ -2,7 +2,7 @@
 
 - **Language**: TypeScript
 - **Package Manager**: bun
-- **Add-ons**: prettier, vitest, playwright, tailwindcss, storybook, mcp, sveltekit-adapter
+- **Add-ons**: prettier, vitest, playwright, tailwindcss, mcp, sveltekit-adapter
 
 ---
 

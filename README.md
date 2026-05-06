@@ -20,7 +20,7 @@ To recreate this project with the same configuration:
 
 ```sh
 # recreate this project
-bun x sv@0.15.2 create --template library --types ts --add prettier vitest="usages:unit,component" playwright tailwindcss="plugins:typography,forms" storybook mcp="ide:opencode,other+setup:local" sveltekit-adapter="adapter:cloudflare+cfTarget:workers" --install bun kleri-ui
+bun x sv@0.15.2 create --template library --types ts --add prettier vitest="usages:unit,component" playwright tailwindcss="plugins:typography,forms" mcp="ide:opencode,other+setup:local" sveltekit-adapter="adapter:cloudflare+cfTarget:workers" --install bun kleri-ui
 ```
 
 ## Developing
