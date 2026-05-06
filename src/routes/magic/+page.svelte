@@ -60,7 +60,9 @@
 						gradientOpacity={magicCardProps.gradientOpacity}
 					>
 						<h3 class="text-lg font-semibold">{magicCardProps.children}</h3>
-						<p class="text-sm text-muted-foreground">Hover over this card to see the magic effect.</p>
+						<p class="text-sm text-muted-foreground">
+							Hover over this card to see the magic effect.
+						</p>
 					</KleriMagicCard>
 				</div>
 				<CodePreview component="KleriMagicCard" props={magicCardProps} />

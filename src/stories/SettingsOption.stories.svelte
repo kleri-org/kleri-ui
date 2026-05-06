@@ -1,36 +1,36 @@
 <script module>
-  // @ts-nocheck
-  import { defineMeta } from '@storybook/addon-svelte-csf';
-  import SettingsOption from '$lib/settings/SettingsOption.svelte';
-  import KleriSwitch from '$lib/input/KleriSwitch.svelte';
+	// @ts-nocheck
+	import { defineMeta } from '@storybook/addon-svelte-csf';
+	import SettingsOption from '$lib/settings/SettingsOption.svelte';
+	import KleriSwitch from '$lib/input/KleriSwitch.svelte';
 
-  const { Story } = defineMeta({
-    title: 'Settings/SettingsOption',
-    component: SettingsOption,
-    tags: ['autodocs'],
-    argTypes: {
-      optionAtEnd: { control: 'boolean' },
-    },
-    args: {
-      optionAtEnd: false,
-    }
-  });
+	const { Story } = defineMeta({
+		title: 'Settings/SettingsOption',
+		component: SettingsOption,
+		tags: ['autodocs'],
+		argTypes: {
+			optionAtEnd: { control: 'boolean' }
+		},
+		args: {
+			optionAtEnd: false
+		}
+	});
 </script>
 
 <Story name="Default">
-  {#snippet children(args)}
-    <SettingsOption {...args}>
-      {#snippet name()}Dark Mode{/snippet}
-      {#snippet option()}<KleriSwitch value={true} />{/snippet}
-    </SettingsOption>
-  {/snippet}
+	{#snippet children(args)}
+		<SettingsOption {...args}>
+			{#snippet name()}Dark Mode{/snippet}
+			{#snippet option()}<KleriSwitch value={true} />{/snippet}
+		</SettingsOption>
+	{/snippet}
 </Story>
 
 <Story name="Option At End" args={{ optionAtEnd: true }}>
-  {#snippet children(args)}
-    <SettingsOption {...args}>
-      {#snippet name()}Notifications{/snippet}
-      {#snippet option()}<KleriSwitch />{/snippet}
-    </SettingsOption>
-  {/snippet}
+	{#snippet children(args)}
+		<SettingsOption {...args}>
+			{#snippet name()}Notifications{/snippet}
+			{#snippet option()}<KleriSwitch />{/snippet}
+		</SettingsOption>
+	{/snippet}
 </Story>

@@ -27,7 +27,9 @@
 			<span class="text-foreground">Heading</span>
 		</div>
 		<h1 class="text-4xl font-bold text-foreground">Heading</h1>
-		<p class="text-lg text-muted-foreground">Typography components for page titles and section headers.</p>
+		<p class="text-lg text-muted-foreground">
+			Typography components for page titles and section headers.
+		</p>
 	</div>
 
 	<!-- PrimaryHeading -->

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { ClassValue } from "clsx";
-	import { cn } from "$lib/utils";
-	import type { Snippet } from "svelte";
-	import { InfoIcon, TriangleAlert } from "@lucide/svelte";
+	import type { ClassValue } from 'clsx';
+	import { cn } from '$lib/utils';
+	import type { Snippet } from 'svelte';
+	import { InfoIcon, TriangleAlert } from '@lucide/svelte';
 
 	interface Props {
 		children: Snippet;
@@ -14,11 +14,11 @@
 	let { children, class: className, info, warning }: Props = $props();
 </script>
 
-<h1 class={cn("font-Poppins font-bold text-2xl mb-1 text-accent", className)}>
+<h1 class={cn('mb-1 font-Poppins text-2xl font-bold text-accent', className)}>
 	{@render children?.()}
 
 	{#if info}
-		<div class="flex flex-row items-center gap-x-2 font-spacemono text-foreground text-sm pb-2">
+		<div class="flex flex-row items-center gap-x-2 pb-2 font-spacemono text-sm text-foreground">
 			<InfoIcon size={14} class="text-foreground" />
 			{info}
 		</div>
@@ -27,7 +27,7 @@
 
 	{#if warning}
 		<div
-			class="flex flex-row items-center gap-x-2 font-spacemono text-sm text-yellow-600 dark:text-yellow-500 pb-2"
+			class="flex flex-row items-center gap-x-2 pb-2 font-spacemono text-sm text-yellow-600 dark:text-yellow-500"
 		>
 			<TriangleAlert size={14} />
 			{warning}

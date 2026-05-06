@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { Component } from "svelte";
-	import type { HTMLInputAttributes } from "svelte/elements";
-	import type { ClassValue } from "clsx";
-	import type { WithElementRef } from "$lib/utils";
+	import type { Component } from 'svelte';
+	import type { HTMLInputAttributes } from 'svelte/elements';
+	import type { ClassValue } from 'clsx';
+	import type { WithElementRef } from '$lib/utils';
 
-	import { cn } from "$lib/utils";
-	import { Eye, EyeOff } from "@lucide/svelte";
+	import { cn } from '$lib/utils';
+	import { Eye, EyeOff } from '@lucide/svelte';
 
 	type Props = {
 		// biome-ignore lint/suspicious/noExplicitAny: input value can be any type
@@ -28,26 +28,26 @@
 		InputIcon,
 		class: className,
 		withBorder = true,
-		placeholder = "",
+		placeholder = '',
 		required,
 		shake = false,
-		type = "text",
+		type = 'text',
 		...restProps
 	}: Props = $props();
 
 	let isPasswordVisible = $state(false);
 	let currentInputType = $derived(
-		type === "password" ? (isPasswordVisible ? "text" : "password") : type
+		type === 'password' ? (isPasswordVisible ? 'text' : 'password') : type
 	);
 
 	let borderClasses = $derived(
-		withBorder ? "border-border border-2" : "border-2 border-transparent"
+		withBorder ? 'border-border border-2' : 'border-2 border-transparent'
 	);
 </script>
 
-<label class="block text-sm font-medium w-full select-none">
+<label class="block w-full text-sm font-medium select-none">
 	<!-- Label and Errors -->
-	<div class="inline-flex flex-row align-middle items-center">
+	<div class="inline-flex flex-row items-center align-middle">
 		{#if label}
 			<p class="indent-2">
 				{label}
@@ -65,11 +65,11 @@
 	<!-- Main Input -->
 	<div
 		class={cn(
-			"flex flex-row items-center justify-end my-1 gap-2 py-3 pl-4 w-full rounded-kleri outline-black focus-within:kleri-border dark:focus-within:kleri-border-dark focus:outline-black focus:ring-black active:ring-black active:outline-black overflow-hidden",
+			'my-1 flex w-full flex-row items-center justify-end gap-2 overflow-hidden rounded-kleri py-3 pl-4 outline-black focus-within:kleri-border focus:ring-black focus:outline-black active:ring-black active:outline-black dark:focus-within:kleri-border-dark',
 			borderClasses,
 			errors &&
 				errors.length > 0 &&
-				"border-red-400 focus:border-red-400 focus-within:border-red-400",
+				'border-red-400 focus-within:border-red-400 focus:border-red-400',
 			className
 		)}
 		class:shake-it={errors && errors.length > 0}
@@ -79,16 +79,16 @@
 		<input
 			type={currentInputType}
 			{required}
-			class="bg-transparent w-full outline-hidden focus:ring-0 placeholder-muted-foreground px-1 text-foreground"
+			class="w-full bg-transparent px-1 text-foreground placeholder-muted-foreground outline-hidden focus:ring-0"
 			bind:value
 			{placeholder}
 			{...restProps}
 		/>
 
-		{#if type === "password"}
+		{#if type === 'password'}
 			<button
 				type="button"
-				class="pr-3 flex items-center justify-center text-foreground cursor-pointer focus:outline-hidden transition-colors"
+				class="flex cursor-pointer items-center justify-center pr-3 text-foreground transition-colors focus:outline-hidden"
 				onclick={(e) => {
 					e.preventDefault();
 					isPasswordVisible = !isPasswordVisible;

@@ -1,29 +1,29 @@
-import { cleanup, render, screen } from "@testing-library/svelte";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import KleriButton from "./KleriButton.svelte";
+import { cleanup, render, screen } from '@testing-library/svelte';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import KleriButton from './KleriButton.svelte';
 
-describe("KleriButton", () => {
+describe('KleriButton', () => {
 	afterEach(() => {
 		cleanup();
 	});
 
-	it("renders children", () => {
+	it('renders children', () => {
 		render(KleriButton, {
 			// @ts-expect-error testing-library snippet typing
-			props: { children: () => "Click me" },
+			props: { children: () => 'Click me' }
 		});
-		expect(screen.getByRole("button")).toBeInTheDocument();
+		expect(screen.getByRole('button')).toBeInTheDocument();
 	});
 
-	it("shows success state when showSuccess is true", () => {
+	it('shows success state when showSuccess is true', () => {
 		render(KleriButton, {
-			props: { showSuccess: true, successMessage: "Done!" },
+			props: { showSuccess: true, successMessage: 'Done!' }
 		});
-		expect(screen.getByText("Done!")).toBeInTheDocument();
-		expect(screen.getByRole("button")).toBeDisabled();
+		expect(screen.getByText('Done!')).toBeInTheDocument();
+		expect(screen.getByRole('button')).toBeDisabled();
 	});
 
-	it("calls onSuccessComplete after successTimeout", async () => {
+	it('calls onSuccessComplete after successTimeout', async () => {
 		vi.useFakeTimers();
 		const onSuccessComplete = vi.fn();
 
@@ -31,8 +31,8 @@ describe("KleriButton", () => {
 			props: {
 				showSuccess: true,
 				successTimeout: 1000,
-				onSuccessComplete,
-			},
+				onSuccessComplete
+			}
 		});
 
 		vi.advanceTimersByTime(1000);

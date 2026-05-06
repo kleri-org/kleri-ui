@@ -31,18 +31,22 @@
 						role="switch"
 						aria-label={config.label}
 						aria-checked={values[key]}
-						class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-kleri-green-2 focus:ring-offset-2 focus:ring-offset-background {values[key]
+						class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:ring-2 focus:ring-kleri-green-2 focus:ring-offset-2 focus:ring-offset-background focus:outline-none {values[
+							key
+						]
 							? 'bg-kleri-green-3'
 							: 'bg-muted'}"
 						onclick={() => (values[key] = !values[key])}
 					>
 						<span
-							class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform {values[key]
+							class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform {values[
+								key
+							]
 								? 'translate-x-6'
 								: 'translate-x-1'}"
 						></span>
 					</button>
-					<span class="text-sm text-muted-foreground font-spacemono">
+					<span class="font-spacemono text-sm text-muted-foreground">
 						{values[key] ? 'true' : 'false'}
 					</span>
 				</div>
@@ -51,14 +55,14 @@
 					id="control-{key}"
 					type="text"
 					bind:value={values[key]}
-					class="w-full rounded-lg border-2 border-border bg-background px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:border-kleri-green-2 focus:outline-none transition-colors"
+					class="w-full rounded-lg border-2 border-border bg-background px-3 py-2 text-sm text-foreground placeholder-muted-foreground transition-colors focus:border-kleri-green-2 focus:outline-none"
 				/>
 			{:else if config.type === 'number'}
 				<input
 					id="control-{key}"
 					type="number"
 					bind:value={values[key]}
-					class="w-full rounded-lg border-2 border-border bg-background px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:border-kleri-green-2 focus:outline-none transition-colors font-spacemono"
+					class="w-full rounded-lg border-2 border-border bg-background px-3 py-2 font-spacemono text-sm text-foreground placeholder-muted-foreground transition-colors focus:border-kleri-green-2 focus:outline-none"
 				/>
 			{/if}
 		</div>

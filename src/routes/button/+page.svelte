@@ -55,7 +55,9 @@
 			<span class="text-foreground">Button</span>
 		</div>
 		<h1 class="text-4xl font-bold text-foreground">Button</h1>
-		<p class="text-lg text-muted-foreground">Interactive buttons with states, effects, and feedback.</p>
+		<p class="text-lg text-muted-foreground">
+			Interactive buttons with states, effects, and feedback.
+		</p>
 	</div>
 
 	<!-- KleriButton -->
@@ -98,7 +100,9 @@
 	<section id="kleri-utility-button" class="scroll-mt-8 space-y-6">
 		<div class="space-y-2">
 			<h2 class="text-2xl font-bold text-foreground">KleriUtilityButton</h2>
-			<p class="text-muted-foreground">Utility button with built-in tooltip support and hover effects.</p>
+			<p class="text-muted-foreground">
+				Utility button with built-in tooltip support and hover effects.
+			</p>
 		</div>
 		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
 			<div class="space-y-4 lg:col-span-2">

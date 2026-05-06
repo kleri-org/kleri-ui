@@ -31,7 +31,9 @@
 	<section id="settings-option" class="scroll-mt-8 space-y-6">
 		<div class="space-y-2">
 			<h2 class="text-2xl font-bold text-foreground">SettingsOption</h2>
-			<p class="text-muted-foreground">Layout component for settings rows with label and control snippets.</p>
+			<p class="text-muted-foreground">
+				Layout component for settings rows with label and control snippets.
+			</p>
 		</div>
 		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
 			<div class="space-y-4 lg:col-span-2">

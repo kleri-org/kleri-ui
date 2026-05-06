@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { cn } from "$lib/utils";
-	import { onMount } from "svelte";
+	import { cn } from '$lib/utils';
+	import { onMount } from 'svelte';
 
 	interface Props {
 		number?: number;
@@ -23,7 +23,7 @@
 			left: `${Math.floor(Math.random() * -2000)}px`,
 			animationDelay: `${Math.random() * 8 + 0.2}s`,
 			animationDuration: `${Math.floor(Math.random() * 8 + 2.9)}s`,
-			tailWidth: `${Math.floor(Math.random() * 70 + 40)}px`, // Random width between 40px and 100px
+			tailWidth: `${Math.floor(Math.random() * 70 + 40)}px` // Random width between 40px and 100px
 		}));
 		meteorStylesLeft = styles;
 	};
@@ -37,7 +37,7 @@
 			left: `${Math.floor(Math.random() * 2000)}px`,
 			animationDelay: `${Math.random() * 8 + 0.2}s`,
 			animationDuration: `${Math.floor(Math.random() * 8 + 2.9)}s`,
-			tailWidth: `${Math.floor(Math.random() * 70 + 40)}px`, // Random width between 40px and 100px
+			tailWidth: `${Math.floor(Math.random() * 70 + 40)}px` // Random width between 40px and 100px
 		}));
 		meteorStylesRight = styles;
 	};
@@ -54,7 +54,7 @@
 	<span
 		id="meteor-{idx + 1}"
 		class={cn(
-			"pointer-events-none absolute left-1/2 top-1/2 size-[2.4px] rotate-180 animate-meteor rounded-full bg-slate-500 shadow-[0_0_0_1px_#ffffff10]"
+			'pointer-events-none absolute top-1/2 left-1/2 size-[2.4px] rotate-180 animate-meteor rounded-full bg-slate-500 shadow-[0_0_0_1px_#ffffff10]'
 		)}
 		style="top: {style.top}px; left: {style.left}; animation-delay: {style.animationDelay}; animation-duration: {style.animationDuration};"
 	>
@@ -70,7 +70,7 @@
 	<span
 		id="meteor-{idx + 1}"
 		class={cn(
-			"pointer-events-none absolute left-1/2 top-1/2 size-[2.4px] rotate-180 animate-meteor rounded-full bg-slate-500 shadow-[0_0_0_1px_#ffffff10]"
+			'pointer-events-none absolute top-1/2 left-1/2 size-[2.4px] rotate-180 animate-meteor rounded-full bg-slate-500 shadow-[0_0_0_1px_#ffffff10]'
 		)}
 		style="top: {style.top}px; left: {style.left}; animation-delay: {style.animationDelay}; animation-duration: {style.animationDuration};"
 	>

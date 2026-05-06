@@ -102,7 +102,9 @@
 <div class="relative z-10 flex min-h-screen">
 	{#if !isHome}
 		<!-- Sidebar -->
-		<aside class="sticky top-0 flex h-screen w-64 flex-col border-r border-border/20 bg-background/80 backdrop-blur-xl">
+		<aside
+			class="sticky top-0 flex h-screen w-64 flex-col border-r border-border/20 bg-background/80 backdrop-blur-xl"
+		>
 			<div class="border-b border-border/20 p-6">
 				<a href="/" class="flex items-center gap-3">
 					<KleriUiLogo class="h-8 w-auto" />

@@ -90,7 +90,7 @@
 	});
 </script>
 
-<section class="px-8 pb-16 pt-8">
+<section class="px-8 pt-8 pb-16">
 	<div bind:this={cardsContainer} class="mx-auto max-w-6xl">
 		<div class="mb-8 flex items-center gap-3">
 			<div class="h-px flex-1 bg-border/30"></div>
