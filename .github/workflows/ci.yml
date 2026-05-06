@@ -40,11 +40,8 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Sync SvelteKit
-        run: bunx svelte-kit sync
-
-      - name: Run svelte-check
-        run: bunx svelte-check --tsconfig ./tsconfig.json
+      - name: Run type check
+        run: bun run check
 
   test-unit:
     name: Unit Tests
