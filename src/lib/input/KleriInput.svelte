@@ -79,7 +79,7 @@
 		<input
 			type={currentInputType}
 			{required}
-			class="w-full bg-transparent px-1 text-foreground placeholder-muted-foreground outline-hidden focus:ring-0"
+			class="-my-3 w-full border-0 bg-transparent px-1 text-foreground placeholder-muted-foreground outline-none focus:ring-0 focus:outline-none"
 			bind:value
 			{placeholder}
 			{...restProps}
@@ -153,5 +153,14 @@
 
 	.shake-it {
 		animation: shake-it 0.5s ease-in-out;
+	}
+
+	input {
+		outline: none;
+	}
+
+	input:focus {
+		outline: none;
+		box-shadow: none;
 	}
 </style>

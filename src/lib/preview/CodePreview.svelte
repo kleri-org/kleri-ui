@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { KleriButton } from '$lib';
+
 	interface Props {
 		component: string;
 		props: Record<string, any>;
@@ -26,20 +28,26 @@
 		return `<${component}${propLines.length > 0 ? '\n' + propLines.join('\n') + '\n' : ''}/>`;
 	});
 
+	let copied = $state(false);
+
 	function copyCode() {
 		navigator.clipboard.writeText(code);
+		copied = true;
 	}
 </script>
 
 <div class="overflow-hidden rounded-lg border-2 border-border bg-card">
 	<div class="flex items-center justify-between border-b border-border/50 bg-muted/30 px-4 py-2">
 		<span class="font-spacemono text-xs text-muted-foreground">Usage</span>
-		<button
+		<KleriButton
+			class="w-auto px-3 py-1 text-xs"
+			showSuccess={copied}
+			successMessage="Copied!"
+			onSuccessComplete={() => (copied = false)}
 			onclick={copyCode}
-			class="font-spacemono text-xs text-kleri-green-2 transition-colors hover:text-kleri-green-1"
 		>
 			Copy
-		</button>
+		</KleriButton>
 	</div>
 	<pre class="overflow-x-auto p-4 font-spacemono text-sm text-foreground"><code>{code}</code></pre>
 </div>
