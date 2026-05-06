@@ -26,9 +26,7 @@ test.describe('KleriButton', () => {
 
 	test('disabled button state', async ({ page }) => {
 		// Toggle "Disabled" in PropControls
-		const disabledToggle = page
-			.locator('#kleri-button')
-			.getByRole('switch', { name: 'Disabled' });
+		const disabledToggle = page.locator('#kleri-button').getByRole('switch', { name: 'Disabled' });
 		await disabledToggle.click();
 
 		const button = page.getByRole('button', { name: 'Click me' });
@@ -37,9 +35,7 @@ test.describe('KleriButton', () => {
 
 	test('success message can be customised via PropControls', async ({ page }) => {
 		// Change "Success Message" string input
-		const successMsgInput = page
-			.locator('#kleri-button')
-			.getByLabel('Success Message');
+		const successMsgInput = page.locator('#kleri-button').getByLabel('Success Message');
 		await successMsgInput.fill('Done!');
 
 		// Toggle "Show Success"
@@ -124,15 +120,13 @@ test.describe('KleriInput', () => {
 
 	test('shake animation triggers on error', async ({ page }) => {
 		// Toggle "Shake" in PropControls boolean switch
-		const shakeToggle = page
-			.locator('#kleri-input')
-			.getByRole('switch', { name: 'Shake' });
+		const shakeToggle = page.locator('#kleri-input').getByRole('switch', { name: 'Shake' });
 		await shakeToggle.click();
 
 		// Error state is visible
-		await expect(
-			page.locator('#kleri-input').getByText('Invalid input')
-		).toBeVisible({ timeout: 3000 });
+		await expect(page.locator('#kleri-input').getByText('Invalid input')).toBeVisible({
+			timeout: 3000
+		});
 	});
 });
 

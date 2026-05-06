@@ -8,9 +8,7 @@ test.describe('Landing page', () => {
 		await expect(page.getByText('Kleri')).toBeVisible();
 
 		// Subtitle is present
-		await expect(
-			page.getByText('A handcrafted component library built with Svelte')
-		).toBeVisible();
+		await expect(page.getByText('A handcrafted component library built with Svelte')).toBeVisible();
 
 		// CTA link navigates to /components
 		const cta = page.getByRole('link', { name: /explore components/i });
