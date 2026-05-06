@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="static/KleriUiLogo.svg" alt="KleriUI Logo" />
+  <img src="static/KleriUiLogo.svg" alt="KleriUI Logo" width="406" height="306" />
 </p>
 
 # @kleri/ui
