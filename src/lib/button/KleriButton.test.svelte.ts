@@ -1,5 +1,6 @@
 import { cleanup, render, screen } from '@testing-library/svelte';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { createRawSnippet } from 'svelte';
 import KleriButton from './KleriButton.svelte';
 
 describe('KleriButton', () => {
@@ -9,7 +10,9 @@ describe('KleriButton', () => {
 
 	it('renders children', () => {
 		render(KleriButton, {
-			props: { children: () => 'Click me' }
+			props: {
+				children: createRawSnippet(() => ({ render: () => 'Click me' }))
+			}
 		});
 		expect(screen.getByRole('button')).toBeInTheDocument();
 	});
