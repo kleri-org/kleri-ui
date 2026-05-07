@@ -11,5 +11,10 @@
 		"binding": "ASSETS",
 		"directory": ".svelte-kit/cloudflare"
 	},
-	"routes": [{ "pattern": "ui.kleri.org", "custom_domain": true }]
+	"routes": [
+		{
+			"pattern": "ui.kleri.org",
+			"custom_domain": true
+		}
+	]
 }

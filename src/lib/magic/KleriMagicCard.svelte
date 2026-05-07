@@ -83,13 +83,13 @@
 </script>
 
 <motion.div
-	class={cn('group rounded-kleri relative flex overflow-hidden p-px', className)}
+	class={cn('group relative flex overflow-hidden rounded-kleri p-px', className)}
 	style={{ background: borderGradient }}
 	onpointermove={handlePointerMove}
 	onpointerleave={reset}
 >
 	<div
-		class="bg-card text-card-foreground rounded-kleri relative flex w-full flex-col overflow-hidden p-6"
+		class="relative flex w-full flex-col overflow-hidden rounded-kleri bg-card p-6 text-card-foreground"
 	>
 		{#if children}
 			{@render children()}

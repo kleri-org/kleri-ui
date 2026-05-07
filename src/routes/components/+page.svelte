@@ -16,7 +16,7 @@
 			description: 'Primary, secondary, and sub headings',
 			count: 3,
 			comingSoon: false,
-			route: '/heading',
+			route: '/components/heading',
 			icon: Heading1
 		},
 		{
@@ -24,7 +24,7 @@
 			description: 'Interactive buttons and magic effects',
 			count: 3,
 			comingSoon: false,
-			route: '/button',
+			route: '/components/button',
 			icon: MousePointerClick
 		},
 		{
@@ -32,7 +32,7 @@
 			description: 'Switches, text inputs, and form controls',
 			count: 2,
 			comingSoon: false,
-			route: '/input',
+			route: '/components/input',
 			icon: TextCursorInput
 		},
 		{
@@ -40,7 +40,7 @@
 			description: 'Contextual information overlays',
 			count: 1,
 			comingSoon: false,
-			route: '/tooltip',
+			route: '/components/tooltip',
 			icon: MessageCircle
 		},
 		{
@@ -48,7 +48,7 @@
 			description: 'Motion and visual effects',
 			count: 1,
 			comingSoon: false,
-			route: '/animation',
+			route: '/components/animation',
 			icon: Sparkles
 		},
 		{
@@ -56,7 +56,7 @@
 			description: 'Configuration and preference controls',
 			count: 1,
 			comingSoon: false,
-			route: '/settings',
+			route: '/components/settings',
 			icon: Settings
 		},
 		{
@@ -64,7 +64,7 @@
 			description: 'Enchanted interactive components',
 			count: 2,
 			comingSoon: false,
-			route: '/magic',
+			route: '/components/magic',
 			icon: Wand2
 		}
 	];
@@ -90,7 +90,7 @@
 	});
 </script>
 
-<section class="px-8 pb-16 pt-8">
+<section class="px-8 pt-8 pb-16">
 	<div bind:this={cardsContainer} class="mx-auto max-w-6xl">
 		<div class="mb-8 flex items-center gap-3">
 			<div class="h-px flex-1 bg-border/30"></div>
@@ -101,7 +101,7 @@
 		</div>
 
 		<div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-			{#each categories as category, i}
+			{#each categories as category, i (category.name)}
 				{#if category.comingSoon}
 					<div
 						class="card-enter group relative rounded-xl border-2 border-border/50 bg-card/50 p-6 opacity-60"
@@ -119,7 +119,7 @@
 								Coming Soon
 							</span>
 						</div>
-						<p class="text-sm text-muted-foreground">{category.description}</p>
+						<p class="text-sm text-foreground/80">{category.description}</p>
 					</div>
 				{:else}
 					<a
@@ -145,7 +145,7 @@
 								{category.count} component{category.count !== 1 ? 's' : ''}
 							</span>
 						</div>
-						<p class="text-sm text-muted-foreground">{category.description}</p>
+						<p class="text-sm text-foreground/80">{category.description}</p>
 					</a>
 				{/if}
 			{/each}

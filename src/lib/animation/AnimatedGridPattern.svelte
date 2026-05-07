@@ -103,10 +103,7 @@
 <svg
 	bind:this={containerRef}
 	aria-hidden="true"
-	class={cn(
-		'pointer-events-none absolute inset-0 h-full w-full',
-		className
-	)}
+	class={cn('pointer-events-none absolute inset-0 h-full w-full', className)}
 	{...props}
 >
 	<defs>

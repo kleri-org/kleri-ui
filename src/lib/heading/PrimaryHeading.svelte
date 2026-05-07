@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { ClassValue } from "clsx";
-	import { cn } from "$lib/utils";
+	import type { ClassValue } from 'clsx';
+	import { cn } from '$lib/utils';
 
 	interface Props {
-		children: any;
+		children: import('svelte').Snippet;
 		class?: ClassValue | null | undefined;
 	}
 
@@ -12,7 +12,7 @@
 
 <h1
 	class={cn(
-		"pointer-events-none select-none kleri-text-animation font-Poppins text-5xl font-bold leading-normal text-left whitespace-nowrap shadow-foreground drop-shadow-2xl cursor-default",
+		'pointer-events-none kleri-text-animation cursor-default text-left font-Poppins text-5xl leading-normal font-bold whitespace-nowrap shadow-foreground drop-shadow-2xl select-none',
 		className
 	)}
 >

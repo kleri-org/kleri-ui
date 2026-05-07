@@ -2,50 +2,50 @@
 * Poppins
 */
 @font-face {
-	font-family: "Poppins";
+	font-family: 'Poppins';
 	font-style: normal;
 	font-display: swap;
 	font-weight: 400;
-	src: url("./fonts/Poppins-Regular.woff2") format("woff2");
+	src: url('./fonts/Poppins-Regular.woff2') format('woff2');
 }
 
 @font-face {
-	font-family: "Poppins";
+	font-family: 'Poppins';
 	font-style: normal;
 	font-display: swap;
 	font-weight: 500;
-	src: url("./fonts/Poppins-Medium.woff2") format("woff2");
+	src: url('./fonts/Poppins-Medium.woff2') format('woff2');
 }
 
 @font-face {
-	font-family: "Poppins";
+	font-family: 'Poppins';
 	font-style: normal;
 	font-display: swap;
 	font-weight: 600;
-	src: url("./fonts/Poppins-SemiBold.woff2") format("woff2");
+	src: url('./fonts/Poppins-SemiBold.woff2') format('woff2');
 }
 
 @font-face {
-	font-family: "Poppins";
+	font-family: 'Poppins';
 	font-style: normal;
 	font-display: swap;
 	font-weight: 700;
-	src: url("./fonts/Poppins-Bold.woff2") format("woff2");
+	src: url('./fonts/Poppins-Bold.woff2') format('woff2');
 }
 
 /*
 * Space Mono
 */
 @font-face {
-	font-family: "Space Mono";
+	font-family: 'Space Mono';
 	font-display: swap;
 	font-weight: 400;
-	src: url("./fonts/SpaceMono-Regular.woff2") format("woff2");
+	src: url('./fonts/SpaceMono-Regular.woff2') format('woff2');
 }
 
 @font-face {
-	font-family: "Space Mono";
+	font-family: 'Space Mono';
 	font-display: swap;
 	font-weight: 700;
-	src: url("./fonts/SpaceMono-Bold.woff2") format("woff2");
+	src: url('./fonts/SpaceMono-Bold.woff2') format('woff2');
 }

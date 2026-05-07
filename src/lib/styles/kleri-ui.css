@@ -11,6 +11,21 @@
 	--background: oklch(1 0 0);
 	--foreground: oklch(0.145 0 0);
 
+	/* Code syntax highlighting theme (light) */
+	--color-kleri-code-bg: oklch(0.97 0 0);
+	--color-kleri-code-foreground: oklch(0.205 0 0);
+	--color-kleri-code-comment: oklch(0.55 0.05 260);
+	--color-kleri-code-string: var(--color-kleri-green-1);
+	--color-kleri-code-keyword: var(--color-kleri-green-3);
+	--color-kleri-code-number: oklch(0.55 0.2 30);
+	--color-kleri-code-boolean: var(--color-kleri-green-3);
+	--color-kleri-code-tag: var(--color-kleri-green-3);
+	--color-kleri-code-function: oklch(0.55 0.2 260);
+	--color-kleri-code-variable: var(--color-kleri-green-2);
+	--color-kleri-code-attribute: var(--color-kleri-green-2);
+	--color-kleri-code-punctuation: oklch(0.4 0 0);
+	--color-kleri-code-error: oklch(0.6 0.2 25);
+
 	--card: oklch(1 0 0);
 	--card-foreground: oklch(0.145 0 0);
 
@@ -57,6 +72,21 @@
 .dark {
 	--background: oklch(0.145 0 0);
 	--foreground: oklch(0.985 0 0);
+
+	/* Code syntax highlighting theme (dark) */
+	--color-kleri-code-bg: oklch(0.18 0 0);
+	--color-kleri-code-foreground: oklch(0.92 0 0);
+	--color-kleri-code-comment: oklch(0.55 0.05 260);
+	--color-kleri-code-string: var(--color-kleri-green-2);
+	--color-kleri-code-keyword: var(--color-kleri-green-2);
+	--color-kleri-code-number: oklch(0.7 0.18 60);
+	--color-kleri-code-boolean: var(--color-kleri-green-2);
+	--color-kleri-code-tag: var(--color-kleri-green-2);
+	--color-kleri-code-function: oklch(0.75 0.15 260);
+	--color-kleri-code-variable: oklch(0.7 0.12 200);
+	--color-kleri-code-attribute: oklch(0.7 0.14 160);
+	--color-kleri-code-punctuation: oklch(0.6 0 0);
+	--color-kleri-code-error: oklch(0.7 0.2 25);
 
 	--card: oklch(0.205 0 0);
 	--card-foreground: oklch(0.985 0 0);
@@ -186,6 +216,33 @@
 			height: 0;
 		}
 	}
+}
+
+/* Shiki syntax highlighting - dual theme support via .dark class */
+html.dark .shiki,
+html.dark .shiki span {
+	color: var(--shiki-dark) !important;
+	background-color: var(--shiki-dark-bg) !important;
+	font-style: var(--shiki-dark-font-style) !important;
+	font-weight: var(--shiki-dark-font-weight) !important;
+	text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
+/* Ensure shiki respects our container styling */
+.shiki {
+	padding: 0 !important;
+	margin: 0 !important;
+	overflow-x: auto !important;
+	background-color: var(--color-kleri-code-bg) !important;
+}
+
+.shiki code {
+	display: block;
+	padding: 1rem !important;
+	font-family: var(--font-spacemono) !important;
+	font-size: 0.875rem !important;
+	line-height: 1.5 !important;
+	color: var(--color-kleri-code-foreground) !important;
 }
 
 @layer base {

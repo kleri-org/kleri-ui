@@ -65,11 +65,11 @@
 
 	:global([data-switch-thumb]) {
 		display: block;
-		width: 1rem;
-		height: 1rem;
+		width: 0.9rem;
+		height: 0.9rem;
 		border-radius: 9999px;
 		background-color: white;
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
 		transform: translateX(0.125rem);
 		transition: transform 0.2s ease;
 		flex-shrink: 0;
