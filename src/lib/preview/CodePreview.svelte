@@ -40,7 +40,7 @@
 
 <div class="overflow-hidden rounded-lg border-2 border-border bg-card">
 	<div class="flex items-center justify-between border-b border-border/50 bg-muted/30 px-4 py-2">
-		<span class="font-spacemono text-xs text-muted-foreground">Usage</span>
+		<span class="font-spacemono text-xs text-foreground">Usage</span>
 		<KleriButton
 			class="w-auto px-3 py-1 text-xs"
 			showSuccess={copied}
@@ -51,5 +51,9 @@
 			Copy
 		</KleriButton>
 	</div>
-	<pre class="overflow-x-auto p-4 font-spacemono text-sm text-foreground"><code>{code}</code></pre>
+
+	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+	<div role="region" aria-label={`${component} usage example`} tabindex="0" class="overflow-x-auto">
+		<pre class="p-4 font-spacemono text-sm text-foreground"><code>{code}</code></pre>
+	</div>
 </div>

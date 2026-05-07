@@ -17,11 +17,12 @@ test.describe('KleriButton', () => {
 			.getByRole('switch', { name: 'Show Success' });
 		await showSuccessToggle.click();
 
-		// Success message appears in the button
-		await expect(page.getByText('Success!')).toBeVisible({ timeout: 3000 });
+		// Success message appears in the preview button
+		const successButton = page.locator('#kleri-button').getByRole('button', { name: 'Success!' });
+		await expect(successButton).toBeVisible({ timeout: 3000 });
 
 		// After the default timeout (2000ms), the success state reverts
-		await expect(page.getByText('Success!')).not.toBeVisible({ timeout: 5000 });
+		await expect(successButton).not.toBeVisible({ timeout: 5000 });
 	});
 
 	test('disabled button state', async ({ page }) => {
@@ -44,8 +45,10 @@ test.describe('KleriButton', () => {
 			.getByRole('switch', { name: 'Show Success' });
 		await showSuccessToggle.click();
 
-		// Custom message appears
-		await expect(page.getByText('Done!')).toBeVisible({ timeout: 3000 });
+		// Custom message appears in the preview button
+		await expect(page.locator('#kleri-button').getByRole('button', { name: 'Done!' })).toBeVisible({
+			timeout: 3000
+		});
 	});
 });
 
@@ -123,8 +126,8 @@ test.describe('KleriInput', () => {
 		const shakeToggle = page.locator('#kleri-input').getByRole('switch', { name: 'Shake' });
 		await shakeToggle.click();
 
-		// Error state is visible
-		await expect(page.locator('#kleri-input').getByText('Invalid input')).toBeVisible({
+		// Error state is visible in the live preview
+		await expect(page.locator('#kleri-input p').filter({ hasText: 'Invalid input' })).toBeVisible({
 			timeout: 3000
 		});
 	});

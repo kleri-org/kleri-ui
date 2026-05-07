@@ -16,7 +16,7 @@ test.describe('Landing page', () => {
 
 		await cta.click();
 		await page.waitForURL('/components');
-		await expect(page.getByText('Components')).toBeVisible();
+		await expect(page.getByText('13 Components')).toBeVisible();
 	});
 });
 
@@ -29,7 +29,7 @@ test.describe('Navigation', () => {
 
 		const categories = ['Heading', 'Button', 'Input', 'Tooltip', 'Animation', 'Settings', 'Magic'];
 		for (const name of categories) {
-			await expect(sidebar.getByRole('link', { name })).toBeVisible();
+			await expect(sidebar.getByRole('link', { name, exact: true })).toBeVisible();
 		}
 	});
 
@@ -47,8 +47,8 @@ test.describe('Navigation', () => {
 		for (const { name, path } of routes) {
 			await page.goto(path);
 			await expect(page).toHaveURL(path);
-			// Each category page has a heading matching its name
-			await expect(page.locator('h1')).toContainText(name);
+			// Each category page has a top-level heading matching its name
+			await expect(page.getByRole('heading', { name, level: 1, exact: true })).toBeVisible();
 		}
 	});
 
@@ -58,7 +58,7 @@ test.describe('Navigation', () => {
 		// Cards are visible (intersection observer triggers after scroll)
 		await page.waitForTimeout(600);
 
-		const cardLinks = page.locator('a[href^="/components/"]');
+		const cardLinks = page.locator('section a[href^="/components/"]');
 		const count = await cardLinks.count();
 		expect(count).toBe(7);
 
@@ -73,7 +73,7 @@ test.describe('Navigation', () => {
 			'href="/components/magic"'
 		];
 		for (const route of routes) {
-			const link = page.locator(`a[${route}]`);
+			const link = page.locator(`section a[${route}]`);
 			await expect(link).toBeVisible();
 		}
 	});
@@ -82,10 +82,10 @@ test.describe('Navigation', () => {
 		await page.goto('/components/button');
 
 		// Breadcrumb links
-		const homeLink = page.getByRole('link', { name: 'Kleri UI' });
+		const homeLink = page.getByRole('link', { name: 'Kleri UI', exact: true });
 		await expect(homeLink).toBeVisible();
 
-		const componentsLink = page.getByRole('link', { name: 'Components' });
+		const componentsLink = page.getByRole('link', { name: 'Components', exact: true });
 		await expect(componentsLink).toBeVisible();
 
 		// Click breadcrumb to go back
@@ -114,8 +114,8 @@ test.describe('Deep linking', () => {
 		await expect(section).toBeVisible();
 
 		// The sidebar should highlight the active sub-item
-		const activeSubItem = page.locator('aside a.text-kleri-green-2');
-		await expect(activeSubItem).toContainText('KleriButton');
+		const activeSubItem = page.locator('aside a[href="/components/button#kleri-button"]');
+		await expect(activeSubItem).toHaveClass(/text-kleri-green-2/);
 	});
 
 	test('all component sub-items have valid hash links', async ({ page }) => {

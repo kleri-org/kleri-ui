@@ -133,7 +133,6 @@
 				const firstId = (sections[0] as HTMLElement).id;
 				if (currentHash !== '#' + firstId) {
 					currentHash = '#' + firstId;
-					history.replaceState(null, '', `${path}#${firstId}`);
 				}
 				return;
 			}
@@ -143,7 +142,6 @@
 				const lastId = (sections[sections.length - 1] as HTMLElement).id;
 				if (currentHash !== '#' + lastId) {
 					currentHash = '#' + lastId;
-					history.replaceState(null, '', `${path}#${lastId}`);
 				}
 				return;
 			}
@@ -164,7 +162,6 @@
 				}
 				if (closestId && currentHash !== '#' + closestId) {
 					currentHash = '#' + closestId;
-					history.replaceState(null, '', `${path}#${closestId}`);
 				}
 			}
 		};
@@ -187,7 +184,6 @@
 					if (intersectingIds.has(id)) {
 						if (currentHash !== '#' + id) {
 							currentHash = '#' + id;
-							history.replaceState(null, '', `${path}#${id}`);
 						}
 						break;
 					}

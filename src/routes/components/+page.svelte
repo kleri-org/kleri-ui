@@ -119,7 +119,7 @@
 								Coming Soon
 							</span>
 						</div>
-						<p class="text-sm text-muted-foreground">{category.description}</p>
+						<p class="text-sm text-foreground/80">{category.description}</p>
 					</div>
 				{:else}
 					<a
@@ -145,7 +145,7 @@
 								{category.count} component{category.count !== 1 ? 's' : ''}
 							</span>
 						</div>
-						<p class="text-sm text-muted-foreground">{category.description}</p>
+						<p class="text-sm text-foreground/80">{category.description}</p>
 					</a>
 				{/if}
 			{/each}
