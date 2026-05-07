@@ -9,4 +9,4 @@ bun.lockb
 /static/
 
 # Generated
-wrangler.jsonc
+worker-configuration.d.ts
