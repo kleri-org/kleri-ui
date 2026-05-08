@@ -4,11 +4,13 @@
 	import KleriButtonGroup from '$lib/button/KleriButtonGroup.svelte';
 	import KleriMagicButton from '$lib/magic/KleriMagicButton.svelte';
 	import { PropControls, CodePreview } from '$lib/preview';
-	import { Save } from '@lucide/svelte';
+	import { Copy, Delete, Save } from '@lucide/svelte';
 
+	// --- KleriButtonGroup symbol map (used by CodePreview) ---
 	const groupSymbols = new Map<any, string>();
 	groupSymbols.set(Save, 'Save');
 
+	// --- KleriButton ---
 	let kleriButtonProps = $state({
 		children: 'Click me',
 		showSuccess: false,
@@ -29,12 +31,43 @@
 		kleriButtonProps.showSuccess = false;
 	}
 
+	// --- KleriUtilityButton ---
 	let utilityProps = $state({ children: 'Utility', tooltip: 'Click to perform action' });
 	const utilitySchema = {
 		children: { type: 'string' as const, label: 'Button Text' },
 		tooltip: { type: 'string' as const, label: 'Tooltip' }
 	};
 
+	// --- KleriButtonGroup ---
+	let groupProps = $state({
+		orientation: 'horizontal' as const,
+		size: 'default' as const,
+		variant: 'default' as const,
+		showSeparator: false,
+		showText: false
+	});
+
+	const groupCodeProps = $derived({
+		orientation: groupProps.orientation,
+		size: groupProps.size,
+		variant: groupProps.variant,
+		items: [
+			{ type: 'button' as const, label: 'Save', icon: Save, tooltip: 'Save file' },
+			...(groupProps.showSeparator ? [{ type: 'separator' as const }] : []),
+			{ type: 'button' as const, label: 'Copy', icon: Copy, tooltip: 'Copy file' },
+			{ type: 'button' as const, label: 'Delete', icon: Delete, tooltip: 'Delete file' }
+		]
+	});
+
+	const groupSchema = {
+		orientation: { type: 'string' as const, label: 'Orientation (horizontal / vertical)' },
+		size: { type: 'string' as const, label: 'Size (default / sm / lg / icon)' },
+		variant: { type: 'string' as const, label: 'Variant (default / outline / ghost / secondary)' },
+		showSeparator: { type: 'boolean' as const, label: 'Show Separator' },
+		showText: { type: 'boolean' as const, label: 'Show Text Prefix' }
+	};
+
+	// --- KleriMagicButton ---
 	let magicButtonProps = $state({
 		children: 'Magic Button',
 		gradientSize: 150,
@@ -51,34 +84,6 @@
 		gradientOpacity: { type: 'number' as const, label: 'Gradient Opacity' },
 		gradientFrom: { type: 'string' as const, label: 'Gradient From' },
 		gradientTo: { type: 'string' as const, label: 'Gradient To' }
-	};
-
-	let groupProps = $state({
-		orientation: 'horizontal' as const,
-		size: 'default' as const,
-		variant: 'default' as const,
-		showSeparator: false,
-		showText: false
-	});
-
-	const groupCodeProps = $derived({
-		orientation: groupProps.orientation,
-		size: groupProps.size,
-		variant: groupProps.variant,
-		items: [
-			{ type: 'button', label: 'Save', icon: Save, tooltip: 'Save file' },
-			...(groupProps.showSeparator ? [{ type: 'separator' }] : []),
-			{ type: 'button', label: 'Copy', tooltip: 'Copy file' },
-			{ type: 'button', label: 'Delete', tooltip: 'Delete file' }
-		]
-	});
-
-	const groupSchema = {
-		orientation: { type: 'string' as const, label: 'Orientation (horizontal / vertical)' },
-		size: { type: 'string' as const, label: 'Size (default / sm / lg / icon)' },
-		variant: { type: 'string' as const, label: 'Variant (default / outline / ghost / secondary)' },
-		showSeparator: { type: 'boolean' as const, label: 'Show Separator' },
-		showText: { type: 'boolean' as const, label: 'Show Text Prefix' }
 	};
 </script>
 
@@ -182,19 +187,7 @@
 						orientation={groupProps.orientation}
 						size={groupProps.size}
 						variant={groupProps.variant}
-						items={[
-							{ type: 'button', label: 'Save', icon: Save, tooltip: 'Save file' },
-							...(groupProps.showSeparator ? [{ type: 'separator' as const }] : []),
-							{ type: 'button', label: 'Copy', tooltip: 'Copy file' },
-							{ type: 'button', label: 'Delete', tooltip: 'Delete file' }
-						]}
-					/>
-
-					<KleriButtonGroup
-						orientation={groupProps.orientation}
-						size={groupProps.size}
-						variant={groupProps.variant}
-						items={[{ type: 'button' as const, label: 'Download', tooltip: 'Download file' }]}
+						items={groupCodeProps.items}
 					/>
 				</div>
 				<CodePreview component="KleriButtonGroup" props={groupCodeProps} symbols={groupSymbols} />
