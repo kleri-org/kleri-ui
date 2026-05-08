@@ -1,6 +1,10 @@
 {
 	"name": "@kleri/ui",
 	"version": "0.0.2",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/kleri-org/kleri-ui"
+	},
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
