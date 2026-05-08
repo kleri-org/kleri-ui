@@ -13,7 +13,7 @@
 
 <h1
 	class={cn(
-		'pointer-events-none cursor-default pb-5 text-left font-spacemono text-4xl leading-normal font-bold whitespace-nowrap text-primary shadow-kleri-green-2 drop-shadow select-none',
+		'pointer-events-none cursor-default pb-5 text-left font-spacemono text-4xl leading-normal font-bold whitespace-nowrap text-primary shadow-kleri-2 drop-shadow select-none',
 		className
 	)}
 >

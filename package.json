@@ -1,6 +1,6 @@
 {
 	"name": "@kleri/ui",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"description": "An opinionated SvelteKit UI component library for the kleri.org apps.",
 	"license": "MIT",
 	"author": "Ishaan Goel",
@@ -48,6 +48,10 @@
 		},
 		"./styles.css": {
 			"default": "./dist/styles/kleri-ui.css"
+		},
+		"./plugin": {
+			"types": "./dist/plugin.d.ts",
+			"default": "./dist/plugin.js"
 		}
 	},
 	"peerDependencies": {

@@ -1,13 +1,13 @@
 @utility kleri-bg {
-	background: linear-gradient(90deg, var(--color-kleri-green-1), var(--color-kleri-green-2));
+	background: linear-gradient(90deg, var(--color-kleri-1), var(--color-kleri-2));
 }
 
 @utility kleri-text {
 	background: linear-gradient(
 		to right,
-		var(--color-kleri-green-1),
-		var(--color-kleri-green-2),
-		var(--color-kleri-green-3)
+		var(--color-kleri-1),
+		var(--color-kleri-2),
+		var(--color-kleri-3)
 	);
 	-webkit-background-clip: text;
 	background-clip: text;
@@ -21,9 +21,9 @@
 		linear-gradient(rgba(255, 255, 255), rgb(255, 255, 255)) padding-box,
 		linear-gradient(
 				90deg,
-				var(--color-kleri-green-1),
-				var(--color-kleri-green-2),
-				var(--color-kleri-green-1)
+				var(--color-kleri-1),
+				var(--color-kleri-2),
+				var(--color-kleri-1)
 			)
 			0% / 100% 100% border-box;
 	background-size: 200% 200%;
@@ -36,9 +36,9 @@
 		linear-gradient(rgba(0, 0, 0, 0.95), rgb(0, 0, 0, 0.95)) padding-box,
 		linear-gradient(
 				90deg,
-				var(--color-kleri-green-1),
-				var(--color-kleri-green-2),
-				var(--color-kleri-green-1)
+				var(--color-kleri-1),
+				var(--color-kleri-2),
+				var(--color-kleri-1)
 			)
 			0% / 100% 100% border-box;
 	background-size: 200% 200%;
@@ -49,9 +49,9 @@
 	--bg-size: 500%;
 	background: linear-gradient(
 			90deg,
-			var(--color-kleri-green-1),
-			var(--color-kleri-green-2),
-			var(--color-kleri-green-1)
+			var(--color-kleri-1),
+			var(--color-kleri-2),
+			var(--color-kleri-1)
 		)
 		0 0 / var(--bg-size) 200%;
 	color: transparent;

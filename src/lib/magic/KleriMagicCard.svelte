@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { motion, useMotionTemplate, useMotionValue } from 'motion-sv';
 	import { cn } from '$lib/utils';
-	import { KLERI_GREEN_1, KLERI_GREEN_2 } from '$lib/constants';
+	import { KLERI_COLOR_1, KLERI_COLOR_2 } from '$lib/constants';
 	import type { Snippet } from 'svelte';
 
 	interface KleriMagicCardProps {
@@ -25,10 +25,10 @@
 		children,
 		class: className,
 		gradientSize = 200,
-		gradientColor = KLERI_GREEN_2,
+		gradientColor = KLERI_COLOR_2,
 		gradientOpacity = 0.15,
-		gradientFrom = KLERI_GREEN_2,
-		gradientTo = KLERI_GREEN_1
+		gradientFrom = KLERI_COLOR_2,
+		gradientTo = KLERI_COLOR_1
 	}: KleriMagicCardProps = $props();
 
 	let mouseX = $derived(useMotionValue(-gradientSize));

@@ -55,7 +55,7 @@
 	}
 
 	:global([data-switch-root][data-state='checked']) {
-		background: var(--color-kleri-green-2);
+		background: var(--color-kleri-2);
 	}
 
 	:global([data-switch-root][data-disabled]) {

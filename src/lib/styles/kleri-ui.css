@@ -15,14 +15,14 @@
 	--color-kleri-code-bg: oklch(0.97 0 0);
 	--color-kleri-code-foreground: oklch(0.205 0 0);
 	--color-kleri-code-comment: oklch(0.55 0.05 260);
-	--color-kleri-code-string: var(--color-kleri-green-1);
-	--color-kleri-code-keyword: var(--color-kleri-green-3);
+	--color-kleri-code-string: var(--color-kleri-1);
+	--color-kleri-code-keyword: var(--color-kleri-3);
 	--color-kleri-code-number: oklch(0.55 0.2 30);
-	--color-kleri-code-boolean: var(--color-kleri-green-3);
-	--color-kleri-code-tag: var(--color-kleri-green-3);
+	--color-kleri-code-boolean: var(--color-kleri-3);
+	--color-kleri-code-tag: var(--color-kleri-3);
 	--color-kleri-code-function: oklch(0.55 0.2 260);
-	--color-kleri-code-variable: var(--color-kleri-green-2);
-	--color-kleri-code-attribute: var(--color-kleri-green-2);
+	--color-kleri-code-variable: var(--color-kleri-2);
+	--color-kleri-code-attribute: var(--color-kleri-2);
 	--color-kleri-code-punctuation: oklch(0.4 0 0);
 	--color-kleri-code-error: oklch(0.6 0.2 25);
 
@@ -33,7 +33,7 @@
 	--popover-foreground: oklch(0.145 0 0);
 
 	/* --primary: oklch(0.205 0 0); */
-	--primary: var(--color-kleri-green-3);
+	--primary: var(--color-kleri-3);
 	--primary-foreground: oklch(0.205 0 0);
 
 	--secondary: oklch(0.97 0 0);
@@ -42,7 +42,7 @@
 	--muted: oklch(0.9 0 0);
 	--muted-foreground: oklch(0.356 0 0);
 
-	--accent: var(--color-kleri-green-2);
+	--accent: var(--color-kleri-2);
 	--accent-foreground: oklch(0.205 0 0);
 
 	--destructive: oklch(0.577 0.245 27.325);
@@ -77,11 +77,11 @@
 	--color-kleri-code-bg: oklch(0.18 0 0);
 	--color-kleri-code-foreground: oklch(0.92 0 0);
 	--color-kleri-code-comment: oklch(0.55 0.05 260);
-	--color-kleri-code-string: var(--color-kleri-green-2);
-	--color-kleri-code-keyword: var(--color-kleri-green-2);
+	--color-kleri-code-string: var(--color-kleri-2);
+	--color-kleri-code-keyword: var(--color-kleri-2);
 	--color-kleri-code-number: oklch(0.7 0.18 60);
-	--color-kleri-code-boolean: var(--color-kleri-green-2);
-	--color-kleri-code-tag: var(--color-kleri-green-2);
+	--color-kleri-code-boolean: var(--color-kleri-2);
+	--color-kleri-code-tag: var(--color-kleri-2);
 	--color-kleri-code-function: oklch(0.75 0.15 260);
 	--color-kleri-code-variable: oklch(0.7 0.12 200);
 	--color-kleri-code-attribute: oklch(0.7 0.14 160);
@@ -94,7 +94,7 @@
 	--popover: oklch(0.205 0 0);
 	--popover-foreground: oklch(0.985 0 0);
 
-	--primary: var(--color-kleri-green-2);
+	--primary: var(--color-kleri-2);
 	--primary-foreground: oklch(0.205 0 0);
 
 	--secondary: oklch(0.269 0 0);
@@ -103,7 +103,7 @@
 	--muted: oklch(0.269 0 0);
 	--muted-foreground: oklch(0.608 0 0);
 
-	--accent: var(--color-kleri-green-3);
+	--accent: var(--color-kleri-3);
 	--accent-foreground: oklch(0.985 0 0);
 
 	--destructive: oklch(0.704 0.191 22.216);
@@ -131,9 +131,9 @@
 }
 
 @theme inline {
-	--color-kleri-green-1: rgb(25, 96, 114);
-	--color-kleri-green-2: rgb(132, 204, 184);
-	--color-kleri-green-3: rgb(35, 145, 144);
+	--color-kleri-1: rgb(25, 96, 114);
+	--color-kleri-2: rgb(132, 204, 184);
+	--color-kleri-3: rgb(35, 145, 144);
 
 	--font-Poppins: Poppins, sans-serif;
 	--font-spacemono: Space Mono, monospace;

@@ -311,7 +311,7 @@
 								class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors {isActivePath(
 									category.route
 								)
-									? 'bg-kleri-green-3/20 text-kleri-green-2'
+									? 'bg-kleri-3/20 text-kleri-2'
 									: 'text-foreground hover:bg-muted/30'}"
 							>
 								<category.icon class="h-4 w-4" />
@@ -327,7 +327,7 @@
 												class="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors {isActiveHash(
 													item.id
 												)
-													? 'bg-kleri-green-3/20 font-medium text-kleri-green-2'
+													? 'bg-kleri-3/20 font-medium text-kleri-2'
 													: 'text-muted-foreground hover:bg-muted/30 hover:text-foreground'}"
 											>
 												<item.icon class="h-3.5 w-3.5" />

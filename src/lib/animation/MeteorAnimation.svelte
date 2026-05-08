@@ -60,7 +60,7 @@
 	>
 		<!-- Meteor Tail  -->
 		<div
-			class="pointer-events-none absolute -z-10 h-px bg-linear-to-r from-kleri-green-2 via-kleri-green-1 to-transparent"
+			class="pointer-events-none absolute -z-10 h-px bg-linear-to-r from-kleri-2 via-kleri-1 to-transparent"
 			style="width: {style.tailWidth};"
 		></div>
 	</span>
@@ -76,7 +76,7 @@
 	>
 		<!-- Meteor Tail  -->
 		<div
-			class="pointer-events-none absolute -z-10 h-px bg-linear-to-r from-kleri-green-2 via-kleri-green-1 to-transparent"
+			class="pointer-events-none absolute -z-10 h-px bg-linear-to-r from-kleri-2 via-kleri-1 to-transparent"
 			style="width: {style.tailWidth};"
 		></div>
 	</span>

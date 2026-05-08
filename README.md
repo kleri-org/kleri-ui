@@ -4,13 +4,13 @@
 
 # @kleri/ui
 
-A Svelte 5 component library built with Tailwind CSS 4, bits-ui, and motion-sv. Features brand-consistent components with Kleri green theming, animated effects, and accessible primitives.
+A Svelte 5 component library built with Tailwind CSS 4, bits-ui, and motion-sv. Features brand-consistent theming, animated effects, and accessible primitives.
 
 ## Prerequisites
 
 - **Node.js** >= 20
 - **Package manager**: [bun](https://bun.sh) (recommended) or npm/pnpm/yarn
-- A **SvelteKit** (or Svelte 5 + Vite) project with **Tailwind CSS v4**
+- A **SvelteKit** (or Svelte 5 + Vite) project
 
 ## Installation
 
@@ -22,7 +22,7 @@ bun add @kleri/ui
 
 ### Peer Dependencies
 
-`@kleri/ui` expects the following packages to be installed in your project. They are **not** bundled — you declare them in your own `package.json`:
+`@kleri/ui` expects the following packages to be installed in your project:
 
 | Package        | Minimum Version | Required |
 | -------------- | --------------- | -------- |
@@ -38,30 +38,41 @@ If some are missing, install them:
 bun add bits-ui @lucide/svelte daisyui
 ```
 
-`@kleri/ui` has its own runtime dependencies (`clsx`, `tailwind-merge`, `motion-sv`, etc.) — these are installed automatically when you add the package.
+`@kleri/ui` has its own runtime dependencies (`clsx`, `tailwind-merge`, `motion-sv`, etc.) — these are installed automatically.
 
 ## Setup
 
-### 1. Configure Tailwind CSS v4 with Vite
-
-Add the `@tailwindcss/vite` plugin to your Vite config:
+Add the Vite plugin to your `vite.config.ts`:
 
 ```ts
 // vite.config.ts
-import tailwindcss from '@tailwindcss/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
+import kleriUI from '@kleri/ui/plugin';
 
 export default defineConfig({
-	plugins: [tailwindcss(), sveltekit()]
+	plugins: [kleriUI(), sveltekit()]
 });
 ```
 
-> If you're not using Vite, set up Tailwind CSS v4 via [PostCSS or CLI](https://tailwindcss.com/docs/installation/using-postcss) instead.
+That's it. The plugin handles:
 
-### 2. Import styles
+- Injecting Tailwind CSS, theme tokens, fonts, and utilities
+- Registering the package for Tailwind class scanning
+- Enabling daisyUI (configurable)
+- Warning you if `@tailwindcss/vite` is missing
 
-In your app's root CSS file (e.g. `src/app.css`), import **both** Tailwind and the Kleri styles:
+### Plugin Options
+
+```ts
+kleriUI({
+	daisyui: true // set to false to skip auto-enabling daisyUI
+});
+```
+
+### Manual Setup (without plugin)
+
+If you prefer not to use the plugin, you can still import styles manually:
 
 ```css
 /* src/app.css */
@@ -77,37 +88,6 @@ Then import the CSS in your root layout:
 	import '../app.css';
 </script>
 ```
-
-### 3. (Optional) Enable daisyUI
-
-If you use daisyUI components alongside Kleri, add the plugin import **after** the Kleri styles:
-
-```css
-/* src/app.css */
-@import 'tailwindcss';
-@import '@kleri/ui/styles.css';
-@plugin 'daisyui';
-```
-
-### 4. Use components
-
-```svelte
-<script>
-	import { KleriButton, KleriInput, KleriMagicCard } from '@kleri/ui';
-</script>
-
-<KleriButton>Click me</KleriButton>
-```
-
-### How it works
-
-The `@kleri/ui/styles.css` entry point:
-
-- **Registers theme tokens** (`--color-kleri-green-1`, `--color-kleri-green-2`, `--color-kleri-green-3`) via Tailwind's `@theme inline` directive, making them available as utility classes (`bg-kleri-green-1`, `text-kleri-green-2`, `font-Poppins`, `rounded-kleri`, etc.)
-- **Defines custom utility classes** (`kleri-bg`, `kleri-text`, `kleri-border`, `kleri-text-animation`, `bg-kleri_blur`, etc.)
-- **Bundles self-hosted web fonts** (Poppins 400–700, Space Mono 400/700) as pre-compressed `woff2` files — no external font service required
-- **Provides light and dark mode CSS variables** via the `.dark` class selector
-- Uses `@source '..'` to tell Tailwind to scan the package's built output for utility class usage, so component Tailwind classes are included in your final build without any additional configuration
 
 ---
 
@@ -177,10 +157,10 @@ Button with animated gradient border spotlight that follows the cursor.
 | Prop              | Type         | Default         | Description                     |
 | ----------------- | ------------ | --------------- | ------------------------------- |
 | `gradientSize`    | `number`     | `150`           | Radius of gradient circle in px |
-| `gradientColor`   | `string`     | `KLERI_GREEN_2` | Inner glow overlay color        |
+| `gradientColor`   | `string`     | `KLERI_COLOR_2` | Inner glow overlay color        |
 | `gradientOpacity` | `number`     | `0.1`           | Inner glow opacity              |
-| `gradientFrom`    | `string`     | `KLERI_GREEN_2` | Border spotlight start color    |
-| `gradientTo`      | `string`     | `KLERI_GREEN_1` | Border spotlight end color      |
+| `gradientFrom`    | `string`     | `KLERI_COLOR_2` | Border spotlight start color    |
+| `gradientTo`      | `string`     | `KLERI_COLOR_1` | Border spotlight end color      |
 | `class`           | `ClassValue` | —               | Additional CSS classes          |
 
 ---
@@ -228,7 +208,7 @@ Text input with label, error display, icon, and password toggle.
 
 #### KleriSwitch
 
-Toggle switch with Kleri green checked state.
+Toggle switch with brand checked state.
 
 ```svelte
 <script>
@@ -267,7 +247,7 @@ Large animated gradient heading (Poppins, 5xl, bold).
 
 #### SecondaryHeading
 
-Bold heading with Space Mono font and green shadow (4xl).
+Bold heading with Space Mono font and brand shadow (4xl).
 
 ```svelte
 <SecondaryHeading>Dashboard</SecondaryHeading>
@@ -315,10 +295,10 @@ Card with animated gradient border spotlight that follows the cursor.
 | Prop              | Type         | Default         | Description                     |
 | ----------------- | ------------ | --------------- | ------------------------------- |
 | `gradientSize`    | `number`     | `200`           | Radius of gradient circle in px |
-| `gradientColor`   | `string`     | `KLERI_GREEN_2` | Inner glow overlay color        |
+| `gradientColor`   | `string`     | `KLERI_COLOR_2` | Inner glow overlay color        |
 | `gradientOpacity` | `number`     | `0.15`          | Inner glow opacity              |
-| `gradientFrom`    | `string`     | `KLERI_GREEN_2` | Border spotlight start color    |
-| `gradientTo`      | `string`     | `KLERI_GREEN_1` | Border spotlight end color      |
+| `gradientFrom`    | `string`     | `KLERI_COLOR_2` | Border spotlight start color    |
+| `gradientTo`      | `string`     | `KLERI_COLOR_1` | Border spotlight end color      |
 | `class`           | `ClassValue` | —               | Additional CSS classes          |
 
 ---
@@ -386,7 +366,7 @@ Settings row with label and control in a 3-column grid.
 
 #### MeteorAnimation
 
-Shooting meteors background effect with Kleri green tails.
+Shooting meteors background effect with brand-colored tails.
 
 ```svelte
 <script>
@@ -484,11 +464,11 @@ Dynamic form controls generated from a schema.
 
 Exported as constants and CSS variables:
 
-| Token           | Value                | CSS Variable            |
-| --------------- | -------------------- | ----------------------- |
-| `KLERI_GREEN_1` | `rgb(25, 96, 114)`   | `--color-kleri-green-1` |
-| `KLERI_GREEN_2` | `rgb(132, 204, 184)` | `--color-kleri-green-2` |
-| `KLERI_GREEN_3` | `rgb(35, 145, 144)`  | `--color-kleri-green-3` |
+| Token           | Value                | CSS Variable      |
+| --------------- | -------------------- | ----------------- |
+| `KLERI_COLOR_1` | `rgb(25, 96, 114)`   | `--color-kleri-1` |
+| `KLERI_COLOR_2` | `rgb(132, 204, 184)` | `--color-kleri-2` |
+| `KLERI_COLOR_3` | `rgb(35, 145, 144)`  | `--color-kleri-3` |
 
 ### Fonts
 
@@ -499,14 +479,14 @@ Exported as constants and CSS variables:
 
 ### CSS Utilities
 
-| Utility                | Description                                    |
-| ---------------------- | ---------------------------------------------- |
-| `kleri-bg`             | Linear gradient background (green-1 → green-2) |
-| `kleri-text`           | Gradient text (green-1 → green-2 → green-3)    |
-| `kleri-text-animation` | Animated gradient text (500% background size)  |
-| `kleri-border`         | Animated gradient border (light mode)          |
-| `kleri-border-dark`    | Animated gradient border (dark mode)           |
-| `bg-kleri_blur`        | 30% background with 40px blur                  |
+| Utility                | Description                                   |
+| ---------------------- | --------------------------------------------- |
+| `kleri-bg`             | Linear gradient background (1 → 2)            |
+| `kleri-text`           | Gradient text (1 → 2 → 3)                     |
+| `kleri-text-animation` | Animated gradient text (500% background size) |
+| `kleri-border`         | Animated gradient border (light mode)         |
+| `kleri-border-dark`    | Animated gradient border (dark mode)          |
+| `bg-kleri_blur`        | 30% background with 40px blur                 |
 
 ### Border Radius
 

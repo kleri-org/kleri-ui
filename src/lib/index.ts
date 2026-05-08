@@ -6,7 +6,8 @@ export {
 	type WithoutChildrenOrChild
 } from './utils.js';
 
-export { KLERI_GREEN_1, KLERI_GREEN_2, KLERI_GREEN_3 } from './constants.js';
+export { KLERI_COLOR_1, KLERI_COLOR_2, KLERI_COLOR_3 } from './constants.js';
+export { default as kleriUI } from './plugin.js';
 
 export { default as PrimaryHeading } from './heading/PrimaryHeading.svelte';
 export { default as SecondaryHeading } from './heading/SecondaryHeading.svelte';

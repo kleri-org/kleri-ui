@@ -21,9 +21,9 @@
 	<!-- Page header -->
 	<div class="space-y-2">
 		<div class="mb-2 flex items-center gap-2 font-spacemono text-sm text-muted-foreground">
-			<a href="/" class="transition-colors hover:text-kleri-green-2">Kleri UI</a>
+			<a href="/" class="transition-colors hover:text-kleri-2">Kleri UI</a>
 			<span>/</span>
-			<a href="/components" class="transition-colors hover:text-kleri-green-2">Components</a>
+			<a href="/components" class="transition-colors hover:text-kleri-2">Components</a>
 			<span>/</span>
 			<span class="text-foreground">Tooltip</span>
 		</div>
@@ -53,7 +53,7 @@
 						{#snippet trigger(triggerProps)}
 							<button
 								{...triggerProps}
-								class="rounded-kleri border-2 border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-kleri-green-2"
+								class="rounded-kleri border-2 border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-kleri-2"
 							>
 								Hover me
 							</button>
