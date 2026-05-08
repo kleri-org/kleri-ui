@@ -1,7 +1,7 @@
 <script lang="ts">
-	import KleriButton from '$lib/button/KleriButton.svelte';
-	import KleriUtilityButton from '$lib/button/KleriUtilityButton.svelte';
-	import KleriButtonGroup from '$lib/button/KleriButtonGroup.svelte';
+	import KleriButton from '$lib/button/KleriButton/KleriButton.svelte';
+	import KleriUtilityButton from '$lib/button/KleriUtilityButton/KleriUtilityButton.svelte';
+	import KleriButtonGroup from '$lib/button/KleriButtonGroup/KleriButtonGroup.svelte';
 	import KleriMagicButton from '$lib/magic/KleriMagicButton.svelte';
 	import { PropControls, CodePreview } from '$lib/preview';
 	import { Copy, Delete, Save } from '@lucide/svelte';

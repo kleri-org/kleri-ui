@@ -1,6 +1,6 @@
 import { cleanup, render, screen } from '@testing-library/svelte';
 import { afterEach, describe, expect, it } from 'vitest';
-import ButtonGroupTestHost from '../../test/ButtonGroupTestHost.svelte';
+import ButtonGroupTestHost from '../../../test/ButtonGroupTestHost.svelte';
 
 describe('KleriButtonGroup', () => {
 	afterEach(() => {

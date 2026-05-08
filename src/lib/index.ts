@@ -15,10 +15,10 @@ export { default as KleriTooltip } from './tooltip/KleriTooltip.svelte';
 export { default as MeteorAnimation } from './animation/MeteorAnimation.svelte';
 export { default as SettingsOption } from './settings/SettingsOption.svelte';
 
-export { default as KleriButton } from './button/KleriButton.svelte';
-export { default as KleriUtilityButton } from './button/KleriUtilityButton.svelte';
-export { default as KleriButtonGroup } from './button/KleriButtonGroup.svelte';
-export { type ButtonGroupItem } from './button/button-group-types.js';
+export { default as KleriButton } from './button/KleriButton/KleriButton.svelte';
+export { default as KleriUtilityButton } from './button/KleriUtilityButton/KleriUtilityButton.svelte';
+export { default as KleriButtonGroup } from './button/KleriButtonGroup/KleriButtonGroup.svelte';
+export type { ButtonGroupItem } from './button/KleriButtonGroup/types.js';
 
 export { default as KleriSwitch } from './input/KleriSwitch.svelte';
 export { default as KleriInput } from './input/KleriInput.svelte';

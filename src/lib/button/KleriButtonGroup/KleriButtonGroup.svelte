@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { cn, type WithElementRef } from '$lib/utils';
 	import type { HTMLAttributes } from 'svelte/elements';
-	import { setButtonGroupContext } from './button-group-context.js';
-	import KleriUtilityButton from './KleriUtilityButton.svelte';
-	import type { ButtonGroupItem } from './button-group-types.js';
+	import { setButtonGroupContext } from './context.js';
+	import KleriUtilityButton from '../KleriUtilityButton/KleriUtilityButton.svelte';
+	import type { ButtonGroupItem } from './types.js';
 
 	interface ButtonGroupProps extends WithElementRef<HTMLAttributes<HTMLDivElement>> {
 		orientation?: 'horizontal' | 'vertical';

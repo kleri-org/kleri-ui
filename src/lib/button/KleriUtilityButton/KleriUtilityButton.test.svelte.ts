@@ -1,6 +1,6 @@
 import { cleanup, render, screen } from '@testing-library/svelte';
 import { afterEach, describe, expect, it } from 'vitest';
-import TooltipProviderTestHost from '../../test/TooltipProviderTestHost.svelte';
+import TooltipProviderTestHost from '../../../test/TooltipProviderTestHost.svelte';
 
 describe('KleriUtilityButton', () => {
 	afterEach(() => {

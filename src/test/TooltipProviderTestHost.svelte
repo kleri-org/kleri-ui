@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Tooltip } from 'bits-ui';
 	import KleriTooltip from '$lib/tooltip/KleriTooltip.svelte';
-	import KleriUtilityButton from '$lib/button/KleriUtilityButton.svelte';
+	import KleriUtilityButton from '$lib/button/KleriUtilityButton/KleriUtilityButton.svelte';
 
 	interface Props {
 		mode?: 'tooltip' | 'utility-button';

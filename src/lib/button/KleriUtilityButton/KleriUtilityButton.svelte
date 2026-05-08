@@ -4,7 +4,7 @@
 	import { cn } from '$lib/utils';
 	import { mergeProps } from 'bits-ui';
 	import KleriTooltip from '$lib/tooltip/KleriTooltip.svelte';
-	import { getButtonGroupContext } from './button-group-context.js';
+	import { getButtonGroupContext } from '../KleriButtonGroup/context.js';
 
 	type ButtonProps = WithElementRef<HTMLButtonAttributes>;
 
