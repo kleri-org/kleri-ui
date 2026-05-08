@@ -1,8 +1,10 @@
 <script lang="ts">
 	import KleriButton from '$lib/button/KleriButton.svelte';
 	import KleriUtilityButton from '$lib/button/KleriUtilityButton.svelte';
+	import KleriButtonGroup from '$lib/button/KleriButtonGroup.svelte';
 	import KleriMagicButton from '$lib/magic/KleriMagicButton.svelte';
 	import { PropControls, CodePreview } from '$lib/preview';
+	import { Save } from 'lucide-svelte';
 
 	let kleriButtonProps = $state({
 		children: 'Click me',
@@ -43,6 +45,35 @@
 		gradientOpacity: { type: 'number' as const, label: 'Gradient Opacity' },
 		gradientFrom: { type: 'string' as const, label: 'Gradient From' },
 		gradientTo: { type: 'string' as const, label: 'Gradient To' }
+	};
+
+	let groupProps = $state({
+		orientation: 'horizontal' as const,
+		size: 'default' as const,
+		variant: 'default' as const,
+		showSeparator: false,
+		showText: false
+	});
+
+	const groupCodeProps = $derived({
+		orientation: groupProps.orientation,
+		size: groupProps.size,
+		variant: groupProps.variant,
+		items: [
+			...(groupProps.showText ? [{ type: 'text', content: 'https://' }] : []),
+			{ type: 'button', label: 'Save', tooltip: 'Save file' },
+			...(groupProps.showSeparator ? [{ type: 'separator' }] : []),
+			{ type: 'button', label: 'Copy', tooltip: 'Copy file' },
+			{ type: 'button', label: 'Delete', tooltip: 'Delete file' }
+		]
+	});
+
+	const groupSchema = {
+		orientation: { type: 'string' as const, label: 'Orientation (horizontal / vertical)' },
+		size: { type: 'string' as const, label: 'Size (default / sm / lg / icon)' },
+		variant: { type: 'string' as const, label: 'Variant (default / outline / ghost / secondary)' },
+		showSeparator: { type: 'boolean' as const, label: 'Show Separator' },
+		showText: { type: 'boolean' as const, label: 'Show Text Prefix' }
 	};
 </script>
 
@@ -124,6 +155,52 @@
 					Props
 				</h2>
 				<PropControls schema={utilitySchema} bind:values={utilityProps} />
+			</div>
+		</div>
+	</section>
+
+	<!-- KleriButtonGroup -->
+	<section id="kleri-button-group" class="scroll-mt-8 space-y-6">
+		<div class="space-y-2">
+			<h2 class="text-2xl font-bold text-foreground">KleriButtonGroup</h2>
+			<p class="text-muted-foreground">
+				Groups related buttons together with merged borders, radius stripping, and shared size /
+				variant context. Includes optional Separator and Text subcomponents.
+			</p>
+		</div>
+		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+			<div class="space-y-4 lg:col-span-2">
+				<div
+					class="flex min-h-60 items-center justify-center gap-x-2 rounded-xl border-2 border-border/50 bg-card/30 p-12"
+				>
+					<KleriButtonGroup
+						orientation={groupProps.orientation}
+						size={groupProps.size}
+						variant={groupProps.variant}
+						items={[
+							{ type: 'button', label: 'Save', icon: Save, tooltip: 'Save file' },
+							...(groupProps.showSeparator ? [{ type: 'separator' as const }] : []),
+							{ type: 'button', label: 'Copy', tooltip: 'Copy file' },
+							{ type: 'button', label: 'Delete', tooltip: 'Delete file' }
+						]}
+					/>
+
+					<KleriButtonGroup
+						orientation={groupProps.orientation}
+						size={groupProps.size}
+						variant={groupProps.variant}
+						items={[{ type: 'button' as const, label: 'Download', tooltip: 'Download file' }]}
+					/>
+				</div>
+				<CodePreview component="KleriButtonGroup" props={groupCodeProps} />
+			</div>
+			<div class="h-fit rounded-xl border-2 border-border/50 bg-card/30 p-6">
+				<h2
+					class="mb-4 font-spacemono text-sm font-semibold tracking-wider text-foreground uppercase"
+				>
+					Props
+				</h2>
+				<PropControls schema={groupSchema} bind:values={groupProps} />
 			</div>
 		</div>
 	</section>

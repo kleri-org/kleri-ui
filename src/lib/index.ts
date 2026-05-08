@@ -17,6 +17,8 @@ export { default as SettingsOption } from './settings/SettingsOption.svelte';
 
 export { default as KleriButton } from './button/KleriButton.svelte';
 export { default as KleriUtilityButton } from './button/KleriUtilityButton.svelte';
+export { default as KleriButtonGroup } from './button/KleriButtonGroup.svelte';
+export { type ButtonGroupItem } from './button/button-group-types.js';
 
 export { default as KleriSwitch } from './input/KleriSwitch.svelte';
 export { default as KleriInput } from './input/KleriInput.svelte';

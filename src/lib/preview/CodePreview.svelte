@@ -12,10 +12,25 @@
 	let { component, props }: Props = $props();
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	function formatValue(value: any): string {
+	function formatValue(value: any, indent = 2): string {
 		if (typeof value === 'boolean') return `{${value}}`;
 		if (typeof value === 'number') return `{${value}}`;
 		if (typeof value === 'string') return `"${value}"`;
+		if (Array.isArray(value)) {
+			if (value.length === 0) return `{[]}`;
+			const innerIndent = ' '.repeat(indent + 2);
+			const items = value.map((v) => `${innerIndent}${formatValue(v, indent + 2)}`).join(',\n');
+			return `{[\n${items}\n${' '.repeat(indent)}]}`;
+		}
+		if (typeof value === 'object' && value !== null) {
+			const entries = Object.entries(value);
+			if (entries.length === 0) return `{{}}`;
+			const innerIndent = ' '.repeat(indent + 2);
+			const props = entries
+				.map(([k, v]) => `${innerIndent}${k}: ${formatValue(v, indent + 2)}`)
+				.join(',\n');
+			return `{{\n${props}\n${' '.repeat(indent)}}}`;
+		}
 		return String(value);
 	}
 
