@@ -6,6 +6,9 @@
 	import { PropControls, CodePreview } from '$lib/preview';
 	import { Save } from '@lucide/svelte';
 
+	const groupSymbols = new Map<any, string>();
+	groupSymbols.set(Save, 'Save');
+
 	let kleriButtonProps = $state({
 		children: 'Click me',
 		showSuccess: false,
@@ -13,6 +16,7 @@
 		successTimeout: 2000,
 		disabled: false
 	});
+
 	const kleriButtonSchema = {
 		children: { type: 'string' as const, label: 'Button Text' },
 		showSuccess: { type: 'boolean' as const, label: 'Show Success' },
@@ -20,6 +24,7 @@
 		successTimeout: { type: 'number' as const, label: 'Timeout (ms)' },
 		disabled: { type: 'boolean' as const, label: 'Disabled' }
 	};
+
 	function handleSuccessComplete() {
 		kleriButtonProps.showSuccess = false;
 	}
@@ -38,6 +43,7 @@
 		gradientFrom: 'rgb(132, 204, 184)',
 		gradientTo: 'rgb(25, 96, 114)'
 	});
+
 	const magicButtonSchema = {
 		children: { type: 'string' as const, label: 'Button Text' },
 		gradientSize: { type: 'number' as const, label: 'Gradient Size (px)' },
@@ -60,8 +66,7 @@
 		size: groupProps.size,
 		variant: groupProps.variant,
 		items: [
-			...(groupProps.showText ? [{ type: 'text', content: 'https://' }] : []),
-			{ type: 'button', label: 'Save', tooltip: 'Save file' },
+			{ type: 'button', label: 'Save', icon: Save, tooltip: 'Save file' },
 			...(groupProps.showSeparator ? [{ type: 'separator' }] : []),
 			{ type: 'button', label: 'Copy', tooltip: 'Copy file' },
 			{ type: 'button', label: 'Delete', tooltip: 'Delete file' }
@@ -192,7 +197,7 @@
 						items={[{ type: 'button' as const, label: 'Download', tooltip: 'Download file' }]}
 					/>
 				</div>
-				<CodePreview component="KleriButtonGroup" props={groupCodeProps} />
+				<CodePreview component="KleriButtonGroup" props={groupCodeProps} symbols={groupSymbols} />
 			</div>
 			<div class="h-fit rounded-xl border-2 border-border/50 bg-card/30 p-6">
 				<h2

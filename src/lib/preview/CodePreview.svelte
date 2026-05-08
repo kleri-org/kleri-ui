@@ -7,15 +7,19 @@
 		component: string;
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		props: Record<string, any>;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		symbols?: Map<any, string>;
 	}
 
-	let { component, props }: Props = $props();
+	let { component, props, symbols }: Props = $props();
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	function formatValue(value: any, indent = 2): string {
+		if (symbols?.has(value)) return `{${symbols.get(value)}}`;
 		if (typeof value === 'boolean') return `{${value}}`;
 		if (typeof value === 'number') return `{${value}}`;
 		if (typeof value === 'string') return `"${value}"`;
+		if (typeof value === 'function') return `{() => {}}`;
 		if (Array.isArray(value)) {
 			if (value.length === 0) return `{[]}`;
 			const innerIndent = ' '.repeat(indent + 2);
