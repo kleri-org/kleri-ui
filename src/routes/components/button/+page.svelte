@@ -1,9 +1,14 @@
 <script lang="ts">
-	import KleriButton from '$lib/button/KleriButton.svelte';
-	import KleriUtilityButton from '$lib/button/KleriUtilityButton.svelte';
+	import KleriButton from '$lib/button/KleriButton/KleriButton.svelte';
+	import KleriUtilityButton from '$lib/button/KleriUtilityButton/KleriUtilityButton.svelte';
+	import KleriButtonGroup from '$lib/button/KleriButtonGroup/KleriButtonGroup.svelte';
 	import KleriMagicButton from '$lib/magic/KleriMagicButton.svelte';
 	import { PropControls, CodePreview } from '$lib/preview';
+	import { Copy, Delete, Save } from '@lucide/svelte';
 
+	// --------------------------------------------------------------------------
+	// --- KleriButton ---
+	// --------------------------------------------------------------------------
 	let kleriButtonProps = $state({
 		children: 'Click me',
 		showSuccess: false,
@@ -11,6 +16,7 @@
 		successTimeout: 2000,
 		disabled: false
 	});
+
 	const kleriButtonSchema = {
 		children: { type: 'string' as const, label: 'Button Text' },
 		showSuccess: { type: 'boolean' as const, label: 'Show Success' },
@@ -18,16 +24,60 @@
 		successTimeout: { type: 'number' as const, label: 'Timeout (ms)' },
 		disabled: { type: 'boolean' as const, label: 'Disabled' }
 	};
+
 	function handleSuccessComplete() {
 		kleriButtonProps.showSuccess = false;
 	}
 
+	// --------------------------------------------------------------------------
+	// --- KleriUtilityButton ---
+	// --------------------------------------------------------------------------
 	let utilityProps = $state({ children: 'Utility', tooltip: 'Click to perform action' });
 	const utilitySchema = {
 		children: { type: 'string' as const, label: 'Button Text' },
 		tooltip: { type: 'string' as const, label: 'Tooltip' }
 	};
 
+	// --------------------------------------------------------------------------
+	// --- KleriButtonGroup ---
+	// --------------------------------------------------------------------------
+	let groupProps = $state({
+		orientation: 'horizontal' as const,
+		size: 'sm' as const,
+		variant: 'default' as const,
+		showSeparator: false,
+		showText: false
+	});
+
+	const groupCodeProps = $derived({
+		orientation: groupProps.orientation,
+		size: groupProps.size,
+		variant: groupProps.variant,
+		items: [
+			{ type: 'button' as const, label: 'Save', icon: Save, tooltip: 'Save file' },
+			...(groupProps.showSeparator ? [{ type: 'separator' as const }] : []),
+			{ type: 'button' as const, label: 'Copy', icon: Copy, tooltip: 'Copy file' },
+			{ type: 'button' as const, label: 'Delete', icon: Delete, tooltip: 'Delete file' }
+		]
+	});
+
+	const groupSchema = {
+		orientation: { type: 'string' as const, label: 'Orientation (horizontal / vertical)' },
+		size: { type: 'string' as const, label: 'Size (sm / lg)' },
+		variant: { type: 'string' as const, label: 'Variant (default / outline / ghost / secondary)' },
+		showSeparator: { type: 'boolean' as const, label: 'Show Separator' },
+		showText: { type: 'boolean' as const, label: 'Show Text Prefix' }
+	};
+
+	// KleriButtonGroup symbol map (used by CodePreview). Otherwise the Component gets expanded in the CodePreview.
+	const groupSymbols = new Map<unknown, string>();
+	groupSymbols.set(Save, 'Save');
+	groupSymbols.set(Copy, 'Copy');
+	groupSymbols.set(Delete, 'Delete');
+
+	// --------------------------------------------------------------------------
+	// --- KleriMagicButton ---
+	// --------------------------------------------------------------------------
 	let magicButtonProps = $state({
 		children: 'Magic Button',
 		gradientSize: 150,
@@ -36,6 +86,7 @@
 		gradientFrom: 'rgb(132, 204, 184)',
 		gradientTo: 'rgb(25, 96, 114)'
 	});
+
 	const magicButtonSchema = {
 		children: { type: 'string' as const, label: 'Button Text' },
 		gradientSize: { type: 'number' as const, label: 'Gradient Size (px)' },
@@ -124,6 +175,40 @@
 					Props
 				</h2>
 				<PropControls schema={utilitySchema} bind:values={utilityProps} />
+			</div>
+		</div>
+	</section>
+
+	<!-- KleriButtonGroup -->
+	<section id="kleri-button-group" class="scroll-mt-8 space-y-6">
+		<div class="space-y-2">
+			<h2 class="text-2xl font-bold text-foreground">KleriButtonGroup</h2>
+			<p class="text-muted-foreground">
+				Groups related buttons together with merged borders, radius stripping, and shared size /
+				variant context. Includes optional Separator and Text subcomponents.
+			</p>
+		</div>
+		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+			<div class="space-y-4 lg:col-span-2">
+				<div
+					class="flex min-h-60 items-center justify-center gap-x-2 rounded-xl border-2 border-border/50 bg-card/30 p-12"
+				>
+					<KleriButtonGroup
+						orientation={groupProps.orientation}
+						size={groupProps.size}
+						variant={groupProps.variant}
+						items={groupCodeProps.items}
+					/>
+				</div>
+				<CodePreview component="KleriButtonGroup" props={groupCodeProps} symbols={groupSymbols} />
+			</div>
+			<div class="h-fit rounded-xl border-2 border-border/50 bg-card/30 p-6">
+				<h2
+					class="mb-4 font-spacemono text-sm font-semibold tracking-wider text-foreground uppercase"
+				>
+					Props
+				</h2>
+				<PropControls schema={groupSchema} bind:values={groupProps} />
 			</div>
 		</div>
 	</section>

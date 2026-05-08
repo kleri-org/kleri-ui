@@ -21,7 +21,7 @@
 		SlidersHorizontal,
 		Wand2,
 		CreditCard
-	} from 'lucide-svelte';
+	} from '@lucide/svelte';
 
 	const { children } = $props();
 
@@ -45,6 +45,7 @@
 			items: [
 				{ name: 'KleriButton', id: 'kleri-button', icon: MousePointerClick },
 				{ name: 'KleriUtilityButton', id: 'kleri-utility-button', icon: Wrench },
+				{ name: 'KleriButtonGroup', id: 'kleri-button-group', icon: Wrench },
 				{ name: 'KleriMagicButton', id: 'kleri-magic-button', icon: Sparkles }
 			]
 		},

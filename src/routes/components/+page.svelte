@@ -6,8 +6,8 @@
 		MessageCircle,
 		Sparkles,
 		Settings,
-		Wand2
-	} from 'lucide-svelte';
+		Wand
+	} from '@lucide/svelte';
 	import { onMount } from 'svelte';
 
 	const categories = [
@@ -21,7 +21,7 @@
 		},
 		{
 			name: 'Button',
-			description: 'Interactive buttons and magic effects',
+			description: 'Interactive buttons, groups, and magic effects',
 			count: 3,
 			comingSoon: false,
 			route: '/components/button',
@@ -65,7 +65,7 @@
 			count: 2,
 			comingSoon: false,
 			route: '/components/magic',
-			icon: Wand2
+			icon: Wand
 		}
 	];
 
