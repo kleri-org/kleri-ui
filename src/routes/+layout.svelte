@@ -21,7 +21,7 @@
 		SlidersHorizontal,
 		Wand2,
 		CreditCard
-	} from 'lucide-svelte';
+	} from '@lucide/svelte';
 
 	const { children } = $props();
 

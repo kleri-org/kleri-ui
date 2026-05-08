@@ -7,7 +7,7 @@
 		Sparkles,
 		Settings,
 		Wand
-	} from 'lucide-svelte';
+	} from '@lucide/svelte';
 	import { onMount } from 'svelte';
 
 	const categories = [

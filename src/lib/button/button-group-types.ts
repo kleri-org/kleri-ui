@@ -9,6 +9,6 @@ export type ButtonGroupItem =
 			disabled?: boolean;
 			class?: string;
 			onclick?: (e: MouseEvent) => void;
-		}
+	  }
 	| { type: 'separator' }
 	| { type: 'text'; content: string };

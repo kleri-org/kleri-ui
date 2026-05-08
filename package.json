@@ -47,7 +47,6 @@
 	},
 	"dependencies": {
 		"clsx": "^2.1.1",
-		"lucide-svelte": "^1.0.1",
 		"motion-sv": "^0.1.12",
 		"shiki": "^4.0.2",
 		"tailwind-merge": "^3.5.0",

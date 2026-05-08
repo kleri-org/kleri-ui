@@ -60,7 +60,7 @@
 				data-slot="button-group-separator"
 				role="separator"
 				aria-orientation={orientation}
-				class={cn('self-stretch bg-border', orientation === 'vertical' ? 'mx-3 w-3' : 'my-3 h-3')}
+				class={cn('self-stretch bg-border', orientation === 'vertical' ? 'my-3 h-px' : 'mx-3 w-px')}
 			></div>
 		{:else if item.type === 'text'}
 			<div data-slot="button-group-text" class="flex items-center px-3 py-2 text-sm">
@@ -72,23 +72,31 @@
 
 <style>
 	:global(
-		[data-slot='button-group'][data-orientation='horizontal'] > [data-slot]:has(~ [data-slot])
+		[data-slot='button-group'][data-orientation='horizontal']
+			> [data-slot='button']:has(+ [data-slot='button'])
 	) {
 		border-top-right-radius: 0;
 		border-bottom-right-radius: 0;
 	}
-	:global([data-slot='button-group'][data-orientation='horizontal'] > [data-slot] ~ [data-slot]) {
+	:global(
+		[data-slot='button-group'][data-orientation='horizontal']
+			> [data-slot='button'] + [data-slot='button']
+	) {
 		border-top-left-radius: 0;
 		border-bottom-left-radius: 0;
 		border-left-width: 0;
 	}
 	:global(
-		[data-slot='button-group'][data-orientation='vertical'] > [data-slot]:has(~ [data-slot])
+		[data-slot='button-group'][data-orientation='vertical']
+			> [data-slot='button']:has(+ [data-slot='button'])
 	) {
 		border-bottom-right-radius: 0;
 		border-bottom-left-radius: 0;
 	}
-	:global([data-slot='button-group'][data-orientation='vertical'] > [data-slot] ~ [data-slot]) {
+	:global(
+		[data-slot='button-group'][data-orientation='vertical']
+			> [data-slot='button'] + [data-slot='button']
+	) {
 		border-top-right-radius: 0;
 		border-top-left-radius: 0;
 		border-top-width: 0;
