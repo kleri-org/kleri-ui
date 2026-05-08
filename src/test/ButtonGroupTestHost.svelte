@@ -47,7 +47,7 @@
 	const items: ButtonGroupItem[] = $derived(
 		customItems ?? [
 			...(includeText ? [{ type: 'text' as const, content: textContent }] : []),
-			...((buttonLabels ?? ['One', 'Two']).map((label, i) => ({
+			...(buttonLabels ?? ['One', 'Two']).map((label, i) => ({
 				type: 'button' as const,
 				label,
 				icon: buttonIcons?.[i],
@@ -55,10 +55,8 @@
 				disabled: buttonDisabled?.[i],
 				onclick: buttonOnclicks?.[i],
 				class: buttonClasses?.[i]
-			}))),
-			...Array(
-				separatorCount ?? (includeSeparator ? 1 : 0)
-			).fill({ type: 'separator' as const })
+			})),
+			...Array(separatorCount ?? (includeSeparator ? 1 : 0)).fill({ type: 'separator' as const })
 		]
 	);
 </script>

@@ -352,10 +352,7 @@ describe('KleriButtonGroup', () => {
 		it('handles only separators (no buttons)', () => {
 			render(ButtonGroupTestHost, {
 				props: {
-					customItems: [
-						{ type: 'separator' },
-						{ type: 'separator' }
-					]
+					customItems: [{ type: 'separator' }, { type: 'separator' }]
 				}
 			});
 			expect(screen.getAllByRole('separator')).toHaveLength(2);
