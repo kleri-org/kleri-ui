@@ -6,36 +6,90 @@
 
 A Svelte 5 component library built with Tailwind CSS 4, bits-ui, and motion-sv. Features brand-consistent components with Kleri green theming, animated effects, and accessible primitives.
 
+## Prerequisites
+
+- **Node.js** >= 20
+- **Package manager**: [bun](https://bun.sh) (recommended) or npm/pnpm/yarn
+- A **SvelteKit** (or Svelte 5 + Vite) project with **Tailwind CSS v4**
+
 ## Installation
 
 ```bash
 bun add @kleri/ui
 ```
 
-## Peer Dependencies
+> If using npm, pnpm, or yarn, replace `bun add` with your package manager's install command.
 
-| Package        | Version |
-| -------------- | ------- |
-| svelte         | ^5.0.0  |
-| bits-ui        | ^2.18.0 |
-| @lucide/svelte | ^1.14.0 |
-| tailwindcss    | ^4.2.0  |
-| daisyui        | ^5.5.0  |
+### Peer Dependencies
+
+`@kleri/ui` expects the following packages to be installed in your project. They are **not** bundled — you declare them in your own `package.json`:
+
+| Package        | Minimum Version | Required |
+| -------------- | --------------- | -------- |
+| svelte         | ^5.0.0          | ✓        |
+| tailwindcss    | ^4.2.0          | ✓        |
+| bits-ui        | ^2.18.0         | ✓        |
+| @lucide/svelte | ^1.14.0         | ✓        |
+| daisyui        | ^5.5.0          | ✓        |
+
+If some are missing, install them:
+
+```bash
+bun add bits-ui @lucide/svelte daisyui
+```
+
+`@kleri/ui` has its own runtime dependencies (`clsx`, `tailwind-merge`, `motion-sv`, etc.) — these are installed automatically when you add the package.
 
 ## Setup
 
-### 1. Import styles
+### 1. Configure Tailwind CSS v4 with Vite
 
-```js
-// src/app.html or layout
-import '@kleri/ui/styles.css';
+Add the `@tailwindcss/vite` plugin to your Vite config:
+
+```ts
+// vite.config.ts
+import tailwindcss from '@tailwindcss/vite';
+import { sveltekit } from '@sveltejs/kit/vite';
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+	plugins: [tailwindcss(), sveltekit()]
+});
 ```
 
-### 2. Configure Tailwind
+> If you're not using Vite, set up Tailwind CSS v4 via [PostCSS or CLI](https://tailwindcss.com/docs/installation/using-postcss) instead.
 
-Ensure your Tailwind config includes the Kleri theme. The CSS exports CSS variables for `--color-kleri-green-1`, `--color-kleri-green-2`, and `--color-kleri-green-3`, along with custom fonts (Poppins, Space Mono).
+### 2. Import styles
 
-### 3. Use components
+In your app's root CSS file (e.g. `src/app.css`), import **both** Tailwind and the Kleri styles:
+
+```css
+/* src/app.css */
+@import 'tailwindcss';
+@import '@kleri/ui/styles.css';
+```
+
+Then import the CSS in your root layout:
+
+```svelte
+<!-- src/routes/+layout.svelte -->
+<script>
+	import '../app.css';
+</script>
+```
+
+### 3. (Optional) Enable daisyUI
+
+If you use daisyUI components alongside Kleri, add the plugin import **after** the Kleri styles:
+
+```css
+/* src/app.css */
+@import 'tailwindcss';
+@import '@kleri/ui/styles.css';
+@plugin 'daisyui';
+```
+
+### 4. Use components
 
 ```svelte
 <script>
@@ -44,6 +98,16 @@ Ensure your Tailwind config includes the Kleri theme. The CSS exports CSS variab
 
 <KleriButton>Click me</KleriButton>
 ```
+
+### How it works
+
+The `@kleri/ui/styles.css` entry point:
+
+- **Registers theme tokens** (`--color-kleri-green-1`, `--color-kleri-green-2`, `--color-kleri-green-3`) via Tailwind's `@theme inline` directive, making them available as utility classes (`bg-kleri-green-1`, `text-kleri-green-2`, `font-Poppins`, `rounded-kleri`, etc.)
+- **Defines custom utility classes** (`kleri-bg`, `kleri-text`, `kleri-border`, `kleri-text-animation`, `bg-kleri_blur`, etc.)
+- **Bundles self-hosted web fonts** (Poppins 400–700, Space Mono 400/700) as pre-compressed `woff2` files — no external font service required
+- **Provides light and dark mode CSS variables** via the `.dark` class selector
+- Uses `@source '..'` to tell Tailwind to scan the package's built output for utility class usage, so component Tailwind classes are included in your final build without any additional configuration
 
 ---
 
