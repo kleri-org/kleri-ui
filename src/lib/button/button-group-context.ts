@@ -1,7 +1,7 @@
 import { getContext, setContext } from 'svelte';
 
 export interface ButtonGroupContext {
-	size?: 'default' | 'sm' | 'lg' | 'icon';
+	size?: 'sm' | 'lg';
 	variant?: 'default' | 'outline' | 'ghost' | 'secondary';
 }
 

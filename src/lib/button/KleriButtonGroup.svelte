@@ -7,7 +7,7 @@
 
 	interface ButtonGroupProps extends WithElementRef<HTMLAttributes<HTMLDivElement>> {
 		orientation?: 'horizontal' | 'vertical';
-		size?: 'default' | 'sm' | 'lg' | 'icon';
+		size?: 'sm' | 'lg';
 		variant?: 'default' | 'outline' | 'ghost' | 'secondary';
 		items: ButtonGroupItem[];
 	}
@@ -60,7 +60,10 @@
 				data-slot="button-group-separator"
 				role="separator"
 				aria-orientation={orientation}
-				class={cn('self-stretch bg-border', orientation === 'vertical' ? 'my-3 h-px' : 'mx-3 w-px')}
+				class={cn(
+					'my-1.5 self-stretch border bg-border',
+					orientation === 'vertical' ? 'my-3 h-px' : 'mx-3 w-px'
+				)}
 			></div>
 		{:else if item.type === 'text'}
 			<div data-slot="button-group-text" class="flex items-center px-3 py-2 text-sm">
@@ -80,7 +83,8 @@
 	}
 	:global(
 		[data-slot='button-group'][data-orientation='horizontal']
-			> [data-slot='button'] + [data-slot='button']
+			> [data-slot='button']
+			+ [data-slot='button']
 	) {
 		border-top-left-radius: 0;
 		border-bottom-left-radius: 0;
@@ -95,7 +99,8 @@
 	}
 	:global(
 		[data-slot='button-group'][data-orientation='vertical']
-			> [data-slot='button'] + [data-slot='button']
+			> [data-slot='button']
+			+ [data-slot='button']
 	) {
 		border-top-right-radius: 0;
 		border-top-left-radius: 0;

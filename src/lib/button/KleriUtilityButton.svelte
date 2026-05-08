@@ -10,7 +10,7 @@
 
 	interface ExtendedButtonProps extends ButtonProps {
 		tooltip?: string;
-		size?: 'default' | 'sm' | 'lg' | 'icon';
+		size?: 'sm' | 'lg';
 		variant?: 'default' | 'outline' | 'ghost' | 'secondary';
 	}
 
@@ -24,14 +24,12 @@
 	}: ExtendedButtonProps = $props();
 
 	const groupCtx = getButtonGroupContext();
-	const size = $derived(sizeProp ?? groupCtx?.size ?? 'default');
+	const size = $derived(sizeProp ?? groupCtx?.size ?? 'sm');
 	const variant = $derived(variantProp ?? groupCtx?.variant ?? 'default');
 
 	const sizeClasses = {
-		default: 'text-base p-2',
-		sm: 'text-sm px-2 py-1',
-		lg: 'text-lg px-4 py-3',
-		icon: 'p-2'
+		sm: 'text-sm px-3 py-2',
+		lg: 'text-base px-4 py-2'
 	};
 
 	const variantClasses = {
@@ -47,6 +45,7 @@
 		{@const btnProps = mergeProps(triggerProps, restProps, {
 			class: cn(
 				'btn w-full align-center rounded-kleri border-2 ring-0 font-normal hover:shadow-black/50 hover:ring-0 disabled:cursor-not-allowed disabled:kleri-bg disabled:text-black disabled:ring-0 disabled:shadow-none disabled:border-none',
+				sizeClasses['sm'],
 				sizeClasses[size],
 				variantClasses[variant],
 				className

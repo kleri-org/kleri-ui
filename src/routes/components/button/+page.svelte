@@ -6,11 +6,9 @@
 	import { PropControls, CodePreview } from '$lib/preview';
 	import { Copy, Delete, Save } from '@lucide/svelte';
 
-	// --- KleriButtonGroup symbol map (used by CodePreview) ---
-	const groupSymbols = new Map<any, string>();
-	groupSymbols.set(Save, 'Save');
-
+	// --------------------------------------------------------------------------
 	// --- KleriButton ---
+	// --------------------------------------------------------------------------
 	let kleriButtonProps = $state({
 		children: 'Click me',
 		showSuccess: false,
@@ -31,17 +29,21 @@
 		kleriButtonProps.showSuccess = false;
 	}
 
+	// --------------------------------------------------------------------------
 	// --- KleriUtilityButton ---
+	// --------------------------------------------------------------------------
 	let utilityProps = $state({ children: 'Utility', tooltip: 'Click to perform action' });
 	const utilitySchema = {
 		children: { type: 'string' as const, label: 'Button Text' },
 		tooltip: { type: 'string' as const, label: 'Tooltip' }
 	};
 
+	// --------------------------------------------------------------------------
 	// --- KleriButtonGroup ---
+	// --------------------------------------------------------------------------
 	let groupProps = $state({
 		orientation: 'horizontal' as const,
-		size: 'default' as const,
+		size: 'sm' as const,
 		variant: 'default' as const,
 		showSeparator: false,
 		showText: false
@@ -61,13 +63,21 @@
 
 	const groupSchema = {
 		orientation: { type: 'string' as const, label: 'Orientation (horizontal / vertical)' },
-		size: { type: 'string' as const, label: 'Size (default / sm / lg / icon)' },
+		size: { type: 'string' as const, label: 'Size (sm / lg)' },
 		variant: { type: 'string' as const, label: 'Variant (default / outline / ghost / secondary)' },
 		showSeparator: { type: 'boolean' as const, label: 'Show Separator' },
 		showText: { type: 'boolean' as const, label: 'Show Text Prefix' }
 	};
 
+	// KleriButtonGroup symbol map (used by CodePreview). Otherwise the Component gets expanded in the CodePreview.
+	const groupSymbols = new Map<unknown, string>();
+	groupSymbols.set(Save, 'Save');
+	groupSymbols.set(Copy, 'Copy');
+	groupSymbols.set(Delete, 'Delete');
+
+	// --------------------------------------------------------------------------
 	// --- KleriMagicButton ---
+	// --------------------------------------------------------------------------
 	let magicButtonProps = $state({
 		children: 'Magic Button',
 		gradientSize: 150,

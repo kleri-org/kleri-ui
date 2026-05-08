@@ -7,8 +7,8 @@
 		component: string;
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		props: Record<string, any>;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		symbols?: Map<any, string>;
+		 
+		symbols?: Map<unknown, string>;
 	}
 
 	let { component, props, symbols }: Props = $props();

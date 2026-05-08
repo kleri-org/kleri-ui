@@ -5,7 +5,7 @@
 
 	interface Props {
 		orientation?: 'horizontal' | 'vertical';
-		size?: 'default' | 'sm' | 'lg' | 'icon';
+		size?: 'sm' | 'lg';
 		variant?: 'default' | 'outline' | 'ghost' | 'secondary';
 		includeSeparator?: boolean;
 		includeText?: boolean;
