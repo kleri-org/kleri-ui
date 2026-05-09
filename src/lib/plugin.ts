@@ -1,8 +1,4 @@
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const __filename = fileURLToPath(import.meta.url);
-const baseDir = path.dirname(__filename);
+const baseDir = import.meta.dirname;
 
 const VIRTUAL_MODULE = 'virtual:kleri-ui/base.css';
 const RESOLVED_VIRTUAL = '\0' + VIRTUAL_MODULE;
@@ -36,6 +32,9 @@ export interface KleriUIOptions {
 export default function kleriUI(options: KleriUIOptions = {}) {
 	const { daisyui = true } = options;
 
+	// Normalize to forward slashes for CSS path compatibility (Windows)
+	const root = baseDir.replace(/\\/g, '/');
+
 	return {
 		name: 'kleri-ui',
 
@@ -65,9 +64,9 @@ export default function kleriUI(options: KleriUIOptions = {}) {
 			if (id === RESOLVED_VIRTUAL) {
 				const lines = [
 					`@import 'tailwindcss';`,
-					`@source '${baseDir}';`,
-					`@import '${path.join(baseDir, 'styles/fonts.css').replace(/\\/g, '/')}';`,
-					`@import '${path.join(baseDir, 'styles/kleri-theme.css').replace(/\\/g, '/')}';`
+					`@source '${root}';`,
+					`@import '${root}/styles/fonts.css';`,
+					`@import '${root}/styles/kleri-theme.css';`
 				];
 				if (daisyui) {
 					lines.push(`@plugin 'daisyui';`);
