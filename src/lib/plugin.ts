@@ -37,13 +37,13 @@ export default function kleriUI(options: KleriUIOptions = {}) {
 
 	return {
 		name: 'kleri-ui',
+		enforce: 'pre',
 
-		config(config: any) {
+		configResolved(config: any) {
 			const plugins = config.plugins || [];
 			const hasTailwind = plugins.some((p: any) => {
 				if (!p) return false;
-				const name = typeof p === 'function' ? p().name : p.name;
-				return name?.includes('tailwindcss');
+				return p.name?.includes('tailwindcss');
 			});
 
 			if (!hasTailwind) {
