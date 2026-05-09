@@ -14,80 +14,95 @@ A Svelte 5 component library built with Tailwind CSS 4, bits-ui, and motion-sv. 
 
 ## Installation
 
+### 1. Install the package
+
 ```bash
 bun add @kleri/ui
 ```
 
-> If using npm, pnpm, or yarn, replace `bun add` with your package manager's install command.
+> npm / pnpm / yarn work too — just replace `bun add` with your package manager's install command.
 
-### Peer Dependencies
+### 2. Install peer dependencies
 
-`@kleri/ui` expects the following packages to be installed in your project:
-
-| Package        | Minimum Version | Required |
-| -------------- | --------------- | -------- |
-| svelte         | ^5.0.0          | ✓        |
-| tailwindcss    | ^4.2.0          | ✓        |
-| bits-ui        | ^2.18.0         | ✓        |
-| @lucide/svelte | ^1.14.0         | ✓        |
-| daisyui        | ^5.5.0          | ✓        |
-
-If some are missing, install them:
+`@kleri/ui` requires these packages in your project:
 
 ```bash
-bun add bits-ui @lucide/svelte daisyui
+bun add tailwindcss @tailwindcss/vite bits-ui @lucide/svelte daisyui
 ```
 
-`@kleri/ui` has its own runtime dependencies (`clsx`, `tailwind-merge`, `motion-sv`, etc.) — these are installed automatically.
+| Package          | Version  | Why                                       |
+| ---------------- | -------- | ----------------------------------------- |
+| `svelte`         | `^5.0.0` | The component runtime                     |
+| `tailwindcss`    | `^4.2.0` | Styling engine                            |
+| `@tailwindcss/vite` | `^4.2.0` | Vite integration for Tailwind CSS 4     |
+| `bits-ui`        | `^2.18.0` | Accessible UI primitives (tooltips, etc.) |
+| `@lucide/svelte` | `^1.14.0` | Icon components                           |
+| `daisyui`        | `^5.5.0` | Component base styles (button, input, etc.) |
 
-## Setup
+Runtime dependencies (`clsx`, `tailwind-merge`, `motion-sv`, etc.) are installed automatically.
 
-Add the Vite plugin to your `vite.config.ts`:
+### 3. Create a CSS entry point
 
-```ts
-// vite.config.ts
-import { sveltekit } from '@sveltejs/kit/vite';
-import { defineConfig } from 'vite';
-import kleriUI from '@kleri/ui/plugin';
-
-export default defineConfig({
-	plugins: [kleriUI(), sveltekit()]
-});
-```
-
-That's it. The plugin handles:
-
-- Injecting Tailwind CSS, theme tokens, fonts, and utilities
-- Registering the package for Tailwind class scanning
-- Enabling daisyUI (configurable)
-- Warning you if `@tailwindcss/vite` is missing
-
-### Plugin Options
-
-```ts
-kleriUI({
-	daisyui: true // set to false to skip auto-enabling daisyUI
-});
-```
-
-### Manual Setup (without plugin)
-
-If you prefer not to use the plugin, you can still import styles manually:
+Create `src/app.css` (or your preferred path) with these directives:
 
 ```css
 /* src/app.css */
 @import 'tailwindcss';
+@source '../src';
 @import '@kleri/ui/styles.css';
+@plugin 'daisyui/index.js' {
+    themes: false;
+}
 ```
 
-Then import the CSS in your root layout:
+- **`@source '../src'`** — tells Tailwind to scan your app's source files for class names. Adjust the path if your `app.css` lives somewhere other than `src/`.
+- **`@import '@kleri/ui/styles.css'`** — pulls in the kleri theme, fonts, color tokens, and utility classes.
+- **`@plugin 'daisyui/index.js'`** — enables daisyUI component base styles (buttons, inputs, cards, etc.).
+- **`themes: false`** — disables daisyUI's default theme stylesheets. This is critical for Tauri apps and any project using a transparent window background — daisyUI themes inject solid background colors on `body` and root elements that will cover your window's transparency. If you *want* daisyUI themes (e.g. for a standard web app), you can omit this or set `themes: ["light", "dark"]` to pick specific ones.
+
+### 4. Import the CSS in your root layout
+
+Create or update `src/routes/+layout.svelte`:
 
 ```svelte
 <!-- src/routes/+layout.svelte -->
 <script>
 	import '../app.css';
 </script>
+
+<slot />
 ```
+
+This ensures the stylesheet is loaded before any component renders.
+
+### That's it
+
+You can now import and use any component:
+
+```svelte
+<script>
+	import { KleriButton } from '@kleri/ui';
+</script>
+
+<KleriButton>Click me</KleriButton>
+```
+
+### Optional: Vite plugin (not recommended for SvelteKit)
+
+`@kleri/ui` ships a Vite plugin (`@kleri/ui/plugin`) that auto-injects styles. **It does not work with SvelteKit** because SvelteKit generates its own HTML, bypassing Vite's `transformIndexHtml` hook. Use it only in plain Vite + Svelte projects (no SvelteKit):
+
+```ts
+// vite.config.ts — plain Vite projects only
+import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { defineConfig } from 'vite';
+import kleriUI from '@kleri/ui/plugin';
+
+export default defineConfig({
+	plugins: [kleriUI(), svelte()]
+});
+```
+
+For SvelteKit projects, use the CSS import method described above.
 
 ---
 
@@ -106,7 +121,7 @@ Primary action button with success state support.
 </script>
 
 <KleriButton
-	{showSuccess}
+	showSuccess={success}
 	successMessage="Done!"
 	successTimeout={2000}
 	onSuccessComplete={() => (success = false)}
@@ -174,7 +189,7 @@ Text input with label, error display, icon, and password toggle.
 ```svelte
 <script>
 	import { KleriInput } from '@kleri/ui';
-	import { KeyRound } from 'lucide-svelte';
+	import { KeyRound } from '@lucide/svelte';
 	let value = $state('');
 	let errors = $state([]);
 </script>
