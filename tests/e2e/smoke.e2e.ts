@@ -115,7 +115,7 @@ test.describe('Deep linking', () => {
 
 		// The sidebar should highlight the active sub-item
 		const activeSubItem = page.locator('aside a[href="/components/button#kleri-button"]');
-		await expect(activeSubItem).toHaveClass(/text-kleri-green-2/);
+		await expect(activeSubItem).toHaveClass(/text-kleri-2/);
 	});
 
 	test('all component sub-items have valid hash links', async ({ page }) => {

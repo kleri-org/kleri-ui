@@ -7,8 +7,6 @@ export {
 } from './utils.js';
 
 export { KLERI_COLOR_1, KLERI_COLOR_2, KLERI_COLOR_3 } from './constants.js';
-export { default as kleriUI } from './plugin.js';
-
 export { default as PrimaryHeading } from './heading/PrimaryHeading.svelte';
 export { default as SecondaryHeading } from './heading/SecondaryHeading.svelte';
 export { default as SubHeading } from './heading/SubHeading.svelte';

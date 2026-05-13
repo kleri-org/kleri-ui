@@ -19,13 +19,8 @@
 	border: 2px solid transparent;
 	background:
 		linear-gradient(rgba(255, 255, 255), rgb(255, 255, 255)) padding-box,
-		linear-gradient(
-				90deg,
-				var(--color-kleri-1),
-				var(--color-kleri-2),
-				var(--color-kleri-1)
-			)
-			0% / 100% 100% border-box;
+		linear-gradient(90deg, var(--color-kleri-1), var(--color-kleri-2), var(--color-kleri-1)) 0% /
+			100% 100% border-box;
 	background-size: 200% 200%;
 	animation: move-bg 5s linear infinite;
 }
@@ -34,13 +29,8 @@
 	--bg-size: 200%;
 	background:
 		linear-gradient(rgba(0, 0, 0, 0.95), rgb(0, 0, 0, 0.95)) padding-box,
-		linear-gradient(
-				90deg,
-				var(--color-kleri-1),
-				var(--color-kleri-2),
-				var(--color-kleri-1)
-			)
-			0% / 100% 100% border-box;
+		linear-gradient(90deg, var(--color-kleri-1), var(--color-kleri-2), var(--color-kleri-1)) 0% /
+			100% 100% border-box;
 	background-size: 200% 200%;
 	animation: move-bg 5s linear infinite;
 }
