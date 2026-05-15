@@ -5,21 +5,22 @@
 	import { open } from '@tauri-apps/plugin-dialog';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { WithElementRef } from '$lib/utils.js';
-	import { Upload } from '@lucide/svelte';
+	import { isImageFile, IMAGE_EXTENSIONS } from '$lib/input/dragndrop-utils.js';
+	import DragNDropChrome from '$lib/input/DragNDropChrome.svelte';
 
 	type Props = {
 		/**
 		 * Called when an image file (.png, .jpg, .jpeg, .gif, .svg, .webp) is dropped
 		 */
-		onImageDrop?: (paths: string[]) => void;
+		onImageDrop?: (path: string) => void;
 		/**
 		 * Called when a document file (.pdf, .doc, .docx, .txt, .csv, .md, etc.) is dropped
 		 */
-		onDocumentDrop?: (paths: string[]) => void;
+		onDocumentDrop?: (path: string) => void;
 		/**
 		 * Called whenever any file type is dropped
 		 */
-		onDrop?: (paths: string[]) => void;
+		onDrop?: (path: string) => void;
 		/**
 		 * Filter for the file picker dialog opened on click.
 		 * - `"images"` — only image files (.png, .jpg, .jpeg, .gif, .svg, .webp)
@@ -31,7 +32,7 @@
 		 */
 		class?: string;
 		label?: string;
-		mainText: string;
+		mainText?: string;
 		subText?: string;
 	} & WithElementRef<HTMLAttributes<HTMLDivElement>>;
 
@@ -53,43 +54,32 @@
 	let unlistenFn: (() => void) | undefined;
 	let isDestroyed = false;
 
-	const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp'];
-
-	function isImageFile(path: string): boolean {
-		const lowerPath = path.toLowerCase();
-		return imageExtensions.some((ext) => lowerPath.endsWith(ext));
-	}
-
-	function handleFiles(paths: string[]) {
-		if (!paths || paths.length === 0) return;
+	function handleFile(path: string | null) {
+		if (!path) return;
 
 		// Enforce the "accept" prop for dragged files
-		if (accept === 'images') {
-			paths = paths.filter(isImageFile);
-			if (paths.length === 0) {
-				isHovering = false;
-				return;
-			}
+		if (accept === 'images' && !isImageFile(path)) {
+			isHovering = false;
+			return;
 		}
 
-		const imagePaths = paths.filter(isImageFile);
-		const documentPaths = paths.filter((p) => !isImageFile(p));
+		const isImage = isImageFile(path);
 
-		if (imagePaths.length > 0) {
-			imagePreview = convertFileSrc(imagePaths[0]);
+		if (isImage) {
+			imagePreview = convertFileSrc(path);
 		} else {
 			imagePreview = null;
 		}
 
 		// Trigger hooks
-		if (imagePaths.length > 0 && onImageDrop) {
-			onImageDrop(imagePaths);
+		if (isImage && onImageDrop) {
+			onImageDrop(path);
 		}
-		if (documentPaths.length > 0 && onDocumentDrop) {
-			onDocumentDrop(documentPaths);
+		if (!isImage && onDocumentDrop) {
+			onDocumentDrop(path);
 		}
 		if (onDrop) {
-			onDrop(paths);
+			onDrop(path);
 		}
 	}
 
@@ -100,24 +90,29 @@
 					? [
 							{
 								name: 'Images',
-								extensions: imageExtensions.map((e) => e.slice(1))
+								extensions: IMAGE_EXTENSIONS.map((e) => e.slice(1))
 							}
 						]
 					: [];
 
-			// Tauri command to open file selector dialogue
 			const selected = await open({
 				directory: false,
-				multiple: true,
+				multiple: false,
 				filters
 			});
 
 			if (!selected) return;
 
-			const paths = Array.isArray(selected) ? selected : [selected];
-			handleFiles(paths);
+			// With multiple: false, open() returns a single string or null
+			handleFile(selected as string | null);
 		} catch (error) {
 			console.error('Failed to open file dialog:', error);
+		}
+	}
+
+	function handleKeyDown(e: KeyboardEvent) {
+		if (e.key === 'Enter') {
+			handleClick();
 		}
 	}
 
@@ -128,7 +123,11 @@
 					isHovering = true;
 				} else if (event.payload.type === 'drop') {
 					isHovering = false;
-					handleFiles(event.payload.paths);
+					// Take only the first file
+					const paths = event.payload.paths;
+					if (paths && paths.length > 0) {
+						handleFile(paths[0]);
+					}
 				} else {
 					// cancelled or leave
 					isHovering = false;
@@ -153,55 +152,14 @@
 	});
 </script>
 
-<!-- Label and Errors -->
-<div class="-mt-2 mb-[-0.5px] inline-flex flex-row items-center align-middle">
-	{#if label}
-		<p class="indent-2 text-sm font-medium select-none">
-			{label}
-		</p>
-	{/if}
-</div>
-<div
-	class="relative flex min-h-10 w-full cursor-pointer flex-col items-center justify-center rounded-kleri border-2 border-dashed border-border p-2 transition-all duration-300 ease-in-out {isHovering
-		? 'scale-[1.02] kleri-border border-solid bg-foreground/5 dark:bg-foreground/10'
-		: 'border-border/60 hover:border-border hover:bg-foreground/5'} {className}"
-	role="button"
-	tabindex="0"
+<DragNDropChrome
+	{isHovering}
+	{imagePreview}
+	{mainText}
+	{subText}
+	{label}
+	class={className}
 	onclick={handleClick}
-	onkeydown={(e) => e.key === 'Enter' && handleClick()}
-	aria-label="File Upload Dropzone"
+	onkeydown={handleKeyDown}
 	{...restProps}
->
-	<div class="pointer-events-none flex flex-col items-center justify-center gap-2 text-center">
-		{#if imagePreview}
-			<img
-				src={imagePreview}
-				alt="File Preview"
-				class="max-h-48 w-auto rounded-kleri object-contain shadow-sm"
-			/>
-		{:else}
-			<!-- Icon -->
-			<div
-				class="flex items-center justify-center text-foreground transition-transform duration-300 {isHovering
-					? 'scale-110 kleri-border'
-					: ''}"
-			>
-				<Upload class="size-5" />
-			</div>
-
-			<!-- Text -->
-			<div class="space-y-1">
-				<h3 class="text-xs font-semibold tracking-tight text-foreground">
-					{#if isHovering}
-						Drop file(s) to upload
-					{:else}
-						{mainText}
-					{/if}
-				</h3>
-				<p class="max-w-62.5 text-sm text-foreground/60">
-					{subText}
-				</p>
-			</div>
-		{/if}
-	</div>
-</div>
+/>

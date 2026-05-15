@@ -20,7 +20,8 @@
 		Settings,
 		SlidersHorizontal,
 		Wand2,
-		CreditCard
+		CreditCard,
+		Upload
 	} from '@lucide/svelte';
 
 	const { children } = $props();
@@ -55,7 +56,8 @@
 			icon: TextCursorInput,
 			items: [
 				{ name: 'KleriSwitch', id: 'kleri-switch', icon: ToggleLeft },
-				{ name: 'KleriInput', id: 'kleri-input', icon: TextCursorInput }
+				{ name: 'KleriInput', id: 'kleri-input', icon: TextCursorInput },
+				{ name: 'KleriDragNDrop', id: 'kleri-drag-n-drop', icon: Upload }
 			]
 		},
 		{
