@@ -53,9 +53,9 @@
 
 <!-- Dropzone -->
 <div
-	class="relative flex min-h-10 w-full cursor-pointer flex-col items-center justify-center rounded-kleri border-2 border-dashed border-border p-2 transition-all duration-300 ease-in-out {isHovering
-		? 'scale-[1.02] kleri-border border-solid bg-foreground/5 dark:bg-foreground/10'
-		: 'border-border/60 hover:border-border hover:bg-foreground/5'} {className}"
+	class="relative flex min-h-40 min-w-20 cursor-pointer flex-col items-center justify-center rounded-kleri border-2 border-dashed border-border p-2 transition-all duration-300 ease-in-out {isHovering
+		? 'scale-105 kleri-border border-solid bg-muted/50'
+		: 'border-border/60 hover:border-border hover:bg-muted/50'} {className}"
 	role="button"
 	tabindex="0"
 	aria-label={ariaLabel}
@@ -78,7 +78,7 @@
 			<!-- Icon -->
 			<div
 				class="flex items-center justify-center text-foreground transition-transform duration-300 {isHovering
-					? 'scale-110 kleri-border'
+					? 'scale-125 kleri-border'
 					: ''}"
 			>
 				<Upload class="size-5" />
@@ -86,14 +86,14 @@
 
 			<!-- Text -->
 			<div class="space-y-1">
-				<h3 class="text-xs font-semibold tracking-tight text-foreground">
+				<h3 class="text-sm font-semibold tracking-tight text-foreground">
 					{#if isHovering}
 						Drop file(s) to upload
 					{:else}
 						{mainText}
 					{/if}
 				</h3>
-				<p class="max-w-62.5 text-sm text-foreground/60">
+				<p class="max-w-62.5 text-xs text-foreground/60">
 					{subText}
 				</p>
 			</div>

@@ -44,9 +44,9 @@
 
 	let dragndropProps = $state({
 		accept: 'any' as 'images' | 'any',
-		label: '',
+		label: 'Drop your files here',
 		mainText: 'Drag and Drop Your file here',
-		subText: ''
+		subText: 'Click to open file selector'
 	});
 	const dragndropSchema = {
 		accept: { type: 'string' as const, label: 'Accept (images / any)' },
@@ -67,7 +67,9 @@
 			<span class="text-foreground">Input</span>
 		</div>
 		<h1 class="text-4xl font-bold text-foreground">Input</h1>
-		<p class="text-lg text-muted-foreground">Form controls, switches, text inputs, and drag-and-drop upload.</p>
+		<p class="text-lg text-muted-foreground">
+			Form controls, switches, text inputs, and drag-and-drop upload.
+		</p>
 	</div>
 
 	<!-- KleriSwitch -->
@@ -145,7 +147,8 @@
 		<div class="space-y-2">
 			<h2 class="text-2xl font-bold text-foreground">KleriDragNDrop</h2>
 			<p class="text-muted-foreground">
-				Drag-and-drop file upload dropzone with image preview and click-to-browse support — ideal for Tauri desktop apps with native file handling.
+				Drag-and-drop file upload dropzone with image preview and click-to-browse support — ideal
+				for Tauri desktop apps with native file handling.
 			</p>
 		</div>
 		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
