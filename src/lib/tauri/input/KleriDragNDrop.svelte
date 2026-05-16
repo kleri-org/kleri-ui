@@ -1,110 +1,233 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { getCurrentWebview } from '@tauri-apps/api/webview';
-	import { convertFileSrc } from '@tauri-apps/api/core';
 	import { open } from '@tauri-apps/plugin-dialog';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { WithElementRef } from '$lib/utils.js';
-	import { isImageFile, IMAGE_EXTENSIONS } from '$lib/input/dragndrop-utils.js';
+	import {
+		type FileTypeName,
+		getDefaultSubText,
+		getErrorSubText,
+		FILE_TYPE_REGISTRY
+	} from '$lib/input/dragndrop-utils.js';
 	import DragNDropChrome from '$lib/input/DragNDropChrome.svelte';
+
+	// -----------------------------------------------------------------------
+	// Status type (mirrors DragNDropChrome)
+	// -----------------------------------------------------------------------
+
+	type DropzoneStatus =
+		| { state: 'idle' }
+		| { state: 'hover' }
+		| { state: 'accepted'; fileCount: number }
+		| { state: 'error'; message: string };
+
+	// -----------------------------------------------------------------------
+	// Props
+	// -----------------------------------------------------------------------
 
 	type Props = {
 		/**
-		 * Called when an image file (.png, .jpg, .jpeg, .gif, .svg, .webp) is dropped
+		 * Allowed file types.  Pass an empty array or omit to accept any file.
+		 *
+		 * Built‑in values: `"image"`, `"pdf"`.  Custom types can be registered
+		 * via `FILE_TYPE_REGISTRY` in `dragndrop-utils.ts`.
 		 */
-		onImageDrop?: (path: string) => void;
+		allowedTypes?: FileTypeName[];
+
 		/**
-		 * Called when a document file (.pdf, .doc, .docx, .txt, .csv, .md, etc.) is dropped
+		 * Called with the accepted file paths after a successful drop or file
+		 * selection.  Only fires when at least one path passes validation.
 		 */
-		onDocumentDrop?: (path: string) => void;
+		onDrop?: (paths: string[]) => void;
+
 		/**
-		 * Called whenever any file type is dropped
+		 * Called with paths that were rejected (wrong type) after a drop or
+		 * file selection.  Fires for both partial and full rejections.
+		 *
+		 * When all files are rejected, `onDrop` does **not** fire.
 		 */
-		onDrop?: (path: string) => void;
-		/**
-		 * Filter for the file picker dialog opened on click.
-		 * - `"images"` — only image files (.png, .jpg, .jpeg, .gif, .svg, .webp)
-		 * - `"any"` — all file types (default)
-		 */
-		accept?: 'images' | 'any';
+		onRejected?: (rejected: Array<{ path: string; reason: string }>) => void;
+
 		/**
 		 * Optional class to append to the wrapper
 		 */
 		class?: string;
+
 		label?: string;
+
+		/**
+		 * Main heading text displayed when the dropzone is idle.
+		 * @default "Drag and Drop Your file here"
+		 */
 		mainText?: string;
+
+		/**
+		 * Hint text shown below the main heading.
+		 * When omitted, a description is auto‑generated from `allowedTypes`.
+		 */
 		subText?: string;
+
+		/**
+		 * Duration (in ms) the error state is shown before reverting to idle.
+		 * @default 3000
+		 */
+		errorDuration?: number;
 	} & WithElementRef<HTMLAttributes<HTMLDivElement>>;
 
 	let {
-		onImageDrop,
-		onDocumentDrop,
+		allowedTypes = undefined,
 		onDrop,
+		onRejected,
 		label,
 		mainText = 'Drag and Drop Your file here',
-		subText,
-		accept = 'any',
+		subText: consumerSubText,
+		errorDuration = 3000,
 		class: className = '',
 		...restProps
 	}: Props = $props();
 
-	let isHovering = $state(false);
-	let imagePreview = $state<string | null>(null);
+	// -----------------------------------------------------------------------
+	// State
+	// -----------------------------------------------------------------------
 
-	let unlistenFn: (() => void) | undefined;
+	let status = $state<DropzoneStatus>({ state: 'idle' });
+	let errorTimeout: ReturnType<typeof setTimeout> | null = null;
 	let isDestroyed = false;
 
-	function handleFile(path: string | null) {
-		if (!path) return;
+	let unlistenFn: (() => void) | undefined;
 
-		// Enforce the "accept" prop for dragged files
-		if (accept === 'images' && !isImageFile(path)) {
-			isHovering = false;
-			return;
+	// -----------------------------------------------------------------------
+	// Derived
+	// -----------------------------------------------------------------------
+
+	let resolvedSubText = $derived(
+		consumerSubText ?? getDefaultSubText(allowedTypes)
+	);
+
+	// -----------------------------------------------------------------------
+	// Path validation (extension‑only — no MIME available for paths)
+	// -----------------------------------------------------------------------
+
+	function isAllowedPath(path: string): boolean {
+		if (!allowedTypes || allowedTypes.length === 0) return true;
+
+		const lower = path.toLowerCase();
+		for (const typeName of allowedTypes) {
+			const entry = FILE_TYPE_REGISTRY[typeName];
+			if (!entry) continue;
+			if (entry.extensions.some((ext) => lower.endsWith(ext))) return true;
+		}
+		return false;
+	}
+
+	function classifyPaths(paths: string[]): {
+		accepted: string[];
+		rejected: Array<{ path: string; reason: string }>;
+	} {
+		const accepted: string[] = [];
+		const rejected: Array<{ path: string; reason: string }> = [];
+
+		for (const path of paths) {
+			if (isAllowedPath(path)) {
+				accepted.push(path);
+			} else {
+				rejected.push({
+					path,
+					reason: getErrorSubText(allowedTypes ?? [])
+				});
+			}
 		}
 
-		const isImage = isImageFile(path);
+		return { accepted, rejected };
+	}
 
-		if (isImage) {
-			imagePreview = convertFileSrc(path);
+	function handlePaths(paths: string[]) {
+		if (paths.length === 0) return;
+
+		clearErrorTimeout();
+
+		const { accepted, rejected } = classifyPaths(paths);
+
+		if (accepted.length > 0 && onDrop) {
+			onDrop(accepted);
+		}
+		if (rejected.length > 0 && onRejected) {
+			onRejected(rejected);
+		}
+
+		if (accepted.length > 0) {
+			status = { state: 'accepted', fileCount: accepted.length };
 		} else {
-			imagePreview = null;
-		}
+			const message =
+				allowedTypes && allowedTypes.length > 0
+					? getErrorSubText(allowedTypes)
+					: 'File type not supported';
 
-		// Trigger hooks
-		if (isImage && onImageDrop) {
-			onImageDrop(path);
-		}
-		if (!isImage && onDocumentDrop) {
-			onDocumentDrop(path);
-		}
-		if (onDrop) {
-			onDrop(path);
+			status = { state: 'error', message };
+			startErrorTimeout();
 		}
 	}
+
+	// -----------------------------------------------------------------------
+	// Error timeout
+	// -----------------------------------------------------------------------
+
+	function clearErrorTimeout() {
+		if (errorTimeout !== null) {
+			clearTimeout(errorTimeout);
+			errorTimeout = null;
+		}
+	}
+
+	function startErrorTimeout() {
+		clearErrorTimeout();
+		errorTimeout = setTimeout(() => {
+			if (!isDestroyed) {
+				status = { state: 'idle' };
+			}
+		}, errorDuration);
+	}
+
+	// -----------------------------------------------------------------------
+	// Public API
+	// -----------------------------------------------------------------------
+
+	export function reset() {
+		clearErrorTimeout();
+		status = { state: 'idle' };
+	}
+
+	// -----------------------------------------------------------------------
+	// Click‑to‑browse
+	// -----------------------------------------------------------------------
 
 	async function handleClick() {
 		try {
 			const filters =
-				accept === 'images'
+				allowedTypes && allowedTypes.length > 0
 					? [
 							{
-								name: 'Images',
-								extensions: IMAGE_EXTENSIONS.map((e) => e.slice(1))
+								name: 'Allowed files',
+								extensions: allowedTypes.flatMap(
+									(t) =>
+										FILE_TYPE_REGISTRY[t]?.extensions.map((e) => e.slice(1)) ?? []
+								)
 							}
 						]
 					: [];
 
 			const selected = await open({
 				directory: false,
-				multiple: false,
+				multiple: true,
 				filters
 			});
 
 			if (!selected) return;
 
-			// With multiple: false, open() returns a single string or null
-			handleFile(selected as string | null);
+			// open() returns string[] | null when multiple: true
+			const paths = Array.isArray(selected) ? selected : selected ? [selected] : [];
+			handlePaths(paths);
 		} catch (error) {
 			console.error('Failed to open file dialog:', error);
 		}
@@ -116,21 +239,23 @@
 		}
 	}
 
+	// -----------------------------------------------------------------------
+	// Tauri drag‑and‑drop events
+	// -----------------------------------------------------------------------
+
 	onMount(async () => {
 		try {
 			const unlisten = await getCurrentWebview().onDragDropEvent((event) => {
 				if (event.payload.type === 'over' || event.payload.type === 'enter') {
-					isHovering = true;
+					status = { state: 'hover' };
 				} else if (event.payload.type === 'drop') {
-					isHovering = false;
-					// Take only the first file
-					const paths = event.payload.paths;
-					if (paths && paths.length > 0) {
-						handleFile(paths[0]);
-					}
+					const paths = event.payload.paths ?? [];
+					handlePaths(paths);
 				} else {
 					// cancelled or leave
-					isHovering = false;
+					if (status.state !== 'error') {
+						status = { state: 'idle' };
+					}
 				}
 			});
 
@@ -146,6 +271,7 @@
 
 	onDestroy(() => {
 		isDestroyed = true;
+		clearErrorTimeout();
 		if (unlistenFn) {
 			unlistenFn();
 		}
@@ -153,10 +279,9 @@
 </script>
 
 <DragNDropChrome
-	{isHovering}
-	{imagePreview}
+	{status}
 	{mainText}
-	{subText}
+	subText={resolvedSubText}
 	{label}
 	class={className}
 	onclick={handleClick}

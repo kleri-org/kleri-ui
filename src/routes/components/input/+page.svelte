@@ -42,17 +42,41 @@
 		}
 	});
 
-	let dragndropProps = $state({
-		accept: 'any' as 'images' | 'any',
+	let dragndropValues = $state({
+		accept: 'image,pdf',
 		label: 'Drop your files here',
 		mainText: 'Drag and Drop Your file here',
-		subText: 'Click to open file selector'
+		subText: ''
 	});
+	let dragndropAllowedTypes = $derived(
+		dragndropValues.accept
+			.split(',')
+			.map((s) => s.trim())
+			.filter(Boolean)
+	);
+	let dragndropProps = $derived({
+		label: dragndropValues.label,
+		mainText: dragndropValues.mainText,
+		subText: dragndropValues.subText
+	});
+
+	let lastDropped = $state<string[]>([]);
+	let lastRejected = $state<string[]>([]);
+
+	function onDrop(files: File[]) {
+		lastDropped = files.map((f) => f.name);
+		lastRejected = [];
+	}
+
+	function onRejected(rejected: Array<{ file: File; reason: string }>) {
+		lastRejected = rejected.map((r) => r.file.name);
+	}
+
 	const dragndropSchema = {
-		accept: { type: 'string' as const, label: 'Accept (images / any)' },
+		accept: { type: 'string' as const, label: 'Allowed Types (comma-separated)' },
 		label: { type: 'string' as const, label: 'Label' },
 		mainText: { type: 'string' as const, label: 'Main Text' },
-		subText: { type: 'string' as const, label: 'Sub Text' }
+		subText: { type: 'string' as const, label: 'Sub Text (leave empty for auto)' }
 	};
 </script>
 
@@ -154,15 +178,31 @@
 		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
 			<div class="space-y-4 lg:col-span-2">
 				<div
-					class="flex min-h-60 items-center justify-center rounded-xl border-2 border-border/50 bg-card/30 p-12"
+					class="flex min-h-60 flex-col items-center justify-center rounded-xl border-2 border-border/50 bg-card/30 p-12"
 				>
 					<div class="w-full max-w-sm">
 						<KleriDragNDrop
-							accept={dragndropProps.accept}
-							label={dragndropProps.label}
-							mainText={dragndropProps.mainText}
-							subText={dragndropProps.subText}
+							allowedTypes={dragndropValues.accept ? dragndropAllowedTypes : undefined}
+							label={dragndropValues.label}
+							mainText={dragndropValues.mainText}
+							subText={dragndropValues.subText || undefined}
+							{onDrop}
+							{onRejected}
 						/>
+					</div>
+					<div class="flex flex-row">
+						<p class="mt-2 font-spacemono text-xs">File(s) - &nbsp;</p>
+						{#if lastDropped.length > 0}
+							<p class="mt-2 font-spacemono text-xs text-green-600 dark:text-green-400">
+								Accepted: {lastDropped.join(', ')}
+							</p>
+						{:else if lastRejected.length > 0}
+							<p class="mt-2 font-spacemono text-xs text-red-600 dark:text-red-400">
+								Rejected: {lastRejected.join(', ')}
+							</p>
+						{:else}
+							<p class="mt-2 font-spacemono text-xs">None</p>
+						{/if}
 					</div>
 				</div>
 				<CodePreview component="KleriDragNDrop" props={dragndropProps} />
@@ -173,7 +213,7 @@
 				>
 					Props
 				</h2>
-				<PropControls schema={dragndropSchema} bind:values={dragndropProps} />
+				<PropControls schema={dragndropSchema} bind:values={dragndropValues} />
 			</div>
 		</div>
 	</section>
