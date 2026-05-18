@@ -9,6 +9,7 @@ export type ButtonGroupItem =
 			disabled?: boolean;
 			class?: string;
 			onclick?: (e: MouseEvent) => void;
+			triggerProps?: Record<string, unknown>;
 	  }
 	| { type: 'separator' }
 	| { type: 'text'; content: string };

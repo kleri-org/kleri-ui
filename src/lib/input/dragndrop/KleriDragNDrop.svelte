@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { WithElementRef } from '$lib/utils.js';
 	import {
@@ -10,7 +11,9 @@
 		getErrorSubText
 	} from './dragndrop-utils.js';
 	import DragNDropChrome from './DragNDropChrome.svelte';
-	import { FileText, X } from '@lucide/svelte';
+	import { Popover, PopoverContent, PopoverTrigger } from '$lib/menus/popover/index.js';
+	import { KleriButtonGroup } from '$lib/button/KleriButtonGroup/index.js';
+	import { FileText, Files, X } from '@lucide/svelte';
 
 	// -----------------------------------------------------------------------
 	// Status type (mirrors DragNDropChrome)
@@ -108,6 +111,7 @@
 	let errorTimeout: ReturnType<typeof setTimeout> | null = null;
 	let isDestroyed = false;
 	let acceptedFiles = $state<File[]>([]);
+	let popoverOpen = $state(false);
 
 	/** Format a file size in bytes to a human-readable string. */
 	function formatBytes(bytes: number): string {
@@ -234,12 +238,26 @@
 	}
 
 	/**
+	 * Removes all files from the accepted list.
+	 */
+	function removeAllFiles() {
+		popoverOpen = false;
+		clearErrorTimeout();
+		acceptedFiles = [];
+		status = { state: 'idle' };
+		if (onDrop) {
+			onDrop([]);
+		}
+	}
+
+	/**
 	 * Removes a file from the accepted list by index.
 	 */
 	function removeFile(index: number) {
 		acceptedFiles = acceptedFiles.filter((_, i) => i !== index);
 
 		if (acceptedFiles.length === 0) {
+			popoverOpen = false;
 			status = { state: 'idle' };
 		} else {
 			status = { state: 'accepted', fileCount: acceptedFiles.length };
@@ -338,27 +356,62 @@
 	ondragleave={handleDragLeave}
 	ondrop={handleDrop}
 	{...restProps}
-/>
-
-{#if acceptedFiles.length > 0}
-	<div class="mt-3 w-full space-y-1.5">
-		{#each acceptedFiles as file, i (file.name)}
-			<div class="flex items-center gap-2 rounded-lg border border-border/40 bg-card/40 px-3 py-2">
-				<FileText class="size-4 shrink-0 text-muted-foreground/60" />
-				<span class="flex-1 truncate text-sm text-foreground">
-					{file.name}
-				</span>
-				<span class="shrink-0 text-xs text-muted-foreground/60">
-					{formatBytes(file.size)}
-				</span>
-				<button
-					type="button"
-					class="shrink-0 rounded p-0.5 text-muted-foreground/60 transition-colors hover:text-destructive"
-					onclick={() => removeFile(i)}
-				>
-					<X class="size-3.5" />
-				</button>
+>
+	{#snippet corner()}
+		{#if acceptedFiles.length > 0}
+			<div transition:fade={{ duration: 150 }}>
+				<Popover bind:open={popoverOpen}>
+					<PopoverTrigger>
+						{#snippet child({ props: popoverProps })}
+							<KleriButtonGroup
+								onclick={(e) => e.stopPropagation()}
+								items={[
+									{
+										type: 'button',
+										label: '',
+										icon: Files,
+										tooltip: `${acceptedFiles.length} file${acceptedFiles.length !== 1 ? 's' : ''}`,
+										triggerProps: popoverProps,
+										class: 'rounded-r-none'
+									},
+									{
+										type: 'button',
+										label: '',
+										icon: X,
+										tooltip: 'Remove all files',
+										onclick: removeAllFiles,
+										class: 'rounded-l-none border-l-0'
+									}
+								]}
+							/>
+						{/snippet}
+					</PopoverTrigger>
+					<PopoverContent class="w-80" align="end" sideOffset={4}>
+						<div class="max-h-64 space-y-1.5 overflow-y-auto">
+							{#each acceptedFiles as file, i (file.name)}
+								<div
+									class="flex items-center gap-2 rounded-lg border border-border/40 bg-card/40 px-3 py-2"
+								>
+									<FileText class="size-4 shrink-0 text-muted-foreground/60" />
+									<span class="flex-1 truncate text-sm text-foreground">
+										{file.name}
+									</span>
+									<span class="shrink-0 text-xs text-muted-foreground/60">
+										{formatBytes(file.size)}
+									</span>
+									<button
+										type="button"
+										class="shrink-0 rounded p-0.5 text-muted-foreground/60 transition-colors hover:text-destructive"
+										onclick={() => removeFile(i)}
+									>
+										<X class="size-3.5" />
+									</button>
+								</div>
+							{/each}
+						</div>
+					</PopoverContent>
+				</Popover>
 			</div>
-		{/each}
-	</div>
-{/if}
+		{/if}
+	{/snippet}
+</DragNDropChrome>

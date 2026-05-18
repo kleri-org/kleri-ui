@@ -180,7 +180,7 @@
 				<div
 					class="flex min-h-60 flex-col items-center justify-center rounded-xl border-2 border-border/50 bg-card/30 p-12"
 				>
-					<div class="w-full max-w-sm">
+					<div class="h-60 w-60">
 						<KleriDragNDrop
 							allowedTypes={dragndropValues.accept ? dragndropAllowedTypes : undefined}
 							label={dragndropValues.label}

@@ -12,6 +12,7 @@
 		tooltip?: string;
 		size?: 'sm' | 'lg';
 		variant?: 'default' | 'outline' | 'ghost' | 'secondary';
+		triggerProps?: Record<string, unknown>;
 	}
 
 	let {
@@ -20,6 +21,7 @@
 		tooltip,
 		size: sizeProp,
 		variant: variantProp,
+		triggerProps = {},
 		...restProps
 	}: ExtendedButtonProps = $props();
 
@@ -41,10 +43,10 @@
 </script>
 
 <KleriTooltip side="bottom" sideOffset={5}>
-	{#snippet trigger(triggerProps)}
-		{@const btnProps = mergeProps(triggerProps, restProps, {
+	{#snippet trigger(tooltipTriggerProps)}
+		{@const btnProps = mergeProps(tooltipTriggerProps, triggerProps, restProps, {
 			class: cn(
-				'btn w-full align-center rounded-kleri border-2 ring-0 font-normal hover:shadow-black/50 hover:ring-0 disabled:cursor-not-allowed disabled:kleri-bg disabled:text-black disabled:ring-0 disabled:shadow-none disabled:border-none',
+				'btn w-fit align-center rounded-kleri border-2 ring-0 font-normal hover:shadow-black/50 hover:ring-0 disabled:cursor-not-allowed disabled:kleri-bg disabled:text-black disabled:ring-0 disabled:shadow-none disabled:border-none',
 				sizeClasses['sm'],
 				sizeClasses[size],
 				variantClasses[variant],

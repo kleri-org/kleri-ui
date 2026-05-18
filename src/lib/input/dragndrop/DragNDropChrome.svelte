@@ -7,6 +7,7 @@
 	} from 'svelte/elements';
 	import type { WithElementRef } from '$lib/utils.js';
 	import { Upload, Check, FileText } from '@lucide/svelte';
+	import type { Snippet } from 'svelte';
 
 	// -----------------------------------------------------------------------
 	// Status discriminated union – the single source of truth for the
@@ -36,6 +37,7 @@
 		ondragenter?: DragEventHandler<HTMLDivElement> | undefined | null;
 		ondragleave?: DragEventHandler<HTMLDivElement> | undefined | null;
 		ondrop?: DragEventHandler<HTMLDivElement> | undefined | null;
+		corner?: Snippet;
 	} & WithElementRef<HTMLAttributes<HTMLDivElement>>;
 
 	let {
@@ -51,6 +53,7 @@
 		ondragenter,
 		ondragleave,
 		ondrop,
+		corner,
 		...restProps
 	}: Props = $props();
 
@@ -144,6 +147,12 @@
 			{/if}
 		</div>
 	</div>
+
+	{#if corner}
+		<div class="absolute top-2 right-2 z-10">
+			{@render corner()}
+		</div>
+	{/if}
 </div>
 
 <!-- Shake animation -->

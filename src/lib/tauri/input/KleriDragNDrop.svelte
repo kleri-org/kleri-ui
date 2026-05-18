@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import { getCurrentWebview } from '@tauri-apps/api/webview';
 	import { open } from '@tauri-apps/plugin-dialog';
 	import type { HTMLAttributes } from 'svelte/elements';
@@ -11,7 +12,9 @@
 		FILE_TYPE_REGISTRY
 	} from '$lib/input/dragndrop/dragndrop-utils.js';
 	import DragNDropChrome from '$lib/input/dragndrop/DragNDropChrome.svelte';
-	import { FileText, X } from '@lucide/svelte';
+	import { Popover, PopoverContent, PopoverTrigger } from '$lib/menus/popover/index.js';
+	import { KleriButtonGroup } from '$lib/button/KleriButtonGroup/index.js';
+	import { FileText, Files, X } from '@lucide/svelte';
 
 	// -----------------------------------------------------------------------
 	// Status type (mirrors DragNDropChrome)
@@ -104,6 +107,7 @@
 	let errorTimeout: ReturnType<typeof setTimeout> | null = null;
 	let isDestroyed = false;
 	let acceptedPaths = $state<string[]>([]);
+	let popoverOpen = $state(false);
 
 	/** Extract the file name from a full path. */
 	function getFileName(path: string): string {
@@ -237,12 +241,26 @@
 	}
 
 	/**
+	 * Removes all paths from the accepted list.
+	 */
+	function removeAllPaths() {
+		popoverOpen = false;
+		clearErrorTimeout();
+		acceptedPaths = [];
+		status = { state: 'idle' };
+		if (onDrop) {
+			onDrop([]);
+		}
+	}
+
+	/**
 	 * Removes a path from the accepted list by index.
 	 */
 	function removePath(index: number) {
 		acceptedPaths = acceptedPaths.filter((_, i) => i !== index);
 
 		if (acceptedPaths.length === 0) {
+			popoverOpen = false;
 			status = { state: 'idle' };
 		} else {
 			status = { state: 'accepted', fileCount: acceptedPaths.length };
@@ -341,24 +359,59 @@
 	onclick={handleClick}
 	onkeydown={handleKeyDown}
 	{...restProps}
-/>
-
-{#if acceptedPaths.length > 0}
-	<div class="mt-3 w-full space-y-1.5">
-		{#each acceptedPaths as path, i (path)}
-			<div class="flex items-center gap-2 rounded-lg border border-border/40 bg-card/40 px-3 py-2">
-				<FileText class="size-4 shrink-0 text-muted-foreground/60" />
-				<span class="flex-1 truncate text-sm text-foreground">
-					{getFileName(path)}
-				</span>
-				<button
-					type="button"
-					class="shrink-0 rounded p-0.5 text-muted-foreground/60 transition-colors hover:text-destructive"
-					onclick={() => removePath(i)}
-				>
-					<X class="size-3.5" />
-				</button>
+>
+	{#snippet corner()}
+		{#if acceptedPaths.length > 0}
+			<div transition:fade={{ duration: 150 }}>
+				<Popover bind:open={popoverOpen}>
+					<PopoverTrigger>
+						{#snippet child({ props: popoverProps })}
+							<KleriButtonGroup
+								onclick={(e) => e.stopPropagation()}
+								items={[
+									{
+										type: 'button',
+										label: '',
+										icon: Files,
+										tooltip: `${acceptedPaths.length} file${acceptedPaths.length !== 1 ? 's' : ''}`,
+										triggerProps: popoverProps,
+										class: 'rounded-r-none'
+									},
+									{
+										type: 'button',
+										label: '',
+										icon: X,
+										tooltip: 'Remove all files',
+										onclick: removeAllPaths,
+										class: 'rounded-l-none border-l-0'
+									}
+								]}
+							/>
+						{/snippet}
+					</PopoverTrigger>
+					<PopoverContent class="w-80" align="end" sideOffset={4}>
+						<div class="max-h-64 space-y-1.5 overflow-y-auto">
+							{#each acceptedPaths as path, i (path)}
+								<div
+									class="flex items-center gap-2 rounded-lg border border-border/40 bg-card/40 px-3 py-2"
+								>
+									<FileText class="size-4 shrink-0 text-muted-foreground/60" />
+									<span class="flex-1 truncate text-sm text-foreground">
+										{getFileName(path)}
+									</span>
+									<button
+										type="button"
+										class="shrink-0 rounded p-0.5 text-muted-foreground/60 transition-colors hover:text-destructive"
+										onclick={() => removePath(i)}
+									>
+										<X class="size-3.5" />
+									</button>
+								</div>
+							{/each}
+						</div>
+					</PopoverContent>
+				</Popover>
 			</div>
-		{/each}
-	</div>
-{/if}
+		{/if}
+	{/snippet}
+</DragNDropChrome>

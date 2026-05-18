@@ -49,9 +49,10 @@
 				disabled={item.disabled}
 				class={cn('flex flex-row items-center justify-center', item.class)}
 				onclick={item.onclick}
+				triggerProps={item.triggerProps}
 			>
 				{#if item.icon}
-					<item.icon strokeWidth="2.2" class="mr-2 h-4 w-4" />
+					<item.icon strokeWidth="2.2" class={cn('h-4 w-4', item.label ? 'mr-2' : '')} />
 				{/if}
 				{item.label}
 			</KleriUtilityButton>
