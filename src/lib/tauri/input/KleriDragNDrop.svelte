@@ -11,6 +11,7 @@
 		FILE_TYPE_REGISTRY
 	} from '$lib/input/dragndrop-utils.js';
 	import DragNDropChrome from '$lib/input/DragNDropChrome.svelte';
+	import { FileText, X } from '@lucide/svelte';
 
 	// -----------------------------------------------------------------------
 	// Status type (mirrors DragNDropChrome)
@@ -54,6 +55,13 @@
 		 */
 		class?: string;
 
+		/**
+		 * When `false`, the dropzone accepts only a single file.
+		 * Additional files are silently ignored.
+		 * @default true
+		 */
+		multiple?: boolean;
+
 		label?: string;
 
 		/**
@@ -77,6 +85,7 @@
 
 	let {
 		allowedTypes = undefined,
+		multiple = true,
 		onDrop,
 		onRejected,
 		label,
@@ -94,6 +103,12 @@
 	let status = $state<DropzoneStatus>({ state: 'idle' });
 	let errorTimeout: ReturnType<typeof setTimeout> | null = null;
 	let isDestroyed = false;
+	let acceptedPaths = $state<string[]>([]);
+
+	/** Extract the file name from a full path. */
+	function getFileName(path: string): string {
+		return path.split('/').pop() ?? path;
+	}
 
 	let unlistenFn: (() => void) | undefined;
 
@@ -149,16 +164,11 @@
 
 		const { accepted, rejected } = classifyPaths(paths);
 
-		if (accepted.length > 0 && onDrop) {
-			onDrop(accepted);
-		}
-		if (rejected.length > 0 && onRejected) {
-			onRejected(rejected);
-		}
-
-		if (accepted.length > 0) {
-			status = { state: 'accepted', fileCount: accepted.length };
-		} else {
+		// All rejected — show error
+		if (accepted.length === 0) {
+			if (rejected.length > 0 && onRejected) {
+				onRejected(rejected);
+			}
 			const message =
 				allowedTypes && allowedTypes.length > 0
 					? getErrorSubText(allowedTypes)
@@ -166,6 +176,33 @@
 
 			status = { state: 'error', message };
 			startErrorTimeout();
+			return;
+		}
+
+		// Fire onRejected for any rejected paths
+		if (rejected.length > 0 && onRejected) {
+			onRejected(rejected);
+		}
+
+		// Apply multiple/single logic
+		if (multiple === false) {
+			// Replace with first accepted path
+			acceptedPaths = [accepted[0]];
+		} else {
+			// Append new paths, skip duplicates by name
+			const existingNames = new Set(acceptedPaths.map((p) => getFileName(p)));
+			const newPaths = accepted.filter(
+				(p) => !existingNames.has(getFileName(p))
+			);
+			acceptedPaths = [...acceptedPaths, ...newPaths];
+		}
+
+		// Update visual state
+		status = { state: 'accepted', fileCount: acceptedPaths.length };
+
+		// Fire onDrop with the updated list
+		if (onDrop) {
+			onDrop(acceptedPaths);
 		}
 	}
 
@@ -193,9 +230,31 @@
 	// Public API
 	// -----------------------------------------------------------------------
 
+	/**
+	 * Resets the dropzone to its idle state, clears the file list,
+	 * and cancels any pending error timeout.
+	 */
 	export function reset() {
 		clearErrorTimeout();
 		status = { state: 'idle' };
+		acceptedPaths = [];
+	}
+
+	/**
+	 * Removes a path from the accepted list by index.
+	 */
+	function removePath(index: number) {
+		acceptedPaths = acceptedPaths.filter((_, i) => i !== index);
+
+		if (acceptedPaths.length === 0) {
+			status = { state: 'idle' };
+		} else {
+			status = { state: 'accepted', fileCount: acceptedPaths.length };
+		}
+
+		if (onDrop) {
+			onDrop(acceptedPaths);
+		}
 	}
 
 	// -----------------------------------------------------------------------
@@ -288,3 +347,25 @@
 	onkeydown={handleKeyDown}
 	{...restProps}
 />
+
+{#if acceptedPaths.length > 0}
+	<div class="mt-3 w-full space-y-1.5">
+		{#each acceptedPaths as path, i}
+			<div
+				class="flex items-center gap-2 rounded-lg border border-border/40 bg-card/40 px-3 py-2"
+			>
+				<FileText class="size-4 shrink-0 text-muted-foreground/60" />
+				<span class="flex-1 truncate text-sm text-foreground">
+					{getFileName(path)}
+				</span>
+				<button
+					type="button"
+					class="shrink-0 rounded p-0.5 text-muted-foreground/60 transition-colors hover:text-destructive"
+					onclick={() => removePath(i)}
+				>
+					<X class="size-3.5" />
+				</button>
+			</div>
+		{/each}
+	</div>
+{/if}

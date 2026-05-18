@@ -10,6 +10,7 @@
 		getErrorSubText
 	} from '$lib/input/dragndrop-utils.js';
 	import DragNDropChrome from '$lib/input/DragNDropChrome.svelte';
+	import { FileText, X } from '@lucide/svelte';
 
 	// -----------------------------------------------------------------------
 	// Status type (mirrors DragNDropChrome)
@@ -57,6 +58,13 @@
 		 */
 		class?: string;
 
+		/**
+		 * When `false`, the dropzone accepts only a single file.
+		 * Additional files are silently ignored.
+		 * @default true
+		 */
+		multiple?: boolean;
+
 		label?: string;
 
 		/**
@@ -80,6 +88,7 @@
 
 	let {
 		allowedTypes = undefined,
+		multiple = true,
 		onDrop,
 		onRejected,
 		label,
@@ -98,6 +107,16 @@
 	let enterCounter = 0;
 	let errorTimeout: ReturnType<typeof setTimeout> | null = null;
 	let isDestroyed = false;
+	let acceptedFiles = $state<File[]>([]);
+
+	/** Format a file size in bytes to a human-readable string. */
+	function formatBytes(bytes: number): string {
+		if (bytes === 0) return '0 B';
+		const k = 1024;
+		const sizes = ['B', 'KB', 'MB', 'GB'];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
+	}
 
 	let fileInput: HTMLInputElement | undefined;
 
@@ -142,23 +161,11 @@
 
 		const { accepted, rejected } = classifyFiles(files);
 
-		// Fire callbacks
-		if (accepted.length > 0 && onDrop) {
-			onDrop(accepted);
-		}
-		if (rejected.length > 0 && onRejected) {
-			onRejected(rejected);
-		}
-
-		// Determine visual state
-		if (accepted.length > 0) {
-			status = { state: 'accepted', fileCount: accepted.length };
-
-			// If there were also rejects, show a brief warning then revert
-			// to accepted state.  The warning is delivered via onRejected;
-			// the visual stays on accepted per the "accepted priority" rule.
-		} else {
-			// All rejected — show error
+		// All rejected — show error
+		if (accepted.length === 0) {
+			if (rejected.length > 0 && onRejected) {
+				onRejected(rejected);
+			}
 			const message =
 				allowedTypes && allowedTypes.length > 0
 					? getErrorSubText(allowedTypes)
@@ -166,6 +173,31 @@
 
 			status = { state: 'error', message };
 			startErrorTimeout();
+			return;
+		}
+
+		// Fire onRejected for any rejected files
+		if (rejected.length > 0 && onRejected) {
+			onRejected(rejected);
+		}
+
+		// Apply multiple/single logic
+		if (multiple === false) {
+			// Replace with first accepted file
+			acceptedFiles = [accepted[0]];
+		} else {
+			// Append new files, skip duplicates by name
+			const existingNames = new Set(acceptedFiles.map((f) => f.name));
+			const newFiles = accepted.filter((f) => !existingNames.has(f.name));
+			acceptedFiles = [...acceptedFiles, ...newFiles];
+		}
+
+		// Update visual state
+		status = { state: 'accepted', fileCount: acceptedFiles.length };
+
+		// Fire onDrop with the updated list
+		if (onDrop) {
+			onDrop(acceptedFiles);
 		}
 	}
 
@@ -194,12 +226,30 @@
 	// -----------------------------------------------------------------------
 
 	/**
-	 * Resets the dropzone to its idle state and clears any pending error
-	 * timeout.
+	 * Resets the dropzone to its idle state, clears the file list,
+	 * and cancels any pending error timeout.
 	 */
 	export function reset() {
 		clearErrorTimeout();
 		status = { state: 'idle' };
+		acceptedFiles = [];
+	}
+
+	/**
+	 * Removes a file from the accepted list by index.
+	 */
+	function removeFile(index: number) {
+		acceptedFiles = acceptedFiles.filter((_, i) => i !== index);
+
+		if (acceptedFiles.length === 0) {
+			status = { state: 'idle' };
+		} else {
+			status = { state: 'accepted', fileCount: acceptedFiles.length };
+		}
+
+		if (onDrop) {
+			onDrop(acceptedFiles);
+		}
 	}
 
 	// -----------------------------------------------------------------------
@@ -291,3 +341,28 @@
 	ondrop={handleDrop}
 	{...restProps}
 />
+
+{#if acceptedFiles.length > 0}
+	<div class="mt-3 w-full space-y-1.5">
+		{#each acceptedFiles as file, i}
+			<div
+				class="flex items-center gap-2 rounded-lg border border-border/40 bg-card/40 px-3 py-2"
+			>
+				<FileText class="size-4 shrink-0 text-muted-foreground/60" />
+				<span class="flex-1 truncate text-sm text-foreground">
+					{file.name}
+				</span>
+				<span class="shrink-0 text-xs text-muted-foreground/60">
+					{formatBytes(file.size)}
+				</span>
+				<button
+					type="button"
+					class="shrink-0 rounded p-0.5 text-muted-foreground/60 transition-colors hover:text-destructive"
+					onclick={() => removeFile(i)}
+				>
+					<X class="size-3.5" />
+				</button>
+			</div>
+		{/each}
+	</div>
+{/if}
