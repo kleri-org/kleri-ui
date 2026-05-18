@@ -9,8 +9,8 @@
 		getDefaultSubText,
 		getErrorSubText,
 		FILE_TYPE_REGISTRY
-	} from '$lib/input/dragndrop-utils.js';
-	import DragNDropChrome from '$lib/input/DragNDropChrome.svelte';
+	} from '$lib/input/dragndrop/dragndrop-utils.js';
+	import DragNDropChrome from '$lib/input/dragndrop/DragNDropChrome.svelte';
 	import { FileText, X } from '@lucide/svelte';
 
 	// -----------------------------------------------------------------------

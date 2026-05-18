@@ -8,8 +8,8 @@
 		getAcceptString,
 		getDefaultSubText,
 		getErrorSubText
-	} from '$lib/input/dragndrop-utils.js';
-	import DragNDropChrome from '$lib/input/DragNDropChrome.svelte';
+	} from './dragndrop-utils.js';
+	import DragNDropChrome from './DragNDropChrome.svelte';
 	import { FileText, X } from '@lucide/svelte';
 
 	// -----------------------------------------------------------------------

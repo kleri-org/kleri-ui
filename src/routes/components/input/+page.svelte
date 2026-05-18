@@ -1,7 +1,7 @@
 <script lang="ts">
 	import KleriSwitch from '$lib/input/KleriSwitch.svelte';
 	import KleriInput from '$lib/input/KleriInput.svelte';
-	import KleriDragNDrop from '$lib/input/KleriDragNDrop.svelte';
+	import KleriDragNDrop from '$lib/input/dragndrop/KleriDragNDrop.svelte';
 	import { PropControls, CodePreview } from '$lib/preview';
 
 	let switchProps = $state({
