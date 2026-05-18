@@ -125,9 +125,7 @@
 	// -----------------------------------------------------------------------
 
 	/** Sub‑text: consumer override > auto‑generated > undefined */
-	let resolvedSubText = $derived(
-		consumerSubText ?? getDefaultSubText(allowedTypes)
-	);
+	let resolvedSubText = $derived(consumerSubText ?? getDefaultSubText(allowedTypes));
 
 	// -----------------------------------------------------------------------
 	// File handling
@@ -344,10 +342,8 @@
 
 {#if acceptedFiles.length > 0}
 	<div class="mt-3 w-full space-y-1.5">
-		{#each acceptedFiles as file, i}
-			<div
-				class="flex items-center gap-2 rounded-lg border border-border/40 bg-card/40 px-3 py-2"
-			>
+		{#each acceptedFiles as file, i (file.name)}
+			<div class="flex items-center gap-2 rounded-lg border border-border/40 bg-card/40 px-3 py-2">
 				<FileText class="size-4 shrink-0 text-muted-foreground/60" />
 				<span class="flex-1 truncate text-sm text-foreground">
 					{file.name}

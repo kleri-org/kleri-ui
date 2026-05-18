@@ -116,9 +116,7 @@
 	// Derived
 	// -----------------------------------------------------------------------
 
-	let resolvedSubText = $derived(
-		consumerSubText ?? getDefaultSubText(allowedTypes)
-	);
+	let resolvedSubText = $derived(consumerSubText ?? getDefaultSubText(allowedTypes));
 
 	// -----------------------------------------------------------------------
 	// Path validation (extension‑only — no MIME available for paths)
@@ -191,9 +189,7 @@
 		} else {
 			// Append new paths, skip duplicates by name
 			const existingNames = new Set(acceptedPaths.map((p) => getFileName(p)));
-			const newPaths = accepted.filter(
-				(p) => !existingNames.has(getFileName(p))
-			);
+			const newPaths = accepted.filter((p) => !existingNames.has(getFileName(p)));
 			acceptedPaths = [...acceptedPaths, ...newPaths];
 		}
 
@@ -269,8 +265,7 @@
 							{
 								name: 'Allowed files',
 								extensions: allowedTypes.flatMap(
-									(t) =>
-										FILE_TYPE_REGISTRY[t]?.extensions.map((e) => e.slice(1)) ?? []
+									(t) => FILE_TYPE_REGISTRY[t]?.extensions.map((e) => e.slice(1)) ?? []
 								)
 							}
 						]
@@ -350,10 +345,8 @@
 
 {#if acceptedPaths.length > 0}
 	<div class="mt-3 w-full space-y-1.5">
-		{#each acceptedPaths as path, i}
-			<div
-				class="flex items-center gap-2 rounded-lg border border-border/40 bg-card/40 px-3 py-2"
-			>
+		{#each acceptedPaths as path, i (path)}
+			<div class="flex items-center gap-2 rounded-lg border border-border/40 bg-card/40 px-3 py-2">
 				<FileText class="size-4 shrink-0 text-muted-foreground/60" />
 				<span class="flex-1 truncate text-sm text-foreground">
 					{getFileName(path)}

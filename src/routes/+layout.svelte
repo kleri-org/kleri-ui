@@ -21,7 +21,8 @@
 		SlidersHorizontal,
 		Wand2,
 		CreditCard,
-		Upload
+		Upload,
+		PanelRight
 	} from '@lucide/svelte';
 
 	const { children } = $props();
@@ -86,6 +87,12 @@
 				{ name: 'KleriMagicCard', id: 'kleri-magic-card', icon: CreditCard },
 				{ name: 'KleriMagicButton', id: 'kleri-magic-button', icon: Sparkles }
 			]
+		},
+		{
+			name: 'Menu',
+			route: '/components/menu',
+			icon: PanelRight,
+			items: [{ name: 'Popover', id: 'popover', icon: PanelRight }]
 		}
 	];
 

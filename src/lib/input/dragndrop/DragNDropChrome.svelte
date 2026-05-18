@@ -61,7 +61,6 @@
 	let isHovering = $derived(status.state === 'hover');
 	let isError = $derived(status.state === 'error');
 	let isAccepted = $derived(status.state === 'accepted');
-	let isIdle = $derived(status.state === 'idle');
 	let acceptedCount = $derived(status.state === 'accepted' ? status.fileCount : 0);
 
 	// Text displayed in the sub‑text slot.
@@ -86,7 +85,7 @@
 	{isHovering
 		? 'scale-105 border-solid border-primary bg-muted/50'
 		: isError
-			? 'border-destructive bg-destructive/5 shake'
+			? 'shake border-destructive bg-destructive/5'
 			: isAccepted
 				? 'border-solid border-primary/50 bg-muted/30'
 				: 'border-border/60 hover:border-border hover:bg-muted/80'}
@@ -136,7 +135,9 @@
 			</h3>
 			{#if displaySubText}
 				<p
-					class="max-w-62.5 text-xs {isError ? 'text-destructive font-medium' : 'text-foreground/60'}"
+					class="max-w-62.5 text-xs {isError
+						? 'font-medium text-destructive'
+						: 'text-foreground/60'}"
 				>
 					{displaySubText}
 				</p>

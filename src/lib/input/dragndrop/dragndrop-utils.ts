@@ -122,9 +122,7 @@ export function getAcceptString(allowedTypes?: FileTypeName[]): string | undefin
 export function getDefaultSubText(allowedTypes?: FileTypeName[]): string | undefined {
 	if (!allowedTypes || allowedTypes.length === 0) return undefined;
 
-	const labels = allowedTypes
-		.map((t) => FILE_TYPE_REGISTRY[t]?.label)
-		.filter(Boolean) as string[];
+	const labels = allowedTypes.map((t) => FILE_TYPE_REGISTRY[t]?.label).filter(Boolean) as string[];
 
 	if (labels.length === 0) return undefined;
 

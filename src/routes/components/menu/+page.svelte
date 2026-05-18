@@ -164,36 +164,36 @@
 					</Popover>
 				</div>
 				<div class="overflow-hidden rounded-lg border-2 border-border bg-card">
-				<div
-					class="flex items-center justify-between border-b border-border/50 bg-muted/30 px-4 py-2"
-				>
-					<span class="font-spacemono text-xs text-foreground">Usage</span>
-					<KleriButton
-						class="w-auto px-3 py-1 text-xs"
-						showSuccess={copied}
-						successMessage="Copied!"
-						onSuccessComplete={() => (copied = false)}
-						onclick={copyCode}
+					<div
+						class="flex items-center justify-between border-b border-border/50 bg-muted/30 px-4 py-2"
 					>
-						Copy
-					</KleriButton>
-				</div>
+						<span class="font-spacemono text-xs text-foreground">Usage</span>
+						<KleriButton
+							class="w-auto px-3 py-1 text-xs"
+							showSuccess={copied}
+							successMessage="Copied!"
+							onSuccessComplete={() => (copied = false)}
+							onclick={copyCode}
+						>
+							Copy
+						</KleriButton>
+					</div>
 
-				<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-				<div
-					role="region"
-					aria-label="Popover usage example"
-					tabindex="0"
-					class="overflow-x-auto"
-				>
-					{#if highlightedHtml}
-						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-						{@html highlightedHtml}
-					{:else}
-						<pre class="p-4 font-spacemono text-sm text-foreground"><code>{usageCode}</code></pre>
-					{/if}
+					<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+					<div
+						role="region"
+						aria-label="Popover usage example"
+						tabindex="0"
+						class="overflow-x-auto"
+					>
+						{#if highlightedHtml}
+							<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+							{@html highlightedHtml}
+						{:else}
+							<pre class="p-4 font-spacemono text-sm text-foreground"><code>{usageCode}</code></pre>
+						{/if}
+					</div>
 				</div>
-			</div>
 			</div>
 			<div class="h-fit rounded-xl border-2 border-border/50 bg-card/30 p-6">
 				<h2
