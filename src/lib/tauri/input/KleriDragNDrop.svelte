@@ -367,6 +367,7 @@
 					<PopoverTrigger>
 						{#snippet child({ props: popoverProps })}
 							<KleriButtonGroup
+								size="xs"
 								onclick={(e) => e.stopPropagation()}
 								items={[
 									{
@@ -375,7 +376,7 @@
 										icon: Files,
 										tooltip: `${acceptedPaths.length} file${acceptedPaths.length !== 1 ? 's' : ''}`,
 										triggerProps: popoverProps,
-										class: 'rounded-r-none'
+										class: 'rounded-r-none border-muted-foreground/50'
 									},
 									{
 										type: 'button',
@@ -383,7 +384,7 @@
 										icon: X,
 										tooltip: 'Remove all files',
 										onclick: removeAllPaths,
-										class: 'rounded-l-none border-l-0'
+										class: 'rounded-l-none border-l-0 border-muted border-muted-foreground/50'
 									}
 								]}
 							/>

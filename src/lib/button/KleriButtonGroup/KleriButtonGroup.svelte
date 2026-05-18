@@ -7,7 +7,7 @@
 
 	interface ButtonGroupProps extends WithElementRef<HTMLAttributes<HTMLDivElement>> {
 		orientation?: 'horizontal' | 'vertical';
-		size?: 'sm' | 'lg';
+		size?: 'xs' | 'sm' | 'lg';
 		variant?: 'default' | 'outline' | 'ghost' | 'secondary';
 		items: ButtonGroupItem[];
 	}

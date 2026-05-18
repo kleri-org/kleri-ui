@@ -10,7 +10,7 @@
 
 	interface ExtendedButtonProps extends ButtonProps {
 		tooltip?: string;
-		size?: 'sm' | 'lg';
+		size?: 'xs' | 'sm' | 'lg';
 		variant?: 'default' | 'outline' | 'ghost' | 'secondary';
 		triggerProps?: Record<string, unknown>;
 	}
@@ -30,6 +30,7 @@
 	const variant = $derived(variantProp ?? groupCtx?.variant ?? 'default');
 
 	const sizeClasses = {
+		xs: 'text-xs px-2 -py-0.5',
 		sm: 'text-sm px-3 py-2',
 		lg: 'text-base px-4 py-2'
 	};
@@ -42,7 +43,7 @@
 	};
 </script>
 
-<KleriTooltip side="bottom" sideOffset={5}>
+<KleriTooltip side="bottom" sideOffset={5} delayDuration={0}>
 	{#snippet trigger(tooltipTriggerProps)}
 		{@const btnProps = mergeProps(tooltipTriggerProps, triggerProps, restProps, {
 			class: cn(
