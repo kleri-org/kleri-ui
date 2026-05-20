@@ -30,7 +30,7 @@
 	const variant = $derived(variantProp ?? groupCtx?.variant ?? 'default');
 
 	const sizeClasses = {
-		xs: 'text-xs px-2 -py-0.5',
+		xs: 'text-xs px-2 h-8',
 		sm: 'text-sm px-3 py-2',
 		lg: 'text-base px-4 py-2'
 	};
@@ -47,7 +47,7 @@
 	{#snippet trigger(tooltipTriggerProps)}
 		{@const btnProps = mergeProps(tooltipTriggerProps, triggerProps, restProps, {
 			class: cn(
-				'btn w-fit align-center rounded-kleri border-2 ring-0 font-normal hover:shadow-black/50 hover:ring-0 disabled:cursor-not-allowed disabled:kleri-bg disabled:text-black disabled:ring-0 disabled:shadow-none disabled:border-none',
+				'btn w-fit align-center rounded-kleri border-2 ring-0 font-normal hover:shadow-black/50 hover:ring-0 disabled:cursor-not-allowed disabled:bg-muted disabled:ring-0 disabled:shadow-none',
 				sizeClasses['sm'],
 				sizeClasses[size],
 				variantClasses[variant],

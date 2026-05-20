@@ -84,6 +84,11 @@
 		 * @default 3000
 		 */
 		errorDuration?: number;
+
+		/**
+		 * Bindable list of accepted file paths.
+		 */
+		files?: string[];
 	} & WithElementRef<HTMLAttributes<HTMLDivElement>>;
 
 	let {
@@ -96,6 +101,7 @@
 		subText: consumerSubText,
 		errorDuration = 3000,
 		class: className = '',
+		files = $bindable([]),
 		...restProps
 	}: Props = $props();
 
@@ -106,7 +112,6 @@
 	let status = $state<DropzoneStatus>({ state: 'idle' });
 	let errorTimeout: ReturnType<typeof setTimeout> | null = null;
 	let isDestroyed = false;
-	let acceptedPaths = $state<string[]>([]);
 	let popoverOpen = $state(false);
 
 	/** Extract the file name from a full path. */
@@ -121,6 +126,20 @@
 	// -----------------------------------------------------------------------
 
 	let resolvedSubText = $derived(consumerSubText ?? getDefaultSubText(allowedTypes));
+
+	// Sync status when files are modified externally
+	$effect(() => {
+		const count = files.length;
+		if (count === 0) {
+			if (status.state !== 'idle' && status.state !== 'error') {
+				status = { state: 'idle' };
+			}
+		} else if (status.state !== 'accepted') {
+			status = { state: 'accepted', fileCount: count };
+		} else if ((status as Extract<DropzoneStatus, { state: 'accepted' }>).fileCount !== count) {
+			status = { state: 'accepted', fileCount: count };
+		}
+	});
 
 	// -----------------------------------------------------------------------
 	// Path validation (extension‑only — no MIME available for paths)
@@ -189,20 +208,20 @@
 		// Apply multiple/single logic
 		if (multiple === false) {
 			// Replace with first accepted path
-			acceptedPaths = [accepted[0]];
+			files = [accepted[0]];
 		} else {
 			// Append new paths, skip duplicates by name
-			const existingNames = new Set(acceptedPaths.map((p) => getFileName(p)));
+			const existingNames = new Set(files.map((p) => getFileName(p)));
 			const newPaths = accepted.filter((p) => !existingNames.has(getFileName(p)));
-			acceptedPaths = [...acceptedPaths, ...newPaths];
+			files = [...files, ...newPaths];
 		}
 
 		// Update visual state
-		status = { state: 'accepted', fileCount: acceptedPaths.length };
+		status = { state: 'accepted', fileCount: files.length };
 
 		// Fire onDrop with the updated list
 		if (onDrop) {
-			onDrop(acceptedPaths);
+			onDrop(files);
 		}
 	}
 
@@ -237,7 +256,7 @@
 	export function reset() {
 		clearErrorTimeout();
 		status = { state: 'idle' };
-		acceptedPaths = [];
+		files = [];
 	}
 
 	/**
@@ -246,7 +265,7 @@
 	function removeAllPaths() {
 		popoverOpen = false;
 		clearErrorTimeout();
-		acceptedPaths = [];
+		files = [];
 		status = { state: 'idle' };
 		if (onDrop) {
 			onDrop([]);
@@ -257,17 +276,17 @@
 	 * Removes a path from the accepted list by index.
 	 */
 	function removePath(index: number) {
-		acceptedPaths = acceptedPaths.filter((_, i) => i !== index);
+		files = files.filter((_, i) => i !== index);
 
-		if (acceptedPaths.length === 0) {
+		if (files.length === 0) {
 			popoverOpen = false;
 			status = { state: 'idle' };
 		} else {
-			status = { state: 'accepted', fileCount: acceptedPaths.length };
+			status = { state: 'accepted', fileCount: files.length };
 		}
 
 		if (onDrop) {
-			onDrop(acceptedPaths);
+			onDrop(files);
 		}
 	}
 
@@ -275,7 +294,7 @@
 	// Click‑to‑browse
 	// -----------------------------------------------------------------------
 
-	async function handleClick() {
+	export async function handleClick() {
 		try {
 			const filters =
 				allowedTypes && allowedTypes.length > 0
@@ -361,7 +380,7 @@
 	{...restProps}
 >
 	{#snippet corner()}
-		{#if acceptedPaths.length > 0}
+		{#if files.length > 0}
 			<div transition:fade={{ duration: 150 }}>
 				<Popover bind:open={popoverOpen}>
 					<PopoverTrigger>
@@ -374,7 +393,7 @@
 										type: 'button',
 										label: '',
 										icon: Files,
-										tooltip: `${acceptedPaths.length} file${acceptedPaths.length !== 1 ? 's' : ''}`,
+										tooltip: `${files.length} file${files.length !== 1 ? 's' : ''}`,
 										triggerProps: popoverProps,
 										class: 'rounded-r-none border-muted-foreground/50'
 									},
@@ -390,9 +409,9 @@
 							/>
 						{/snippet}
 					</PopoverTrigger>
-					<PopoverContent class="w-80" align="end" sideOffset={4}>
+					<PopoverContent class="w-full max-w-80" align="start" sideOffset={4}>
 						<div class="max-h-64 space-y-1.5 overflow-y-auto">
-							{#each acceptedPaths as path, i (path)}
+							{#each files as path, i (path)}
 								<div
 									class="flex items-center gap-2 rounded-lg border border-border/40 bg-card/40 px-3 py-2"
 								>

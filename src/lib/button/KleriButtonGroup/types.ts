@@ -3,7 +3,7 @@ import type { Component } from 'svelte';
 export type ButtonGroupItem =
 	| {
 			type: 'button';
-			label: string;
+			label?: string;
 			icon?: Component;
 			tooltip?: string;
 			disabled?: boolean;

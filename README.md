@@ -60,6 +60,22 @@ Create `src/app.css` (or your preferred path) with these directives:
 - **`@plugin 'daisyui/index.js'`** — enables daisyUI component base styles (buttons, inputs, cards, etc.).
 - **`themes: false`** — disables daisyUI's default theme stylesheets. This is critical for Tauri apps and any project using a transparent window background — daisyUI themes inject solid background colors on `body` and root elements that will cover your window's transparency. If you _want_ daisyUI themes (e.g. for a standard web app), you can omit this or set `themes: ["light", "dark"]` to pick specific ones.
 
+> **Note for local `file:` dependencies:** If you're using a local path like `"@kleri/ui": "file:../kleri-ui"`, Vite may block font files in `kleri-ui/dist/styles/fonts/` with the error `outside of Vite serving allow list`. Add the kleri-ui dist directory to your `vite.config.js`:
+>
+> ```js
+> // vite.config.js
+> export default defineConfig({
+> 	server: {
+> 		fs: {
+> 			// Include kleri-ui dist for font files
+> 			allow: ['../../kleri-ui/dist']
+> 		}
+> 	}
+> });
+> ```
+>
+> Adjust the relative path to match your project structure. See the [Vite server.fs.allow docs](https://vite.dev/config/server-options.html#server-fs-allow) for details.
+
 ### 4. Import the CSS in your root layout
 
 Create or update `src/routes/+layout.svelte`:
