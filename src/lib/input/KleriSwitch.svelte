@@ -13,7 +13,7 @@
 	}
 
 	let {
-		value: checked = $bindable(false),
+		value = $bindable(false),
 		onChecked,
 		disabled = false,
 		class: className,
@@ -21,14 +21,14 @@
 	}: Props = $props();
 
 	// Handler
-	function handleChange(value: boolean) {
-		onChecked?.(value);
+	function handleChange(checked: boolean) {
+		onChecked?.(checked);
 	}
 </script>
 
 <Switch.Root
 	class={cn('ml-3 scale-125', className)}
-	bind:checked
+	bind:checked={value}
 	onCheckedChange={handleChange}
 	{disabled}
 	aria-label={ariaLabel}

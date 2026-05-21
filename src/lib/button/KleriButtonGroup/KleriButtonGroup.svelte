@@ -48,7 +48,7 @@
 				tooltip={item.tooltip}
 				disabled={item.disabled}
 				class={cn(
-					'flex flex-row items-center justify-center border-2 border-muted-foreground',
+					'flex flex-row items-center justify-center',
 					item.class
 				)}
 				onclick={item.onclick}
