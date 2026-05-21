@@ -20,7 +20,9 @@
 		Settings,
 		SlidersHorizontal,
 		Wand2,
-		CreditCard
+		CreditCard,
+		Upload,
+		PanelRight
 	} from '@lucide/svelte';
 
 	const { children } = $props();
@@ -55,7 +57,8 @@
 			icon: TextCursorInput,
 			items: [
 				{ name: 'KleriSwitch', id: 'kleri-switch', icon: ToggleLeft },
-				{ name: 'KleriInput', id: 'kleri-input', icon: TextCursorInput }
+				{ name: 'KleriInput', id: 'kleri-input', icon: TextCursorInput },
+				{ name: 'KleriDragNDrop', id: 'kleri-drag-n-drop', icon: Upload }
 			]
 		},
 		{
@@ -84,6 +87,12 @@
 				{ name: 'KleriMagicCard', id: 'kleri-magic-card', icon: CreditCard },
 				{ name: 'KleriMagicButton', id: 'kleri-magic-button', icon: Sparkles }
 			]
+		},
+		{
+			name: 'Menu',
+			route: '/components/menu',
+			icon: PanelRight,
+			items: [{ name: 'Popover', id: 'popover', icon: PanelRight }]
 		}
 	];
 

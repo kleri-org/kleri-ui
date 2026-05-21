@@ -3,6 +3,7 @@ import { createJavaScriptRegexEngine } from 'shiki/engine/javascript';
 
 import html from '@shikijs/langs/html';
 import javascript from '@shikijs/langs/javascript';
+import svelte from '@shikijs/langs/svelte';
 import tsx from '@shikijs/langs/tsx';
 
 // Custom Kleri theme - uses CSS variables for integration with kleri-ui.css
@@ -104,7 +105,7 @@ const jsEngine = createJavaScriptRegexEngine({ forgiving: true });
 
 const highlighterSingleton = createHighlighterCore({
 	themes: [kleriLight, kleriDark],
-	langs: [html, javascript, tsx],
+	langs: [html, javascript, svelte, tsx],
 	engine: jsEngine
 });
 

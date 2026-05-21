@@ -11,7 +11,7 @@ describe('KleriButton', () => {
 	it('renders children', () => {
 		render(KleriButton, {
 			props: {
-				children: createRawSnippet(() => ({ render: () => 'Click me' }))
+				children: createRawSnippet(() => ({ render: () => '<span>Click me</span>' }))
 			}
 		});
 		expect(screen.getByRole('button')).toBeInTheDocument();

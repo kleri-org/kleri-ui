@@ -10,7 +10,7 @@ A Svelte 5 component library built with Tailwind CSS 4, bits-ui, and motion-sv. 
 
 - **Node.js** >= 20
 - **Package manager**: [bun](https://bun.sh) (recommended) or npm/pnpm/yarn
-- A **SvelteKit** (or Svelte 5 + Vite) project
+- A **SvelteKit** project
 
 ## Installation
 
@@ -30,14 +30,14 @@ bun add @kleri/ui
 bun add tailwindcss @tailwindcss/vite bits-ui @lucide/svelte daisyui
 ```
 
-| Package          | Version  | Why                                       |
-| ---------------- | -------- | ----------------------------------------- |
-| `svelte`         | `^5.0.0` | The component runtime                     |
-| `tailwindcss`    | `^4.2.0` | Styling engine                            |
-| `@tailwindcss/vite` | `^4.2.0` | Vite integration for Tailwind CSS 4     |
-| `bits-ui`        | `^2.18.0` | Accessible UI primitives (tooltips, etc.) |
-| `@lucide/svelte` | `^1.14.0` | Icon components                           |
-| `daisyui`        | `^5.5.0` | Component base styles (button, input, etc.) |
+| Package             | Version   | Why                                         |
+| ------------------- | --------- | ------------------------------------------- |
+| `svelte`            | `^5.0.0`  | The component runtime                       |
+| `tailwindcss`       | `^4.2.0`  | Styling engine                              |
+| `@tailwindcss/vite` | `^4.2.0`  | Vite integration for Tailwind CSS 4         |
+| `bits-ui`           | `^2.18.0` | Accessible UI primitives (tooltips, etc.)   |
+| `@lucide/svelte`    | `^1.14.0` | Icon components                             |
+| `daisyui`           | `^5.5.0`  | Component base styles (button, input, etc.) |
 
 Runtime dependencies (`clsx`, `tailwind-merge`, `motion-sv`, etc.) are installed automatically.
 
@@ -51,14 +51,30 @@ Create `src/app.css` (or your preferred path) with these directives:
 @source '../src';
 @import '@kleri/ui/styles.css';
 @plugin 'daisyui/index.js' {
-    themes: false;
+	themes: false;
 }
 ```
 
 - **`@source '../src'`** — tells Tailwind to scan your app's source files for class names. Adjust the path if your `app.css` lives somewhere other than `src/`.
 - **`@import '@kleri/ui/styles.css'`** — pulls in the kleri theme, fonts, color tokens, and utility classes.
 - **`@plugin 'daisyui/index.js'`** — enables daisyUI component base styles (buttons, inputs, cards, etc.).
-- **`themes: false`** — disables daisyUI's default theme stylesheets. This is critical for Tauri apps and any project using a transparent window background — daisyUI themes inject solid background colors on `body` and root elements that will cover your window's transparency. If you *want* daisyUI themes (e.g. for a standard web app), you can omit this or set `themes: ["light", "dark"]` to pick specific ones.
+- **`themes: false`** — disables daisyUI's default theme stylesheets. This is critical for Tauri apps and any project using a transparent window background — daisyUI themes inject solid background colors on `body` and root elements that will cover your window's transparency. If you _want_ daisyUI themes (e.g. for a standard web app), you can omit this or set `themes: ["light", "dark"]` to pick specific ones.
+
+> **Note for local `file:` dependencies:** If you're using a local path like `"@kleri/ui": "file:../kleri-ui"`, Vite may block font files in `kleri-ui/dist/styles/fonts/` with the error `outside of Vite serving allow list`. Add the kleri-ui dist directory to your `vite.config.js`:
+>
+> ```js
+> // vite.config.js
+> export default defineConfig({
+> 	server: {
+> 		fs: {
+> 			// Include kleri-ui dist for font files
+> 			allow: ['../../kleri-ui/dist']
+> 		}
+> 	}
+> });
+> ```
+>
+> Adjust the relative path to match your project structure. See the [Vite server.fs.allow docs](https://vite.dev/config/server-options.html#server-fs-allow) for details.
 
 ### 4. Import the CSS in your root layout
 
@@ -86,25 +102,6 @@ You can now import and use any component:
 
 <KleriButton>Click me</KleriButton>
 ```
-
-### Optional: Vite plugin (not recommended for SvelteKit)
-
-`@kleri/ui` ships a Vite plugin (`@kleri/ui/plugin`) that auto-injects styles. **It does not work with SvelteKit** because SvelteKit generates its own HTML, bypassing Vite's `transformIndexHtml` hook. Use it only in plain Vite + Svelte projects (no SvelteKit):
-
-```ts
-// vite.config.ts — plain Vite projects only
-import { svelte } from '@sveltejs/vite-plugin-svelte';
-import { defineConfig } from 'vite';
-import kleriUI from '@kleri/ui/plugin';
-
-export default defineConfig({
-	plugins: [kleriUI(), svelte()]
-});
-```
-
-For SvelteKit projects, use the CSS import method described above.
-
----
 
 ## Components
 

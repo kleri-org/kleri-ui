@@ -6,7 +6,8 @@
 		MessageCircle,
 		Sparkles,
 		Settings,
-		Wand
+		Wand,
+		PanelRight
 	} from '@lucide/svelte';
 	import { onMount } from 'svelte';
 
@@ -30,7 +31,7 @@
 		{
 			name: 'Input',
 			description: 'Switches, text inputs, and form controls',
-			count: 2,
+			count: 3,
 			comingSoon: false,
 			route: '/components/input',
 			icon: TextCursorInput
@@ -66,6 +67,14 @@
 			comingSoon: false,
 			route: '/components/magic',
 			icon: Wand
+		},
+		{
+			name: 'Menu',
+			description: 'Popover menus, dropdowns, and overlays',
+			count: 1,
+			comingSoon: false,
+			route: '/components/menu',
+			icon: PanelRight
 		}
 	];
 

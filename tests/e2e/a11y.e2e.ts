@@ -15,7 +15,7 @@ test.describe('Accessibility audits', () => {
 
 	test('components listing page has no critical a11y violations', async ({ page }) => {
 		await page.goto('/components');
-		await page.waitForTimeout(600); // Wait for intersection observer animations
+		await page.waitForTimeout(1500); // Wait for intersection observer animations (8 cards × 80ms delay + 600ms transition)
 
 		const results = await new AxeBuilder({ page })
 			.withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])

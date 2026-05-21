@@ -16,18 +16,27 @@ test.describe('Landing page', () => {
 
 		await cta.click();
 		await page.waitForURL('/components');
-		await expect(page.getByText('13 Components')).toBeVisible();
+		await expect(page.getByText('15 Components')).toBeVisible();
 	});
 });
 
 test.describe('Navigation', () => {
-	test('sidebar lists all 7 component categories', async ({ page }) => {
+	test('sidebar lists all 8 component categories', async ({ page }) => {
 		await page.goto('/components');
 
 		const sidebar = page.locator('aside');
 		await expect(sidebar).toBeVisible();
 
-		const categories = ['Heading', 'Button', 'Input', 'Tooltip', 'Animation', 'Settings', 'Magic'];
+		const categories = [
+			'Heading',
+			'Button',
+			'Input',
+			'Tooltip',
+			'Animation',
+			'Settings',
+			'Magic',
+			'Menu'
+		];
 		for (const name of categories) {
 			await expect(sidebar.getByRole('link', { name, exact: true })).toBeVisible();
 		}
@@ -41,7 +50,8 @@ test.describe('Navigation', () => {
 			{ name: 'Tooltip', path: '/components/tooltip' },
 			{ name: 'Animation', path: '/components/animation' },
 			{ name: 'Settings', path: '/components/settings' },
-			{ name: 'Magic', path: '/components/magic' }
+			{ name: 'Magic', path: '/components/magic' },
+			{ name: 'Menu', path: '/components/menu' }
 		];
 
 		for (const { name, path } of routes) {
@@ -60,7 +70,7 @@ test.describe('Navigation', () => {
 
 		const cardLinks = page.locator('section a[href^="/components/"]');
 		const count = await cardLinks.count();
-		expect(count).toBe(7);
+		expect(count).toBe(8);
 
 		// Click each card and verify navigation
 		const routes = [
@@ -70,7 +80,8 @@ test.describe('Navigation', () => {
 			'href="/components/tooltip"',
 			'href="/components/animation"',
 			'href="/components/settings"',
-			'href="/components/magic"'
+			'href="/components/magic"',
+			'href="/components/menu"'
 		];
 		for (const route of routes) {
 			const link = page.locator(`section a[${route}]`);
@@ -115,7 +126,7 @@ test.describe('Deep linking', () => {
 
 		// The sidebar should highlight the active sub-item
 		const activeSubItem = page.locator('aside a[href="/components/button#kleri-button"]');
-		await expect(activeSubItem).toHaveClass(/text-kleri-green-2/);
+		await expect(activeSubItem).toHaveClass(/text-kleri-2/);
 	});
 
 	test('all component sub-items have valid hash links', async ({ page }) => {

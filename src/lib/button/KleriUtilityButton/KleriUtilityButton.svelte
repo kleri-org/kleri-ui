@@ -10,8 +10,9 @@
 
 	interface ExtendedButtonProps extends ButtonProps {
 		tooltip?: string;
-		size?: 'sm' | 'lg';
+		size?: 'xs' | 'sm' | 'lg';
 		variant?: 'default' | 'outline' | 'ghost' | 'secondary';
+		triggerProps?: Record<string, unknown>;
 	}
 
 	let {
@@ -20,6 +21,7 @@
 		tooltip,
 		size: sizeProp,
 		variant: variantProp,
+		triggerProps = {},
 		...restProps
 	}: ExtendedButtonProps = $props();
 
@@ -28,23 +30,25 @@
 	const variant = $derived(variantProp ?? groupCtx?.variant ?? 'default');
 
 	const sizeClasses = {
+		xs: 'text-xs px-2 h-8',
 		sm: 'text-sm px-3 py-2',
 		lg: 'text-base px-4 py-2'
 	};
 
 	const variantClasses = {
-		default: 'bg-none text-white hover:bg-accent hover:text-black',
+		default: 'bg-none text-white hover:bg-accent hover:text-black border-muted-foreground',
 		outline: 'bg-transparent border-border text-foreground hover:bg-accent hover:text-black',
 		ghost: 'bg-transparent border-transparent text-foreground hover:bg-accent hover:text-black',
-		secondary: 'bg-secondary text-secondary-foreground hover:bg-accent hover:text-black'
+		secondary:
+			'bg-secondary text-secondary-foreground hover:bg-accent hover:text-black border-muted-foreground'
 	};
 </script>
 
-<KleriTooltip side="bottom" sideOffset={5}>
-	{#snippet trigger(triggerProps)}
-		{@const btnProps = mergeProps(triggerProps, restProps, {
+<KleriTooltip side="bottom" sideOffset={5} delayDuration={0}>
+	{#snippet trigger(tooltipTriggerProps)}
+		{@const btnProps = mergeProps(tooltipTriggerProps, triggerProps, restProps, {
 			class: cn(
-				'btn w-full align-center rounded-kleri border-2 ring-0 font-normal hover:shadow-black/50 hover:ring-0 disabled:cursor-not-allowed disabled:kleri-bg disabled:text-black disabled:ring-0 disabled:shadow-none disabled:border-none',
+				'btn w-fit align-center rounded-kleri border-2 ring-0 font-normal hover:shadow-black/50 hover:ring-0 disabled:cursor-not-allowed disabled:bg-muted disabled:ring-0 disabled:shadow-none',
 				sizeClasses['sm'],
 				sizeClasses[size],
 				variantClasses[variant],

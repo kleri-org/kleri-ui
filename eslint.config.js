@@ -20,7 +20,9 @@ export default defineConfig(
 			// SvelteKit navigation rule is overly strict for static showcase pages
 			'svelte/no-navigation-without-resolve': 'off',
 			// Allow standard Set/Map where SvelteSet isn't necessary
-			'svelte/prefer-svelte-reactivity': 'off'
+			'svelte/prefer-svelte-reactivity': 'off',
+			// Svelte auto-generated .d.ts uses `{}` for Component<Props, {}, ''>
+			'@typescript-eslint/no-empty-object-type': ['error', { allowObjectTypes: 'always' }]
 		}
 	},
 	{
