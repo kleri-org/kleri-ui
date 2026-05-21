@@ -39,7 +39,8 @@
 		default: 'bg-none text-white hover:bg-accent hover:text-black border-muted-foreground',
 		outline: 'bg-transparent border-border text-foreground hover:bg-accent hover:text-black',
 		ghost: 'bg-transparent border-transparent text-foreground hover:bg-accent hover:text-black',
-		secondary: 'bg-secondary text-secondary-foreground hover:bg-accent hover:text-black border-muted-foreground'
+		secondary:
+			'bg-secondary text-secondary-foreground hover:bg-accent hover:text-black border-muted-foreground'
 	};
 </script>
 
