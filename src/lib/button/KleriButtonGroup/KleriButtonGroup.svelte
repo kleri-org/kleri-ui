@@ -67,7 +67,7 @@
 				)}
 			></div>
 		{:else if item.type === 'text'}
-			<div data-slot="button-group-text" class="flex items-center px-3 py-2 text-sm">
+			<div data-slot="button-group-text" class={cn('flex items-center px-3 py-2 text-sm', item.class)}>
 				{item.content}
 			</div>
 		{/if}
