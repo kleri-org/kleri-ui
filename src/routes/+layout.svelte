@@ -22,7 +22,8 @@
 		Wand2,
 		CreditCard,
 		Upload,
-		PanelRight
+		PanelRight,
+		AppWindow
 	} from '@lucide/svelte';
 
 	const { children } = $props();
@@ -93,6 +94,12 @@
 			route: '/components/menu',
 			icon: PanelRight,
 			items: [{ name: 'Popover', id: 'popover', icon: PanelRight }]
+		},
+		{
+			name: 'Window Controls',
+			route: '/components/window-controls',
+			icon: AppWindow,
+			items: [{ name: 'KleriWindowsControls', id: 'kleri-windows-controls', icon: AppWindow }]
 		}
 	];
 

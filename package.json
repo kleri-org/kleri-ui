@@ -61,13 +61,17 @@
 		"tailwindcss": "^4.2.0",
 		"daisyui": "^5.5.0",
 		"@tauri-apps/api": "^2.0.0",
-		"@tauri-apps/plugin-dialog": "^2.0.0"
+		"@tauri-apps/plugin-dialog": "^2.0.0",
+		"@tauri-apps/plugin-os": "^2.0.0"
 	},
 	"peerDependenciesMeta": {
 		"@tauri-apps/api": {
 			"optional": true
 		},
 		"@tauri-apps/plugin-dialog": {
+			"optional": true
+		},
+		"@tauri-apps/plugin-os": {
 			"optional": true
 		}
 	},
@@ -97,6 +101,7 @@
 		"@tailwindcss/vite": "^4.3.0",
 		"@tauri-apps/api": "^2.11.0",
 		"@tauri-apps/plugin-dialog": "^2.7.1",
+		"@tauri-apps/plugin-os": "^2.0.0",
 		"@testing-library/jest-dom": "^6.9.1",
 		"@testing-library/svelte": "^5.3.1",
 		"@types/eslint": "^9.6.1",

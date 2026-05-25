@@ -25,3 +25,4 @@ export { default as KleriDragNDrop } from './input/dragndrop/KleriDragNDrop.svel
 
 export { default as KleriMagicCard } from './magic/KleriMagicCard.svelte';
 export { default as KleriMagicButton } from './magic/KleriMagicButton.svelte';
+export { default as KleriWindowsControls } from './tauri/KleriWindowsControls.svelte';

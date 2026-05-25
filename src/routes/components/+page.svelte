@@ -7,7 +7,8 @@
 		Sparkles,
 		Settings,
 		Wand,
-		PanelRight
+		PanelRight,
+		AppWindow
 	} from '@lucide/svelte';
 	import { onMount } from 'svelte';
 
@@ -75,6 +76,14 @@
 			comingSoon: false,
 			route: '/components/menu',
 			icon: PanelRight
+		},
+		{
+			name: 'Window Controls',
+			description: 'Native-style window title-bar controls for Tauri apps',
+			count: 1,
+			comingSoon: false,
+			route: '/components/window-controls',
+			icon: AppWindow
 		}
 	];
 
