@@ -19,7 +19,7 @@
 		"deploy": "vite build && wrangler deploy",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
-		"prepack": "svelte-kit sync && svelte-package && publint && cp -r src/lib/styles dist/",
+		"prepack": "svelte-kit sync && svelte-package && publint && node -e \"import('fs').then(fs => fs.cpSync('src/lib/styles', 'dist/styles', { recursive: true }))\"",
 		"prepack:watch": "svelte-package --watch",
 		"check": "wrangler types --check && svelte-kit sync && rm -rf .svelte-kit/output .svelte-kit/cloudflare .svelte-kit/cloudflare-tmp && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && rm -rf .svelte-kit/output .svelte-kit/cloudflare .svelte-kit/cloudflare-tmp && svelte-check --tsconfig ./tsconfig.json --watch",
