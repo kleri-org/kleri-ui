@@ -44,20 +44,35 @@
 	};
 </script>
 
-<KleriTooltip side="bottom" sideOffset={5} delayDuration={0}>
-	{#snippet trigger(tooltipTriggerProps)}
-		{@const btnProps = mergeProps(tooltipTriggerProps, triggerProps, restProps, {
-			class: cn(
-				'btn w-fit align-center rounded-kleri border-2 ring-0 font-normal hover:shadow-black/50 hover:ring-0 disabled:cursor-not-allowed disabled:bg-muted disabled:ring-0 disabled:shadow-none',
-				sizeClasses['sm'],
-				sizeClasses[size],
-				variantClasses[variant],
-				className
-			)
-		})}
-		<button data-slot="button" {...btnProps}>
-			{@render children?.()}
-		</button>
-	{/snippet}
-	{#if tooltip}<p>{tooltip}</p>{/if}
-</KleriTooltip>
+{#if tooltip}
+	<KleriTooltip side="bottom" sideOffset={5} delayDuration={0}>
+		{#snippet trigger(tooltipTriggerProps)}
+			{@const btnProps = mergeProps(tooltipTriggerProps, triggerProps, restProps, {
+				class: cn(
+					'btn w-fit align-center rounded-kleri border-2 ring-0 font-normal hover:shadow-black/50 hover:ring-0 disabled:cursor-not-allowed disabled:bg-muted disabled:ring-0 disabled:shadow-none',
+					sizeClasses['sm'],
+					sizeClasses[size],
+					variantClasses[variant],
+					className
+				)
+			})}
+			<button data-slot="button" {...btnProps}>
+				{@render children?.()}
+			</button>
+		{/snippet}
+		<p>{tooltip}</p>
+	</KleriTooltip>
+{:else}
+	{@const btnProps = mergeProps(triggerProps, restProps, {
+		class: cn(
+			'btn w-fit align-center rounded-kleri border-2 ring-0 font-normal hover:shadow-black/50 hover:ring-0 disabled:cursor-not-allowed disabled:bg-muted disabled:ring-0 disabled:shadow-none',
+			sizeClasses['sm'],
+			sizeClasses[size],
+			variantClasses[variant],
+			className
+		)
+	})}
+	<button data-slot="button" {...btnProps}>
+		{@render children?.()}
+	</button>
+{/if}
