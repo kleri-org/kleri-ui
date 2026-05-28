@@ -7,11 +7,11 @@
 	let currentOs = $state('');
 
 	let {
-		appWindow,
+		appWindow = undefined,
 		maximizable = true,
 		buttonHeight = 'h-10'
 	}: {
-		appWindow: WebviewWindow;
+		appWindow?: WebviewWindow;
 		maximizable?: boolean;
 		buttonHeight?: string;
 	} = $props();
@@ -31,7 +31,7 @@
 		<button
 			class="inline-flex {buttonHeight} w-12.5 items-center justify-center text-foreground select-none hover:bg-muted-foreground"
 			onclick={() => {
-				appWindow.minimize();
+				appWindow?.minimize();
 				console.log('Minimized');
 			}}
 		>
@@ -40,14 +40,14 @@
 		{#if maximizable}
 			<button
 				class="inline-flex {buttonHeight} w-12.5 items-center justify-center text-foreground select-none hover:bg-muted-foreground"
-				onclick={() => appWindow.toggleMaximize()}
+				onclick={() => appWindow?.toggleMaximize()}
 			>
 				<Square size={15} strokeWidth={2.5} />
 			</button>
 		{/if}
 		<button
 			class="inline-flex {buttonHeight} w-12.5 items-center justify-center text-foreground select-none hover:bg-red-600"
-			onclick={() => appWindow.close()}
+			onclick={() => appWindow?.close()}
 		>
 			<X size={20} strokeWidth={2} />
 		</button>
