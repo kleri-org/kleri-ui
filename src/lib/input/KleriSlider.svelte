@@ -1,117 +1,85 @@
 <script lang="ts">
-	import { Slider as SliderPrimitive } from 'bits-ui';
+	import { Slider } from 'bits-ui';
 	import type { ClassValue } from 'clsx';
-	import { cn, type WithoutChildrenOrChild } from '$lib/utils.js';
+	import { cn } from '$lib/utils';
 
-	interface KleriSliderProps {
+	interface Props {
 		label?: string;
-		errors?: string[];
+		value?: number | number[];
 		showValue?: boolean;
+		type?: 'single' | 'multiple';
 		valueFormatter?: (value: number) => string;
+		errors?: string[];
+		disabled?: boolean;
+		min?: number;
+		max?: number;
+		step?: number;
 		class?: ClassValue;
 	}
 
 	let {
-		ref = $bindable(null),
-		value = $bindable(),
-		orientation = 'horizontal',
-		class: className,
 		label,
-		errors = [],
-		showValue = true,
+		value = $bindable(0),
+		showValue = false,
+		type = 'single',
 		valueFormatter = (v: number) => String(v),
-		...restProps
-	}: WithoutChildrenOrChild<SliderPrimitive.RootProps> & KleriSliderProps = $props();
+		errors,
+		disabled = false,
+		min = 0,
+		max = 100,
+		step = 1,
+		class: className
+	}: Props = $props();
 
-	let displayValue = $derived.by(() => {
-		if (Array.isArray(value)) {
-			return value.map(valueFormatter).join(' – ');
-		}
-		return value !== undefined ? valueFormatter(value as number) : '';
-	});
-
-	let hasErrors = $derived(errors.length > 0);
+	let displayValue = $derived(
+		Array.isArray(value) ? value.map(valueFormatter).join(' – ') : valueFormatter(value as number)
+	);
 </script>
 
-<label class="block w-full select-none">
-	<!-- Label and Value -->
-	{#if label || showValue}
-		<div class="inline-flex w-full flex-row items-center justify-between align-middle">
-			{#if label}
-				<p class="indent-2 text-sm font-medium">{label}</p>
-			{:else}
-				<span></span>
-			{/if}
-			{#if showValue}
-				<p class="pr-1 font-spacemono text-xs text-muted-foreground">{displayValue}</p>
-			{/if}
-		</div>
-	{/if}
+<label class="block w-full text-sm font-medium select-none">
+	<!-- Label and Value/Errors -->
+	<div class="inline-flex flex-row items-center align-middle">
+		{#if label}
+			<p class="indent-2">{label}</p>
+		{/if}
+		{#if showValue}
+			<p class="indent-2 font-spacemono text-xs text-muted-foreground">
+				{displayValue}
+			</p>
+		{/if}
+		{#if errors}
+			{#each errors as error, i (i)}
+				<p class="indent-2 font-spacemono text-xs text-red-400">
+					({error})
+				</p>
+			{/each}
+		{/if}
+	</div>
 
 	<!-- Slider -->
-	<div class={cn('my-1 w-full', hasErrors && 'shake-it')}>
-		<SliderPrimitive.Root
-			bind:ref
+	<div class={cn('my-1 w-full', errors && errors.length > 0 && 'shake-it', className)}>
+		<Slider.Root
+			{type}
 			bind:value={value as never}
-			{orientation}
-			data-slot="slider"
-			class={cn(
-				'relative flex touch-none items-center select-none',
-				'data-vertical:h-full data-vertical:min-h-40 data-vertical:w-auto data-vertical:flex-col',
-				'data-disabled:cursor-not-allowed data-disabled:opacity-50',
-				className
-			)}
-			{...restProps}
+			{min}
+			{max}
+			{step}
+			{disabled}
+			class="relative flex w-full touch-none items-center select-none data-disabled:opacity-50"
 		>
 			{#snippet children({ thumbItems })}
-				<span
-					data-slot="slider-track"
-					data-orientation={orientation}
-					class={cn(
-						'relative grow overflow-hidden rounded-kleri bg-muted',
-						'data-[orientation=horizontal]:h-2 data-[orientation=horizontal]:w-full',
-						'data-[orientation=vertical]:h-full data-[orientation=vertical]:w-2'
-					)}
-				>
-					<SliderPrimitive.Range
-						data-slot="slider-range"
-						class={cn(
-							'absolute rounded-kleri select-none',
-							'data-[orientation=horizontal]:h-full',
-							'data-[orientation=vertical]:w-full',
-							'bg-primary'
-						)}
-					/>
+				<span class="relative h-2 w-full grow cursor-pointer overflow-hidden rounded-full bg-muted">
+					<Slider.Range class="absolute h-full rounded-full kleri-bg" />
 				</span>
 				{#each thumbItems as thumb (thumb.index)}
-					<SliderPrimitive.Thumb
-						data-slot="slider-thumb"
+					<Slider.Thumb
 						index={thumb.index}
-						class={cn(
-							'relative block shrink-0 cursor-grab rounded-full border-2 bg-white',
-							'size-4 transition-all duration-150 ease-out',
-							'border-[var(--color-kleri-3)]',
-							'shadow-sm',
-							'after:absolute after:-inset-2 after:rounded-full',
-							'hover:scale-110 hover:shadow-md',
-							'focus-visible:ring-2 focus-visible:ring-[var(--color-kleri-2)] focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-hidden',
-							'active:scale-105 active:cursor-grabbing',
-							'disabled:pointer-events-none disabled:opacity-50'
-						)}
+						class="relative block size-4 shrink-0 cursor-pointer rounded-full border-2 border-white bg-white shadow-md ring-kleri-2/50 select-none after:absolute after:-inset-2 hover:ring-2 focus-visible:ring-2 focus-visible:outline-hidden active:ring-2 disabled:pointer-events-none disabled:opacity-50"
 					/>
 				{/each}
 			{/snippet}
-		</SliderPrimitive.Root>
+		</Slider.Root>
 	</div>
-
-	<!-- Errors -->
-	{#if hasErrors}
-		<div class="flex flex-row flex-wrap gap-x-2 pt-0.5 pl-2">
-			{#each errors as error, i (i)}
-				<p class="font-spacemono text-xs text-red-400">({error})</p>
-			{/each}
-		</div>
-	{/if}
 </label>
 
 <style>
@@ -153,5 +121,9 @@
 
 	.shake-it {
 		animation: shake-it 0.5s ease-in-out;
+	}
+
+	.kleri-bg {
+		background: linear-gradient(90deg, var(--color-kleri-1), var(--color-kleri-2));
 	}
 </style>
