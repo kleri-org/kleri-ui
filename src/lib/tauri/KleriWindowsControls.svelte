@@ -17,9 +17,7 @@
 	} = $props();
 
 	onMount(async () => {
-		if (typeof window !== 'undefined' && '__TAURI__' in window) {
-			currentOs = platform();
-		}
+		currentOs = platform();
 	});
 </script>
 
