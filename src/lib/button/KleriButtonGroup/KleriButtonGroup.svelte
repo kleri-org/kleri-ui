@@ -67,7 +67,10 @@
 				)}
 			></div>
 		{:else if item.type === 'text'}
-			<div data-slot="button-group-text" class={cn('flex items-center px-3 py-2 text-sm', item.class)}>
+			<div
+				data-slot="button-group-text"
+				class={cn('flex items-center px-3 py-2 text-sm', item.class)}
+			>
 				{item.content}
 			</div>
 		{/if}
@@ -89,7 +92,7 @@
 	) {
 		border-top-left-radius: 0;
 		border-bottom-left-radius: 0;
-		border-left-width: 0;
+		margin-left: -2px;
 	}
 	:global(
 		[data-slot='button-group'][data-orientation='vertical']
@@ -105,6 +108,9 @@
 	) {
 		border-top-right-radius: 0;
 		border-top-left-radius: 0;
-		border-top-width: 0;
+		margin-top: -2px;
+	}
+	:global([data-slot='button-group'] > [data-slot='button']:hover) {
+		z-index: 10;
 	}
 </style>
