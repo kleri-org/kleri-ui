@@ -15,6 +15,7 @@
 		Sparkles,
 		TextCursorInput,
 		ToggleLeft,
+		ToggleRight,
 		MessageCircle,
 		Zap,
 		Settings,
@@ -59,6 +60,7 @@
 			items: [
 				{ name: 'KleriSwitch', id: 'kleri-switch', icon: ToggleLeft },
 				{ name: 'KleriInput', id: 'kleri-input', icon: TextCursorInput },
+				{ name: 'KleriToggleGroup', id: 'kleri-toggle-group', icon: ToggleRight },
 				{ name: 'KleriDragNDrop', id: 'kleri-drag-n-drop', icon: Upload }
 			]
 		},
