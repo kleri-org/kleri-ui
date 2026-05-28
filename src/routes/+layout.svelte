@@ -60,6 +60,7 @@
 			items: [
 				{ name: 'KleriSwitch', id: 'kleri-switch', icon: ToggleLeft },
 				{ name: 'KleriInput', id: 'kleri-input', icon: TextCursorInput },
+				{ name: 'KleriSlider', id: 'kleri-slider', icon: SlidersHorizontal },
 				{ name: 'KleriToggleGroup', id: 'kleri-toggle-group', icon: ToggleRight },
 				{ name: 'KleriDragNDrop', id: 'kleri-drag-n-drop', icon: Upload }
 			]
