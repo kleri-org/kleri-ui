@@ -52,6 +52,10 @@
 		"./tauri": {
 			"types": "./dist/tauri/index.d.ts",
 			"svelte": "./dist/tauri/index.js"
+		},
+		"./magic": {
+			"types": "./dist/magic/index.d.ts",
+			"svelte": "./dist/magic/index.js"
 		}
 	},
 	"peerDependencies": {

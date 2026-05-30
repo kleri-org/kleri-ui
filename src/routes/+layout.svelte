@@ -22,6 +22,7 @@
 		SlidersHorizontal,
 		Wand2,
 		CreditCard,
+		Waypoints,
 		Upload,
 		PanelRight,
 		AppWindow
@@ -89,7 +90,8 @@
 			icon: Wand2,
 			items: [
 				{ name: 'KleriMagicCard', id: 'kleri-magic-card', icon: CreditCard },
-				{ name: 'KleriMagicButton', id: 'kleri-magic-button', icon: Sparkles }
+				{ name: 'KleriMagicButton', id: 'kleri-magic-button', icon: Sparkles },
+				{ name: 'KleriAnimatedBeam', id: 'kleri-animated-beam', icon: Waypoints }
 			]
 		},
 		{

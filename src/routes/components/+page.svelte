@@ -64,7 +64,7 @@
 		{
 			name: 'Magic',
 			description: 'Enchanted interactive components',
-			count: 2,
+			count: 3,
 			comingSoon: false,
 			route: '/components/magic',
 			icon: Wand
