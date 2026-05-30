@@ -1,4 +1,4 @@
-import { onMount } from "svelte";
+import { onMount } from 'svelte';
 
 export function useResizeObserver(getContainerRef: () => HTMLElement | null, callback: () => void) {
 	onMount(() => {
