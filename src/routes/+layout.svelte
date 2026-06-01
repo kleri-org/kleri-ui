@@ -15,14 +15,17 @@
 		Sparkles,
 		TextCursorInput,
 		ToggleLeft,
+		ToggleRight,
 		MessageCircle,
 		Zap,
 		Settings,
 		SlidersHorizontal,
 		Wand2,
 		CreditCard,
+		Waypoints,
 		Upload,
-		PanelRight
+		PanelRight,
+		AppWindow
 	} from '@lucide/svelte';
 
 	const { children } = $props();
@@ -58,6 +61,8 @@
 			items: [
 				{ name: 'KleriSwitch', id: 'kleri-switch', icon: ToggleLeft },
 				{ name: 'KleriInput', id: 'kleri-input', icon: TextCursorInput },
+				{ name: 'KleriSlider', id: 'kleri-slider', icon: SlidersHorizontal },
+				{ name: 'KleriToggleGroup', id: 'kleri-toggle-group', icon: ToggleRight },
 				{ name: 'KleriDragNDrop', id: 'kleri-drag-n-drop', icon: Upload }
 			]
 		},
@@ -85,7 +90,8 @@
 			icon: Wand2,
 			items: [
 				{ name: 'KleriMagicCard', id: 'kleri-magic-card', icon: CreditCard },
-				{ name: 'KleriMagicButton', id: 'kleri-magic-button', icon: Sparkles }
+				{ name: 'KleriMagicButton', id: 'kleri-magic-button', icon: Sparkles },
+				{ name: 'KleriAnimatedBeam', id: 'kleri-animated-beam', icon: Waypoints }
 			]
 		},
 		{
@@ -93,6 +99,12 @@
 			route: '/components/menu',
 			icon: PanelRight,
 			items: [{ name: 'Popover', id: 'popover', icon: PanelRight }]
+		},
+		{
+			name: 'Window Controls',
+			route: '/components/window-controls',
+			icon: AppWindow,
+			items: [{ name: 'KleriWindowsControls', id: 'kleri-windows-controls', icon: AppWindow }]
 		}
 	];
 

@@ -12,4 +12,4 @@ export type ButtonGroupItem =
 			triggerProps?: Record<string, unknown>;
 	  }
 	| { type: 'separator' }
-	| { type: 'text'; content: string };
+	| { type: 'text'; content: string; class?: string };

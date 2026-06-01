@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Mail } from '@lucide/svelte';
 import KleriInput from './KleriInput.svelte';
 import KleriSwitch from './KleriSwitch.svelte';
+import KleriSlider from './KleriSlider.svelte';
 
 describe('KleriInput', () => {
 	afterEach(() => {
@@ -47,6 +48,62 @@ describe('KleriInput', () => {
 
 		await fireEvent.click(screen.getByRole('button'));
 		expect(input).toHaveAttribute('type', 'text');
+	});
+});
+
+describe('KleriSlider', () => {
+	afterEach(() => {
+		cleanup();
+	});
+
+	it('renders label and value display', () => {
+		render(KleriSlider, {
+			props: { label: 'Volume', value: 42, showValue: true, type: 'single' }
+		});
+
+		expect(screen.getByText('Volume')).toBeInTheDocument();
+		expect(screen.getByText('42')).toBeInTheDocument();
+	});
+
+	it('formats value with custom formatter', () => {
+		render(KleriSlider, {
+			props: {
+				label: 'Progress',
+				value: 75,
+				showValue: true,
+				type: 'single',
+				valueFormatter: (v: number) => `${v}%`
+			}
+		});
+
+		expect(screen.getByText('75%')).toBeInTheDocument();
+	});
+
+	it('shows validation errors', () => {
+		render(KleriSlider, {
+			props: { label: 'Amount', value: 5, type: 'single', errors: ['Too low', 'Minimum is 10'] }
+		});
+
+		expect(screen.getByText('(Too low)')).toBeInTheDocument();
+		expect(screen.getByText('(Minimum is 10)')).toBeInTheDocument();
+	});
+
+	it('supports the disabled state', () => {
+		render(KleriSlider, {
+			props: { label: 'Locked', value: 50, type: 'single', disabled: true }
+		});
+
+		const slider = screen.getByRole('slider');
+		expect(slider).toHaveAttribute('data-disabled');
+		expect(slider).toHaveAttribute('aria-disabled', 'true');
+	});
+
+	it('hides value when showValue is false', () => {
+		render(KleriSlider, {
+			props: { label: 'Hidden', value: 99, type: 'single', showValue: false }
+		});
+
+		expect(screen.queryByText('99')).not.toBeInTheDocument();
 	});
 });
 

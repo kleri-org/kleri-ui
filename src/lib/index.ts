@@ -21,7 +21,13 @@ export type { ButtonGroupItem } from './button/KleriButtonGroup/types.js';
 
 export { default as KleriSwitch } from './input/KleriSwitch.svelte';
 export { default as KleriInput } from './input/KleriInput.svelte';
+export { default as KleriSlider } from './input/KleriSlider.svelte';
 export { default as KleriDragNDrop } from './input/dragndrop/KleriDragNDrop.svelte';
 
 export { default as KleriMagicCard } from './magic/KleriMagicCard.svelte';
 export { default as KleriMagicButton } from './magic/KleriMagicButton.svelte';
+export { default as KleriWindowsControls } from './tauri/KleriWindowsControls.svelte';
+
+export { default as KleriToggleGroup } from './toggle/KleriToggleGroup.svelte';
+export { default as KleriToggleGroupItem } from './toggle/KleriToggleGroupItem.svelte';
+export type { ToggleVariant, ToggleSize, ToggleVariants } from './toggle/toggle-variants.js';

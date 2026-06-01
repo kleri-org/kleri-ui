@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import KleriMagicCard from '$lib/magic/KleriMagicCard.svelte';
 	import KleriMagicButton from '$lib/magic/KleriMagicButton.svelte';
+	import KleriAnimatedBeam from '$lib/magic/KleriAnimatedBeam.svelte';
 	import { PropControls, CodePreview } from '$lib/preview';
 
 	let magicCardProps = $state({
@@ -26,6 +28,46 @@
 		gradientOpacity: { type: 'number' as const, label: 'Gradient Opacity' },
 		disabled: { type: 'boolean' as const, label: 'Disabled' }
 	};
+
+	// Animated Beam demo
+	let beamContainerRef: HTMLDivElement | null = $state(null);
+	let beamFromRef: HTMLDivElement | null = $state(null);
+	let beamToRef: HTMLDivElement | null = $state(null);
+	let beamMounted = $state(false);
+
+	let beamProps = $state({
+		curvature: 0,
+		reverse: false,
+		pathWidth: 3,
+		pathOpacity: 0.15,
+		startXOffset: 0,
+		startYOffset: 0,
+		endXOffset: 0,
+		endYOffset: 0,
+		duration: 6,
+		delay: 0,
+		beamLength: 0.1,
+		interval: 0
+	});
+
+	const beamSchema = {
+		curvature: { type: 'number' as const, label: 'Curvature' },
+		reverse: { type: 'boolean' as const, label: 'Reverse' },
+		pathWidth: { type: 'number' as const, label: 'Path Width' },
+		pathOpacity: { type: 'number' as const, label: 'Path Opacity' },
+		startXOffset: { type: 'number' as const, label: 'Start X Offset' },
+		startYOffset: { type: 'number' as const, label: 'Start Y Offset' },
+		endXOffset: { type: 'number' as const, label: 'End X Offset' },
+		endYOffset: { type: 'number' as const, label: 'End Y Offset' },
+		duration: { type: 'number' as const, label: 'Duration' },
+		delay: { type: 'number' as const, label: 'Delay' },
+		beamLength: { type: 'number' as const, label: 'Beam Length' },
+		interval: { type: 'number' as const, label: 'Interval' }
+	};
+
+	onMount(() => {
+		beamMounted = true;
+	});
 </script>
 
 <div class="space-y-16">
@@ -76,6 +118,71 @@
 					Props
 				</h2>
 				<PropControls schema={magicCardSchema} bind:values={magicCardProps} />
+			</div>
+		</div>
+	</section>
+
+	<!-- KleriAnimatedBeam -->
+	<section id="kleri-animated-beam" class="scroll-mt-8 space-y-6">
+		<div class="space-y-2">
+			<h2 class="text-2xl font-bold text-foreground">KleriAnimatedBeam</h2>
+			<p class="text-muted-foreground">
+				Animated gradient beam connecting two elements with customizable curvature and Kleri-themed
+				colors.
+			</p>
+		</div>
+		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+			<div class="space-y-4 lg:col-span-2">
+				<div
+					class="relative flex min-h-60 items-center justify-center overflow-hidden rounded-xl border-2 border-border/50 bg-card/30 p-12"
+				>
+					<div
+						bind:this={beamContainerRef}
+						class="relative flex w-full items-center justify-between"
+					>
+						<div
+							bind:this={beamFromRef}
+							class="z-10 flex items-center justify-center rounded-lg border-2 bg-kleri-3 px-4 py-2 font-spacemono text-sm text-foreground"
+						>
+							From
+						</div>
+						<div
+							bind:this={beamToRef}
+							class="z-10 flex items-center justify-center rounded-lg border-2 bg-kleri-2 px-4 py-2 font-spacemono text-sm text-foreground"
+						>
+							To
+						</div>
+
+						{#if beamMounted}
+							<KleriAnimatedBeam
+								containerRef={beamContainerRef}
+								fromRef={beamFromRef}
+								toRef={beamToRef}
+								curvature={beamProps.curvature}
+								reverse={beamProps.reverse}
+								pathWidth={beamProps.pathWidth}
+								pathOpacity={beamProps.pathOpacity}
+								startXOffset={beamProps.startXOffset}
+								startYOffset={beamProps.startYOffset}
+								endXOffset={beamProps.endXOffset}
+								endYOffset={beamProps.endYOffset}
+								duration={beamProps.duration}
+								delay={beamProps.delay}
+								beamLength={beamProps.beamLength}
+								interval={beamProps.interval}
+							/>
+						{/if}
+					</div>
+				</div>
+				<CodePreview component="KleriAnimatedBeam" props={beamProps} />
+			</div>
+			<div class="h-fit rounded-xl border-2 border-border/50 bg-card/30 p-6">
+				<h2
+					class="mb-4 font-spacemono text-sm font-semibold tracking-wider text-foreground uppercase"
+				>
+					Props
+				</h2>
+				<PropControls schema={beamSchema} bind:values={beamProps} />
 			</div>
 		</div>
 	</section>

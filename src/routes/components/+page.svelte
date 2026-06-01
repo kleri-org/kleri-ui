@@ -7,7 +7,8 @@
 		Sparkles,
 		Settings,
 		Wand,
-		PanelRight
+		PanelRight,
+		AppWindow
 	} from '@lucide/svelte';
 	import { onMount } from 'svelte';
 
@@ -63,7 +64,7 @@
 		{
 			name: 'Magic',
 			description: 'Enchanted interactive components',
-			count: 2,
+			count: 3,
 			comingSoon: false,
 			route: '/components/magic',
 			icon: Wand
@@ -75,6 +76,14 @@
 			comingSoon: false,
 			route: '/components/menu',
 			icon: PanelRight
+		},
+		{
+			name: 'Window Controls',
+			description: 'Native-style window title-bar controls for Tauri apps',
+			count: 1,
+			comingSoon: false,
+			route: '/components/window-controls',
+			icon: AppWindow
 		}
 	];
 

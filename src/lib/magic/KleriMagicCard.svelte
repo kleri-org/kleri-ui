@@ -3,6 +3,7 @@
 	import { cn } from '$lib/utils';
 	import { KLERI_COLOR_1, KLERI_COLOR_2 } from '$lib/constants';
 	import type { Snippet } from 'svelte';
+	import type { ClassValue } from 'clsx';
 
 	interface KleriMagicCardProps {
 		/** Card content */
@@ -19,6 +20,8 @@
 		gradientFrom?: string;
 		/** Ending color of the border spotlight */
 		gradientTo?: string;
+
+		background?: ClassValue;
 	}
 
 	let {
@@ -28,7 +31,8 @@
 		gradientColor = KLERI_COLOR_2,
 		gradientOpacity = 0.15,
 		gradientFrom = KLERI_COLOR_2,
-		gradientTo = KLERI_COLOR_1
+		gradientTo = KLERI_COLOR_1,
+		background = 'bg-card'
 	}: KleriMagicCardProps = $props();
 
 	let mouseX = $derived(useMotionValue(-gradientSize));
@@ -89,7 +93,7 @@
 	onpointerleave={reset}
 >
 	<div
-		class="relative flex w-full flex-col overflow-hidden rounded-kleri bg-card p-6 text-card-foreground"
+		class="relative flex w-full flex-col overflow-hidden rounded-kleri {background} p-6 text-card-foreground"
 	>
 		{#if children}
 			{@render children()}

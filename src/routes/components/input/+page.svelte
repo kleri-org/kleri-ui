@@ -1,7 +1,9 @@
 <script lang="ts">
 	import KleriSwitch from '$lib/input/KleriSwitch.svelte';
 	import KleriInput from '$lib/input/KleriInput.svelte';
+	import KleriSlider from '$lib/input/KleriSlider.svelte';
 	import KleriDragNDrop from '$lib/input/dragndrop/KleriDragNDrop.svelte';
+	import { KleriToggleGroup, KleriToggleGroupItem } from '$lib/toggle';
 	import { PropControls, CodePreview } from '$lib/preview';
 
 	let switchProps = $state({
@@ -78,6 +80,45 @@
 		mainText: { type: 'string' as const, label: 'Main Text' },
 		subText: { type: 'string' as const, label: 'Sub Text (leave empty for auto)' }
 	};
+
+	let toggleGroupValue = $state('bold');
+	let toggleGroupProps = $state({
+		variant: 'default',
+		size: 'default',
+		orientation: 'horizontal'
+	});
+	const toggleGroupSchema = {
+		variant: { type: 'string' as const, label: 'Variant (default | outline | ghost)' },
+		size: { type: 'string' as const, label: 'Size (sm | default | lg)' },
+		orientation: { type: 'string' as const, label: 'Orientation (horizontal | vertical)' }
+	};
+
+	let sliderValue = $state(50);
+	let sliderProps = $state({
+		label: 'Brightness',
+		showValue: true,
+		min: 0,
+		max: 100,
+		step: 1,
+		shake: false
+	});
+	let sliderErrors = $state<string[]>([]);
+	const sliderSchema = {
+		label: { type: 'string' as const, label: 'Label' },
+		showValue: { type: 'boolean' as const, label: 'Show Value' },
+		min: { type: 'number' as const, label: 'Min' },
+		max: { type: 'number' as const, label: 'Max' },
+		step: { type: 'number' as const, label: 'Step' },
+		shake: { type: 'boolean' as const, label: 'Shake' }
+	};
+
+	$effect(() => {
+		if (sliderProps.shake) {
+			sliderErrors = ['Invalid value'];
+		} else {
+			sliderErrors = [];
+		}
+	});
 </script>
 
 <div class="space-y-16">
@@ -162,6 +203,89 @@
 					Props
 				</h2>
 				<PropControls schema={inputSchema} bind:values={inputProps} />
+			</div>
+		</div>
+	</section>
+
+	<!-- KleriToggleGroup -->
+	<section id="kleri-toggle-group" class="scroll-mt-8 space-y-6">
+		<div class="space-y-2">
+			<h2 class="text-2xl font-bold text-foreground">KleriToggleGroup</h2>
+			<p class="text-muted-foreground">
+				Accessible toggle group with multiple variants, sizes, and orientations. Compose with
+				KleriToggleGroupItem for individual toggles.
+			</p>
+		</div>
+		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+			<div class="space-y-4 lg:col-span-2">
+				<div
+					class="flex min-h-60 items-center justify-center rounded-xl border-2 border-border/50 bg-card/30 p-12"
+				>
+					<KleriToggleGroup
+						type="single"
+						bind:value={toggleGroupValue}
+						variant={toggleGroupProps.variant as 'default' | 'outline' | 'ghost'}
+						size={toggleGroupProps.size as 'sm' | 'default' | 'lg'}
+						orientation={toggleGroupProps.orientation as 'horizontal' | 'vertical'}
+					>
+						<KleriToggleGroupItem value="bold">Bold</KleriToggleGroupItem>
+						<KleriToggleGroupItem value="italic">Italic</KleriToggleGroupItem>
+						<KleriToggleGroupItem value="underline">Underline</KleriToggleGroupItem>
+					</KleriToggleGroup>
+				</div>
+				<CodePreview
+					component="KleriToggleGroup"
+					props={{ ...toggleGroupProps, value: toggleGroupValue }}
+				/>
+			</div>
+			<div class="h-fit rounded-xl border-2 border-border/50 bg-card/30 p-6">
+				<h2
+					class="mb-4 font-spacemono text-sm font-semibold tracking-wider text-foreground uppercase"
+				>
+					Props
+				</h2>
+				<PropControls schema={toggleGroupSchema} bind:values={toggleGroupProps} />
+			</div>
+		</div>
+	</section>
+
+	<!-- KleriSlider -->
+	<section id="kleri-slider" class="scroll-mt-8 space-y-6">
+		<div class="space-y-2">
+			<h2 class="text-2xl font-bold text-foreground">KleriSlider</h2>
+			<p class="text-muted-foreground">
+				Accessible range slider with gradient track, animated thumb, label, value display, and error
+				shake animation.
+			</p>
+		</div>
+		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+			<div class="space-y-4 lg:col-span-2">
+				<div
+					class="flex min-h-60 items-center justify-center rounded-xl border-2 border-border/50 bg-card/30 p-12"
+				>
+					<div class="w-full max-w-sm">
+						<KleriSlider
+							type="single"
+							bind:value={sliderValue}
+							label={sliderProps.label}
+							showValue={sliderProps.showValue}
+							min={sliderProps.min}
+							max={sliderProps.max}
+							step={sliderProps.step}
+							errors={sliderErrors}
+							valueFormatter={(v: number) => `${v}%`}
+						/>
+					</div>
+				</div>
+				<CodePreview component="KleriSlider" props={{ ...sliderProps, value: sliderValue }} />
+			</div>
+			<div class="h-fit rounded-xl border-2 border-border/50 bg-card/30 p-6">
+				<h2
+					class="mb-4 font-spacemono text-sm font-semibold tracking-wider text-foreground uppercase"
+				>
+					Props
+				</h2>
+				<PropControls schema={sliderSchema} bind:values={sliderProps} />
 			</div>
 		</div>
 	</section>
