@@ -44,7 +44,7 @@
 	);
 </script>
 
-<label class="block w-full text-sm font-medium select-none">
+<label class={cn('block w-full text-sm font-medium select-none', className)}>
 	<!-- Label and Errors -->
 	<div class="inline-flex flex-row items-center align-middle">
 		{#if label}
@@ -68,8 +68,7 @@
 			borderClasses,
 			errors &&
 				errors.length > 0 &&
-				'border-red-400 focus-within:border-red-400 focus:border-red-400',
-			className
+				'border-red-400 focus-within:border-red-400 focus:border-red-400'
 		)}
 		class:shake-it={errors && errors.length > 0}
 	>
