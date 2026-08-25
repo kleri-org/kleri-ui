@@ -71,8 +71,8 @@
 		},
 		{
 			name: 'Menu',
-			description: 'Popover menus, dropdowns, and overlays',
-			count: 1,
+			description: 'Popover menus, dialogs, and overlays',
+			count: 2,
 			comingSoon: false,
 			route: '/components/menu',
 			icon: PanelRight

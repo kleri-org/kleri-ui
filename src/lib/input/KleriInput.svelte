@@ -46,20 +46,22 @@
 
 <label class={cn('block w-full text-sm font-medium select-none', className)}>
 	<!-- Label and Errors -->
-	<div class="inline-flex flex-row items-center align-middle">
-		{#if label}
-			<p class="indent-2">
-				{label}
-			</p>
-		{/if}
-		{#if errors}
-			{#each errors as error, i (i)}
-				<p class="indent-2 font-spacemono text-xs text-red-400">
-					({error})
+	{#if label || (errors && errors.length > 0)}
+		<div class="inline-flex flex-row items-center align-middle">
+			{#if label}
+				<p class="indent-2">
+					{label}
 				</p>
-			{/each}
-		{/if}
-	</div>
+			{/if}
+			{#if errors}
+				{#each errors as error, i (i)}
+					<p class="indent-2 font-spacemono text-xs text-red-400">
+						({error})
+					</p>
+				{/each}
+			{/if}
+		</div>
+	{/if}
 
 	<!-- Main Input -->
 	<div
