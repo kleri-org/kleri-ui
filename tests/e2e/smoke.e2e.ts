@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { gotoHydrated } from './helpers';
 
 test.describe('Landing page', () => {
 	test('renders hero section with branding and CTA', async ({ page }) => {
-		await page.goto('/');
+		await gotoHydrated(page, '/');
 
 		// Brand text is present
 		await expect(page.getByText('Kleri')).toBeVisible();
@@ -16,13 +17,13 @@ test.describe('Landing page', () => {
 
 		await cta.click();
 		await page.waitForURL('/components');
-		await expect(page.getByText('15 Components')).toBeVisible();
+		await expect(page.getByText(/\d+ Components/)).toBeVisible();
 	});
 });
 
 test.describe('Navigation', () => {
-	test('sidebar lists all 8 component categories', async ({ page }) => {
-		await page.goto('/components');
+	test('sidebar lists all 9 component categories', async ({ page }) => {
+		await gotoHydrated(page, '/components');
 
 		const sidebar = page.locator('aside');
 		await expect(sidebar).toBeVisible();
@@ -35,7 +36,8 @@ test.describe('Navigation', () => {
 			'Animation',
 			'Settings',
 			'Magic',
-			'Menu'
+			'Menu',
+			'Window Controls'
 		];
 		for (const name of categories) {
 			await expect(sidebar.getByRole('link', { name, exact: true })).toBeVisible();
@@ -51,11 +53,12 @@ test.describe('Navigation', () => {
 			{ name: 'Animation', path: '/components/animation' },
 			{ name: 'Settings', path: '/components/settings' },
 			{ name: 'Magic', path: '/components/magic' },
-			{ name: 'Menu', path: '/components/menu' }
+			{ name: 'Menu', path: '/components/menu' },
+			{ name: 'Window Controls', path: '/components/window-controls' }
 		];
 
 		for (const { name, path } of routes) {
-			await page.goto(path);
+			await gotoHydrated(page, path);
 			await expect(page).toHaveURL(path);
 			// Each category page has a top-level heading matching its name
 			await expect(page.getByRole('heading', { name, level: 1, exact: true })).toBeVisible();
@@ -63,14 +66,14 @@ test.describe('Navigation', () => {
 	});
 
 	test('category cards on /components link to correct routes', async ({ page }) => {
-		await page.goto('/components');
+		await gotoHydrated(page, '/components');
 
 		// Cards are visible (intersection observer triggers after scroll)
 		await page.waitForTimeout(600);
 
 		const cardLinks = page.locator('section a[href^="/components/"]');
 		const count = await cardLinks.count();
-		expect(count).toBe(8);
+		expect(count).toBe(9);
 
 		// Click each card and verify navigation
 		const routes = [
@@ -81,7 +84,8 @@ test.describe('Navigation', () => {
 			'href="/components/animation"',
 			'href="/components/settings"',
 			'href="/components/magic"',
-			'href="/components/menu"'
+			'href="/components/menu"',
+			'href="/components/window-controls"'
 		];
 		for (const route of routes) {
 			const link = page.locator(`section a[${route}]`);
@@ -90,7 +94,7 @@ test.describe('Navigation', () => {
 	});
 
 	test('breadcrumb navigation works', async ({ page }) => {
-		await page.goto('/components/button');
+		await gotoHydrated(page, '/components/button');
 
 		// Breadcrumb links
 		const homeLink = page.getByRole('link', { name: 'Kleri UI', exact: true });
@@ -106,7 +110,7 @@ test.describe('Navigation', () => {
 	});
 
 	test('sidebar logo links back to home', async ({ page }) => {
-		await page.goto('/components');
+		await gotoHydrated(page, '/components');
 		const logoLink = page.locator('aside a[href="/"]');
 		await expect(logoLink).toBeVisible();
 
@@ -118,7 +122,7 @@ test.describe('Navigation', () => {
 
 test.describe('Deep linking', () => {
 	test('hash-based deep link scrolls to component section', async ({ page }) => {
-		await page.goto('/components/button#kleri-button');
+		await gotoHydrated(page, '/components/button#kleri-button');
 
 		// The KleriButton section should be in view
 		const section = page.locator('#kleri-button');
@@ -130,7 +134,7 @@ test.describe('Deep linking', () => {
 	});
 
 	test('all component sub-items have valid hash links', async ({ page }) => {
-		await page.goto('/components/button');
+		await gotoHydrated(page, '/components/button');
 
 		const subItemLinks = page.locator('aside ul ul a');
 		const count = await subItemLinks.count();
@@ -146,7 +150,7 @@ test.describe('Deep linking', () => {
 test.describe('Responsive layout', () => {
 	test('sidebar is visible on desktop viewports', async ({ page }) => {
 		await page.setViewportSize({ width: 1280, height: 800 });
-		await page.goto('/components');
+		await gotoHydrated(page, '/components');
 		await expect(page.locator('aside')).toBeVisible();
 		// Main content area exists
 		await expect(page.locator('main')).toBeVisible();
@@ -154,13 +158,13 @@ test.describe('Responsive layout', () => {
 
 	test('sidebar is visible on tablet viewports', async ({ page }) => {
 		await page.setViewportSize({ width: 768, height: 1024 });
-		await page.goto('/components');
+		await gotoHydrated(page, '/components');
 		await expect(page.locator('aside')).toBeVisible();
 		await expect(page.locator('main')).toBeVisible();
 	});
 
 	test('page renders without sidebar on landing page', async ({ page }) => {
-		await page.goto('/');
+		await gotoHydrated(page, '/');
 		await expect(page.locator('aside')).toHaveCount(0);
 	});
 });

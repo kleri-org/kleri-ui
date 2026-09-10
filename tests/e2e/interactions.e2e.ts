@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { gotoHydrated } from './helpers';
 
 test.describe('KleriButton', () => {
 	test.beforeEach(async ({ page }) => {
-		await page.goto('/components/button');
+		await gotoHydrated(page, '/components/button');
 	});
 
 	test('renders with default text', async ({ page }) => {
@@ -54,7 +55,7 @@ test.describe('KleriButton', () => {
 
 test.describe('KleriUtilityButton', () => {
 	test.beforeEach(async ({ page }) => {
-		await page.goto('/components/button');
+		await gotoHydrated(page, '/components/button');
 		await page.locator('#kleri-utility-button').scrollIntoViewIfNeeded();
 	});
 
@@ -74,7 +75,7 @@ test.describe('KleriUtilityButton', () => {
 
 test.describe('KleriSwitch', () => {
 	test.beforeEach(async ({ page }) => {
-		await page.goto('/components/input');
+		await gotoHydrated(page, '/components/input');
 		await page.locator('#kleri-switch').scrollIntoViewIfNeeded();
 	});
 
@@ -100,7 +101,7 @@ test.describe('KleriSwitch', () => {
 
 test.describe('KleriInput', () => {
 	test.beforeEach(async ({ page }) => {
-		await page.goto('/components/input');
+		await gotoHydrated(page, '/components/input');
 		await page.locator('#kleri-input').scrollIntoViewIfNeeded();
 	});
 
@@ -134,7 +135,7 @@ test.describe('KleriInput', () => {
 });
 test.describe('KleriTextarea', () => {
 	test.beforeEach(async ({ page }) => {
-		await page.goto('/components/input');
+		await gotoHydrated(page, '/components/input');
 		await page.locator('#kleri-textarea').scrollIntoViewIfNeeded();
 	});
 
@@ -160,7 +161,7 @@ test.describe('KleriTextarea', () => {
 
 test.describe('KleriTooltip', () => {
 	test.beforeEach(async ({ page }) => {
-		await page.goto('/components/tooltip');
+		await gotoHydrated(page, '/components/tooltip');
 	});
 
 	test('shows tooltip content on hover', async ({ page }) => {
@@ -192,7 +193,7 @@ test.describe('KleriTooltip', () => {
 
 test.describe('PropControls', () => {
 	test('boolean toggle switches reflect live in the component', async ({ page }) => {
-		await page.goto('/components/tooltip');
+		await gotoHydrated(page, '/components/tooltip');
 
 		// Find the "Show Arrow" toggle in PropControls
 		const arrowToggle = page.getByRole('switch', { name: /arrow/i });
@@ -208,7 +209,7 @@ test.describe('PropControls', () => {
 	});
 
 	test('string prop edits update live preview', async ({ page }) => {
-		await page.goto('/components/tooltip');
+		await gotoHydrated(page, '/components/tooltip');
 
 		// Change tooltip text in PropControls
 		const textInput = page.getByLabel('Tooltip Text');

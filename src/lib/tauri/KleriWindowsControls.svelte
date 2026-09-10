@@ -1,9 +1,17 @@
 <script lang="ts">
 	import { Minus, Square, X } from '@lucide/svelte';
 	import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
-	import { platform } from '@tauri-apps/plugin-os';
+	import { platform, type Platform } from '@tauri-apps/plugin-os';
+	import { isTauri } from '@tauri-apps/api/core';
+	import { onMount } from 'svelte';
 
-	let currentOs = platform();
+	// `platform()` reads `window.__TAURI_OS_PLUGIN_INTERNALS__`, so it is only safe after mount
+	// and only inside a Tauri webview.
+	let currentOs = $state<Platform | undefined>(undefined);
+
+	onMount(() => {
+		if (isTauri()) currentOs = platform();
+	});
 
 	let {
 		appWindow = undefined,

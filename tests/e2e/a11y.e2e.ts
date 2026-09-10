@@ -1,10 +1,10 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { gotoHydrated } from './helpers';
 
 test.describe('Accessibility audits', () => {
 	test('landing page has no critical a11y violations', async ({ page }) => {
-		await page.goto('/');
-		await page.waitForLoadState('networkidle');
+		await gotoHydrated(page, '/');
 
 		const results = await new AxeBuilder({ page })
 			.withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
@@ -14,7 +14,7 @@ test.describe('Accessibility audits', () => {
 	});
 
 	test('components listing page has no critical a11y violations', async ({ page }) => {
-		await page.goto('/components');
+		await gotoHydrated(page, '/components');
 		await page.waitForTimeout(1500); // Wait for intersection observer animations (8 cards × 80ms delay + 600ms transition)
 
 		const results = await new AxeBuilder({ page })
@@ -25,7 +25,7 @@ test.describe('Accessibility audits', () => {
 	});
 
 	test('button component page has no critical a11y violations', async ({ page }) => {
-		await page.goto('/components/button');
+		await gotoHydrated(page, '/components/button');
 
 		const results = await new AxeBuilder({ page })
 			.withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
@@ -35,7 +35,7 @@ test.describe('Accessibility audits', () => {
 	});
 
 	test('input component page has no critical a11y violations', async ({ page }) => {
-		await page.goto('/components/input');
+		await gotoHydrated(page, '/components/input');
 
 		const results = await new AxeBuilder({ page })
 			.withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
@@ -45,7 +45,7 @@ test.describe('Accessibility audits', () => {
 	});
 
 	test('tooltip component page has no critical a11y violations', async ({ page }) => {
-		await page.goto('/components/tooltip');
+		await gotoHydrated(page, '/components/tooltip');
 
 		const results = await new AxeBuilder({ page })
 			.withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
@@ -55,7 +55,7 @@ test.describe('Accessibility audits', () => {
 	});
 
 	test('heading component page has no critical a11y violations', async ({ page }) => {
-		await page.goto('/components/heading');
+		await gotoHydrated(page, '/components/heading');
 
 		const results = await new AxeBuilder({ page })
 			.withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
@@ -65,7 +65,7 @@ test.describe('Accessibility audits', () => {
 	});
 
 	test('animation component page has no critical a11y violations', async ({ page }) => {
-		await page.goto('/components/animation');
+		await gotoHydrated(page, '/components/animation');
 
 		const results = await new AxeBuilder({ page })
 			.withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
@@ -75,7 +75,7 @@ test.describe('Accessibility audits', () => {
 	});
 
 	test('settings component page has no critical a11y violations', async ({ page }) => {
-		await page.goto('/components/settings');
+		await gotoHydrated(page, '/components/settings');
 
 		const results = await new AxeBuilder({ page })
 			.withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
@@ -85,7 +85,7 @@ test.describe('Accessibility audits', () => {
 	});
 
 	test('magic component page has no critical a11y violations', async ({ page }) => {
-		await page.goto('/components/magic');
+		await gotoHydrated(page, '/components/magic');
 
 		const results = await new AxeBuilder({ page })
 			.withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
@@ -95,7 +95,7 @@ test.describe('Accessibility audits', () => {
 	});
 
 	test('interactive button success state maintains a11y compliance', async ({ page }) => {
-		await page.goto('/components/button');
+		await gotoHydrated(page, '/components/button');
 
 		// Trigger success state
 		const button = page.getByRole('button', { name: 'Click me' });

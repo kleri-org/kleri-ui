@@ -299,6 +299,14 @@
 			});
 		}
 	});
+
+	// The server-rendered markup is visible — and looks interactive — before Svelte
+	// hydrates it, so any click or keystroke in that window is silently dropped.
+	// Publishing the flag once the root effect flushes gives e2e tests a precise
+	// "handlers are attached" signal instead of a timeout race.
+	$effect(() => {
+		document.documentElement.dataset.hydrated = 'true';
+	});
 </script>
 
 <svelte:head>

@@ -21,9 +21,12 @@ export default defineConfig({
 	},
 
 	webServer: {
-		command: 'bun run build && bun run preview',
+		// The suite asserts against server-rendered markup that is then hydrated, so it
+		// must run the build of the current working tree. Reusing whatever already
+		// listens on the port would silently test a stale build from an aborted run.
+		command: 'bun run build && bun run preview -- --port 4173 --strictPort',
 		port: 4173,
-		reuseExistingServer: !process.env.CI,
+		reuseExistingServer: false,
 		timeout: 30_000
 	},
 

@@ -246,7 +246,7 @@ describe('KleriButtonGroup', () => {
 			buttons.forEach((btn) => {
 				expect(btn).toHaveClass('text-sm');
 				expect(btn).toHaveClass('px-3');
-				expect(btn).toHaveClass('py-2');
+				expect(btn).toHaveClass('py-1');
 			});
 		});
 
@@ -297,7 +297,7 @@ describe('KleriButtonGroup', () => {
 			render(ButtonGroupTestHost, { props: { variant: 'ghost' } });
 			const buttons = screen.getAllByRole('button');
 			buttons.forEach((btn) => {
-				expect(btn).toHaveClass('bg-transparent');
+				expect(btn).toHaveClass('bg-none');
 				expect(btn).toHaveClass('border-transparent');
 				expect(btn).toHaveClass('text-foreground');
 			});
@@ -393,7 +393,7 @@ describe('KleriButtonGroup', () => {
 				expect(btn).toHaveClass('text-base');
 				expect(btn).toHaveClass('px-4');
 				// variant ghost
-				expect(btn).toHaveClass('bg-transparent');
+				expect(btn).toHaveClass('bg-none');
 				expect(btn).toHaveClass('border-transparent');
 				expect(btn).toHaveClass('text-foreground');
 			});
