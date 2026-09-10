@@ -33,6 +33,8 @@ export {
 export { default as KleriInput } from './input/KleriInput.svelte';
 export { default as KleriCombobox } from './input/KleriCombobox.svelte';
 export type { KleriComboboxItem } from './input/KleriCombobox.svelte';
+export { default as KleriSelect } from './input/KleriSelect.svelte';
+export type { KleriSelectItem } from './input/KleriSelect.svelte';
 export { default as KleriTextarea } from './input/KleriTextarea.svelte';
 export { default as KleriSlider } from './input/KleriSlider.svelte';
 export { default as KleriDragNDrop } from './input/dragndrop/KleriDragNDrop.svelte';

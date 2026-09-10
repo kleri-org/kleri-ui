@@ -1,8 +1,9 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/svelte';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Mail } from '@lucide/svelte';
+import { Mail, Moon, Star } from '@lucide/svelte';
 import KleriInput from './KleriInput.svelte';
 import KleriCombobox from './KleriCombobox.svelte';
+import KleriSelect from './KleriSelect.svelte';
 import KleriTextarea from './KleriTextarea.svelte';
 import KleriSwitch from './KleriSwitch.svelte';
 import KleriSlider from './KleriSlider.svelte';
@@ -128,6 +129,111 @@ describe('KleriCombobox', () => {
 		expect(screen.getByRole('combobox', { name: 'Framework' })).toBeDisabled();
 	});
 });
+describe('KleriSelect', () => {
+	afterEach(() => {
+		cleanup();
+	});
+
+	const items = [
+		{ value: 'light', label: 'Light' },
+		{ value: 'dark', label: 'Dark' }
+	];
+
+	async function choose(name: string) {
+		await fireEvent.pointerDown(screen.getByRole('button', { name: 'Theme' }), {
+			button: 0,
+			pointerType: 'mouse'
+		});
+		const option = screen.getByRole('option', { name });
+		await fireEvent.pointerDown(option, { button: 0, pointerType: 'mouse' });
+		await fireEvent.pointerUp(option, { button: 0, pointerType: 'mouse' });
+	}
+
+	it('renders the placeholder and swaps it for the picked option', async () => {
+		render(KleriSelect, {
+			props: { label: 'Theme', placeholder: 'Pick a theme', items, value: '' }
+		});
+
+		expect(screen.getByText('Pick a theme')).toBeInTheDocument();
+		expect(screen.getByText('Theme')).toBeInTheDocument();
+
+		await choose('Dark');
+		expect(screen.getByRole('button', { name: 'Theme' })).toHaveTextContent('Dark');
+	});
+
+	it('reports the new value and runs the picked option action', async () => {
+		const onValueChange = vi.fn();
+		const action = vi.fn();
+		render(KleriSelect, {
+			props: {
+				label: 'Theme',
+				items: [
+					{ value: 'light', label: 'Light' },
+					{ value: 'dark', label: 'Dark', action }
+				],
+				onValueChange
+			}
+		});
+
+		await choose('Dark');
+
+		expect(onValueChange).toHaveBeenCalledWith('dark');
+		expect(action).toHaveBeenCalledTimes(1);
+	});
+
+	it('renders an item avatar in the trigger', async () => {
+		const { container } = render(KleriSelect, {
+			props: {
+				label: 'Theme',
+				items: [{ value: 'light', label: 'Light', avatarUrl: '/avatars/light.png' }]
+			}
+		});
+
+		await choose('Light');
+
+		expect(container.querySelector('img')).toHaveAttribute('src', '/avatars/light.png');
+	});
+
+	it('prefers persistentIcon over the selected item icon', async () => {
+		render(KleriSelect, {
+			props: {
+				label: 'Theme',
+				persistentIcon: Star,
+				items: [{ value: 'light', label: 'Light', icon: Moon }]
+			}
+		});
+
+		await choose('Light');
+
+		const trigger = screen.getByRole('button', { name: 'Theme' });
+		expect(trigger.querySelector('svg')).toHaveClass('lucide-star');
+	});
+
+	it('forwards form attributes to the trigger', () => {
+		render(KleriSelect, {
+			props: {
+				label: 'Theme',
+				items,
+				'data-fs-control': 'true',
+				'aria-describedby': 'theme-desc'
+			}
+		});
+
+		const trigger = screen.getByRole('button', { name: 'Theme' });
+		expect(trigger).toHaveAttribute('data-fs-control', 'true');
+		expect(trigger).toHaveAttribute('aria-describedby', 'theme-desc');
+	});
+
+	it('shows errors and blocks the trigger when disabled', () => {
+		render(KleriSelect, {
+			props: { label: 'Theme', items, errors: ['Pick one'], disabled: true }
+		});
+
+		expect(screen.getByText('(Pick one)')).toBeInTheDocument();
+		expect(screen.getByRole('button', { name: 'Theme' })).toBeDisabled();
+	});
+});
+
 describe('KleriTextarea', () => {
 	afterEach(() => {
 		cleanup();

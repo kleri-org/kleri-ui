@@ -2,10 +2,12 @@
 	import KleriSwitch from '$lib/input/KleriSwitch.svelte';
 	import KleriInput from '$lib/input/KleriInput.svelte';
 	import KleriCombobox from '$lib/input/KleriCombobox.svelte';
+	import KleriSelect from '$lib/input/KleriSelect.svelte';
 	import KleriTextarea from '$lib/input/KleriTextarea.svelte';
 	import KleriSlider from '$lib/input/KleriSlider.svelte';
 	import KleriDragNDrop from '$lib/input/dragndrop/KleriDragNDrop.svelte';
 	import { KleriToggleGroup, KleriToggleGroupItem } from '$lib/toggle';
+	import { MonitorCog, Moon, Sun } from '@lucide/svelte';
 	import { PropControls, CodePreview } from '$lib/preview';
 
 	let switchProps = $state({
@@ -66,6 +68,33 @@
 			inputProps.errors = [];
 		}
 	});
+
+	// Icons and an avatar exercise the trigger and list markup, so the demo shows
+	// the whole `KleriSelectItem` shape rather than just text.
+	const themeOptions = [
+		{ value: 'light', label: 'Light', icon: Sun },
+		{ value: 'dark', label: 'Dark', icon: Moon },
+		{ value: 'system', label: 'Follow the system', icon: MonitorCog, avatarUrl: '/favicon.svg' }
+	];
+	const themeSymbols = new Map<unknown, string>([
+		[Sun, 'Sun'],
+		[Moon, 'Moon'],
+		[MonitorCog, 'MonitorCog']
+	]);
+	let selectProps = $state({
+		value: '',
+		label: 'Theme',
+		placeholder: 'Pick a theme',
+		disabled: false,
+		required: false,
+		errors: [] as string[]
+	});
+	const selectSchema = {
+		label: { type: 'string' as const, label: 'Label' },
+		placeholder: { type: 'string' as const, label: 'Placeholder' },
+		disabled: { type: 'boolean' as const, label: 'Disabled' },
+		required: { type: 'boolean' as const, label: 'Required' }
+	};
 	let textareaProps = $state({
 		value: '',
 		label: 'Bio',
@@ -296,6 +325,48 @@
 					Props
 				</h2>
 				<PropControls schema={comboboxSchema} bind:values={comboboxProps} />
+			</div>
+		</div>
+	</section>
+
+	<!-- KleriSelect -->
+	<section id="kleri-select" class="scroll-mt-8 space-y-6">
+		<div class="space-y-2">
+			<h2 class="text-2xl font-bold text-foreground">KleriSelect</h2>
+			<p class="text-muted-foreground">
+				Compact option picker for short lists, with icons, avatars, and per-option actions.
+			</p>
+		</div>
+		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+			<div class="space-y-4 lg:col-span-2">
+				<div
+					class="flex min-h-60 items-center justify-center rounded-xl border-2 border-border/50 bg-card/30 p-12"
+				>
+					<div class="w-full max-w-sm">
+						<KleriSelect
+							items={themeOptions}
+							bind:value={selectProps.value}
+							label={selectProps.label}
+							placeholder={selectProps.placeholder}
+							disabled={selectProps.disabled}
+							required={selectProps.required}
+							errors={selectProps.errors}
+						/>
+					</div>
+				</div>
+				<CodePreview
+					component="KleriSelect"
+					props={{ ...selectProps, items: themeOptions }}
+					symbols={themeSymbols}
+				/>
+			</div>
+			<div class="h-fit rounded-xl border-2 border-border/50 bg-card/30 p-6">
+				<h2
+					class="mb-4 font-spacemono text-sm font-semibold tracking-wider text-foreground uppercase"
+				>
+					Props
+				</h2>
+				<PropControls schema={selectSchema} bind:values={selectProps} />
 			</div>
 		</div>
 	</section>

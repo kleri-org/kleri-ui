@@ -280,6 +280,48 @@ Toggle switch with brand checked state.
 
 ---
 
+#### KleriSelect
+
+Keyboard-navigable option picker for short lists, sharing the Kleri field shell.
+
+```svelte
+<script>
+	import { KleriSelect, type KleriSelectItem } from '@kleri/ui';
+	import { Moon, Sun } from '@lucide/svelte';
+	let theme = $state('dark');
+	const items: KleriSelectItem[] = [
+		{ value: 'light', label: 'Light', icon: Sun },
+		{ value: 'dark', label: 'Dark', icon: Moon, action: () => console.log('dark') }
+	];
+</script>
+
+<KleriSelect bind:value={theme} label="Theme" {items} />
+```
+
+`KleriSelectItem` is generic over the value type (`KleriSelectItem<Theme>`), and each item may carry a `label`, an `icon`, an `avatarUrl`, a per-option `action`, and `disabled`.
+
+| Prop             | Type                      | Default              | Description                                                   |
+| ---------------- | ------------------------- | -------------------- | ------------------------------------------------------------- |
+| `items`          | `KleriSelectItem[]`       | —                    | Options to pick from                                          |
+| `value`          | `string` (bindable)       | `""`                 | Selected value                                                |
+| `open`           | `boolean` (bindable)      | `false`              | Whether the options list is open                              |
+| `label`          | `string`                  | —                    | Label text                                                    |
+| `placeholder`    | `string`                  | `"Select an option"` | Text shown while nothing is selected                          |
+| `persistentIcon` | `Component`               | —                    | Icon always shown in the trigger, ahead of an item's own icon |
+| `errors`         | `string[]`                | `[]`                 | Error messages (shakes the field)                             |
+| `name`           | `string`                  | —                    | Hidden input name, for native form submission                 |
+| `required`       | `boolean`                 | `false`              | HTML required attribute                                       |
+| `disabled`       | `boolean`                 | `false`              | Disabled state                                                |
+| `withBorder`     | `boolean`                 | `true`               | Show border                                                   |
+| `shake`          | `boolean`                 | `false`              | Trigger shake animation                                       |
+| `onValueChange`  | `(value: string) => void` | —                    | Called when the selection changes                             |
+| `onOpenChange`   | `(open: boolean) => void` | —                    | Called when the options list opens or closes                  |
+| `ariaLabel`      | `string`                  | —                    | Accessible name; falls back to `label`, then `placeholder`    |
+| `id`             | `string`                  | auto                 | Control id, also used to link the label                       |
+| `class`          | `ClassValue`              | —                    | Additional CSS classes                                        |
+
+---
+
 ### Headings
 
 #### PrimaryHeading
