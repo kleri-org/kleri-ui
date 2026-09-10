@@ -8,6 +8,9 @@
 	import type { WithElementRef } from '$lib/utils.js';
 	import { Upload, Check, FileText } from '@lucide/svelte';
 	import type { Snippet } from 'svelte';
+	import type { ClassValue } from 'clsx';
+	import { cn } from '$lib/utils.js';
+	import KleriFieldLabel from '$lib/input/KleriFieldLabel.svelte';
 
 	// -----------------------------------------------------------------------
 	// Status discriminated union – the single source of truth for the
@@ -29,7 +32,11 @@
 		mainText: string;
 		subText?: string;
 		label?: string;
-		class?: string;
+		/** Validation errors. Shown next to the label. */
+		errors?: string[];
+		/** Blocks interaction and dims the dropzone. */
+		disabled?: boolean;
+		class?: ClassValue;
 		ariaLabel?: string;
 		onclick?: MouseEventHandler<HTMLDivElement> | undefined | null;
 		onkeydown?: KeyboardEventHandler<HTMLDivElement> | undefined | null;
@@ -51,7 +58,9 @@
 		mainText,
 		subText,
 		label,
-		class: className = '',
+		errors,
+		disabled = false,
+		class: className,
 		ariaLabel = 'File Upload Dropzone',
 		onclick,
 		onkeydown,
@@ -82,28 +91,26 @@
 </script>
 
 <!-- Label -->
-<div class="-mt-2 mb-[-0.5px] inline-flex flex-row items-center align-middle">
-	{#if label}
-		<p class="indent-2 text-sm font-medium select-none">
-			{label}
-		</p>
-	{/if}
-</div>
+<KleriFieldLabel {label} {errors} class="mb-1 text-sm font-medium select-none" />
 
 <!-- Dropzone -->
 <div
 	bind:this={ref}
-	class="relative flex min-h-40 min-w-20 cursor-pointer flex-col items-center justify-center rounded-kleri border-2 border-dashed p-2 transition-all duration-300 ease-in-out
-	{isHovering
-		? 'scale-105 border-solid border-primary bg-muted/50'
-		: isError
-			? 'shake border-destructive bg-destructive/5'
-			: isAccepted
-				? 'border-solid border-primary/50 bg-muted/30'
-				: 'border-border/60 hover:border-border hover:bg-muted/80'}
-	{className}"
+	class={cn(
+		'relative flex min-h-40 min-w-20 cursor-pointer flex-col items-center justify-center rounded-kleri border-2 border-dashed p-2 transition-all duration-300 ease-in-out',
+		isHovering
+			? 'scale-105 border-solid border-primary bg-muted/50'
+			: isError
+				? 'kleri-shake border-destructive bg-destructive/5'
+				: isAccepted
+					? 'border-solid border-primary/50 bg-muted/30'
+					: 'border-border/60 hover:border-border hover:bg-muted/80',
+		disabled && 'pointer-events-none cursor-not-allowed opacity-60',
+		className
+	)}
 	role="button"
-	tabindex="0"
+	tabindex={disabled ? -1 : 0}
+	aria-disabled={disabled || undefined}
 	aria-label={ariaLabel}
 	{onclick}
 	{onkeydown}
@@ -179,30 +186,3 @@
 		</div>
 	{/if}
 </div>
-
-<!-- Shake animation -->
-<style>
-	@keyframes shake {
-		0%,
-		100% {
-			transform: translateX(0);
-		}
-		10%,
-		30%,
-		50%,
-		70%,
-		90% {
-			transform: translateX(-4px);
-		}
-		20%,
-		40%,
-		60%,
-		80% {
-			transform: translateX(4px);
-		}
-	}
-
-	.shake {
-		animation: shake 0.4s ease-in-out;
-	}
-</style>

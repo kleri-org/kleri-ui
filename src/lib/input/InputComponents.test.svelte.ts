@@ -48,8 +48,44 @@ describe('KleriInput', () => {
 		const input = screen.getByPlaceholderText('Password');
 		expect(input).toHaveAttribute('type', 'password');
 
-		await fireEvent.click(screen.getByRole('button'));
+		await fireEvent.click(screen.getByRole('button', { name: 'Show password' }));
 		expect(input).toHaveAttribute('type', 'text');
+		expect(screen.getByRole('button', { name: 'Hide password' })).toBeInTheDocument();
+	});
+
+	it('renders without an icon and links the label to the input', () => {
+		render(KleriInput, { props: { label: 'Email', placeholder: 'you@example.com' } });
+
+		// The label is associated with the control, so it resolves by role + name.
+		expect(screen.getByRole('textbox', { name: 'Email' })).toBe(
+			screen.getByPlaceholderText('you@example.com')
+		);
+	});
+
+	it('marks the field invalid, shakes it, and keeps `shake` out of the DOM', () => {
+		const { container } = render(KleriInput, {
+			props: { label: 'Name', placeholder: 'Name', errors: ['Required'], shake: true }
+		});
+
+		const input = screen.getByPlaceholderText('Name');
+		expect(input).toHaveAttribute('aria-invalid', 'true');
+		expect(input).not.toHaveAttribute('shake');
+		expect(container.querySelector('.kleri-shake')).not.toBeNull();
+	});
+
+	it('calls onValueChange alongside a consumer oninput handler', async () => {
+		const onValueChange = vi.fn();
+		const oninput = vi.fn();
+		render(KleriInput, {
+			props: { placeholder: 'Email', value: '', onValueChange, oninput }
+		});
+
+		await fireEvent.input(screen.getByPlaceholderText('Email'), {
+			target: { value: 'hello@kleri.org' }
+		});
+
+		expect(onValueChange).toHaveBeenCalledWith('hello@kleri.org');
+		expect(oninput).toHaveBeenCalledTimes(1);
 	});
 });
 
@@ -126,12 +162,22 @@ describe('KleriTextarea', () => {
 		expect(screen.getByText('(Too short)')).toBeInTheDocument();
 	});
 
+	it('calls onValueChange on input', async () => {
+		const onValueChange = vi.fn();
+		render(KleriTextarea, {
+			props: { placeholder: 'Bio', value: '', onValueChange }
+		});
+
+		await fireEvent.input(screen.getByPlaceholderText('Bio'), { target: { value: 'Hello' } });
+		expect(onValueChange).toHaveBeenCalledWith('Hello');
+	});
+
 	it('applies the shake animation when shake is true', () => {
 		const { container } = render(KleriTextarea, {
 			props: { label: 'Bio', shake: true }
 		});
 
-		expect(container.querySelector('.shake-it')).not.toBeNull();
+		expect(container.querySelector('.kleri-shake')).not.toBeNull();
 	});
 });
 
@@ -182,6 +228,14 @@ describe('KleriSlider', () => {
 		expect(slider).toHaveAttribute('aria-disabled', 'true');
 	});
 
+	it('applies the shake animation when shake is true', () => {
+		const { container } = render(KleriSlider, {
+			props: { label: 'Amount', value: 5, type: 'single', shake: true }
+		});
+
+		expect(container.querySelector('.kleri-shake')).not.toBeNull();
+	});
+
 	it('hides value when showValue is false', () => {
 		render(KleriSlider, {
 			props: { label: 'Hidden', value: 99, type: 'single', showValue: false }
@@ -206,14 +260,14 @@ describe('KleriSwitch', () => {
 		expect(switchControl).toHaveAttribute('data-state', 'checked');
 	});
 
-	it('calls onChecked when toggled', async () => {
-		const onChecked = vi.fn();
+	it('calls onValueChange when toggled', async () => {
+		const onValueChange = vi.fn();
 		render(KleriSwitch, {
-			props: { ariaLabel: 'Enable sound', value: false, onChecked }
+			props: { ariaLabel: 'Enable sound', value: false, onValueChange }
 		});
 
 		await fireEvent.click(screen.getByRole('switch', { name: 'Enable sound' }));
-		expect(onChecked).toHaveBeenCalledWith(true);
+		expect(onValueChange).toHaveBeenCalledWith(true);
 	});
 
 	it('supports the disabled state', () => {
@@ -222,5 +276,16 @@ describe('KleriSwitch', () => {
 		});
 
 		expect(screen.getByRole('switch', { name: 'Locked setting' })).toBeDisabled();
+	});
+
+	it('renders a label and errors like the other fields', () => {
+		const { container } = render(KleriSwitch, {
+			props: { label: 'Notifications', errors: ['Required'] }
+		});
+
+		expect(screen.getByText('Notifications')).toBeInTheDocument();
+		expect(screen.getByText('(Required)')).toBeInTheDocument();
+		expect(screen.getByRole('switch', { name: 'Notifications' })).toBeInTheDocument();
+		expect(container.querySelector('.kleri-shake')).not.toBeNull();
 	});
 });

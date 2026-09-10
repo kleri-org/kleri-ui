@@ -31,6 +31,44 @@ function makeDataTransfer(files: File[]): DataTransfer {
 	return dt;
 }
 
+describe('KleriDragNDrop file selection', () => {
+	it('does not offer multi-select on the hidden input when multiple is false', () => {
+		const { container } = render(KleriDragNDrop, { props: { multiple: false } });
+
+		const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+		expect(input.multiple).toBe(false);
+	});
+
+	it('replaces the selection instead of appending when multiple is false', async () => {
+		const onDrop = vi.fn();
+		const { container } = render(KleriDragNDrop, { props: { multiple: false, onDrop } });
+		const zone = within(container).getByLabelText('File Upload Dropzone');
+
+		const a = new File(['a'], 'a.pdf', { type: 'application/pdf' });
+		const b = new File(['b'], 'b.pdf', { type: 'application/pdf' });
+
+		await fireEvent.drop(zone, { dataTransfer: makeDataTransfer([a]) });
+		await fireEvent.drop(zone, { dataTransfer: makeDataTransfer([b]) });
+		await tick();
+
+		expect(onDrop).toHaveBeenLastCalledWith([b]);
+		expect(within(container).getByText('1 file selected')).toBeTruthy();
+	});
+
+	it('ignores drops while disabled', async () => {
+		const onDrop = vi.fn();
+		const { container } = render(KleriDragNDrop, { props: { disabled: true, onDrop } });
+		const zone = within(container).getByLabelText('File Upload Dropzone');
+
+		const pdf = new File(['x'], 'doc.pdf', { type: 'application/pdf' });
+		await fireEvent.drop(zone, { dataTransfer: makeDataTransfer([pdf]) });
+		await tick();
+
+		expect(onDrop).not.toHaveBeenCalled();
+		expect(zone).toHaveAttribute('aria-disabled', 'true');
+	});
+});
+
 describe('KleriDragNDrop image preview', () => {
 	it('renders an image preview thumbnail when an image is dropped', async () => {
 		const { container } = render(KleriDragNDrop);

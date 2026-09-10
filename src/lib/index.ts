@@ -20,6 +20,16 @@ export { default as KleriButtonGroup } from './button/KleriButtonGroup/KleriButt
 export type { ButtonGroupItem } from './button/KleriButtonGroup/types.js';
 
 export { default as KleriSwitch } from './input/KleriSwitch.svelte';
+export { default as KleriFieldLabel } from './input/KleriFieldLabel.svelte';
+export {
+	FIELD_CONTROL,
+	FIELD_ICON_SIZE,
+	FIELD_ICON_STROKE,
+	FIELD_ROOT,
+	fieldShell,
+	type FieldIcon,
+	type FieldShellOptions
+} from './input/field.js';
 export { default as KleriInput } from './input/KleriInput.svelte';
 export { default as KleriCombobox } from './input/KleriCombobox.svelte';
 export type { KleriComboboxItem } from './input/KleriCombobox.svelte';

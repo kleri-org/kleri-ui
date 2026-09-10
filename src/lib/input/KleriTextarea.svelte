@@ -1,47 +1,69 @@
 <script lang="ts">
-	import type { Component } from 'svelte';
-	import type { HTMLTextareaAttributes } from 'svelte/elements';
+	import type { FormEventHandler, HTMLTextareaAttributes } from 'svelte/elements';
 	import type { ClassValue } from 'clsx';
-	import type { WithElementRef } from '$lib/utils';
+	import type { WithElementRef } from '$lib/utils.js';
 
-	import { cn } from '$lib/utils';
+	import { cn } from '$lib/utils.js';
+	import KleriFieldLabel from './KleriFieldLabel.svelte';
+	import {
+		FIELD_CONTROL,
+		FIELD_ICON_SIZE,
+		FIELD_ICON_STROKE,
+		FIELD_ROOT,
+		fieldShell,
+		type FieldIcon
+	} from './field.js';
 
 	type Props = {
+		/** Current value. Bindable. */
 		value?: string | null;
+		/** Text shown above the field. */
 		label?: string;
+		/** Validation errors. Shown next to the label and shake the field. */
 		errors?: string[];
-		InputIcon?: Component;
+		/** Leading icon component, e.g. a `@lucide/svelte` icon. */
+		InputIcon?: FieldIcon;
 		placeholder?: string;
 		required?: boolean;
+		disabled?: boolean;
+		/** Draw the resting border. @default true */
 		withBorder?: boolean;
 		rows?: number;
 		/** Controls the textarea resize behavior. Mirrors the CSS `resize` property. */
 		resize?: 'none' | 'y' | 'x' | 'both';
+		/** Play the shake animation. Errors trigger it on their own. */
 		shake?: boolean;
+		/** Called with the new value on every input event. */
+		onValueChange?: (value: string) => void;
+		/** Id of the control. Auto-generated when omitted, and used to link the label. */
+		id?: string;
 		class?: ClassValue;
 	} & WithElementRef<HTMLTextareaAttributes, HTMLTextAreaElement>;
 
 	let {
 		value = $bindable<string | null>(''),
 		label,
-		errors = $bindable(),
+		errors,
 		InputIcon,
 		class: className,
 		withBorder = true,
 		placeholder = '',
-		required,
+		required = false,
+		disabled = false,
 		rows = 4,
 		resize = 'none',
 		shake = false,
+		onValueChange,
+		oninput,
+		id,
 		ref = $bindable<HTMLTextAreaElement | null>(null),
 		...restProps
 	}: Props = $props();
 
-	let hasErrors = $derived((errors?.length ?? 0) > 0);
+	const uid = $props.id();
+	let controlId = $derived(id ?? uid);
 
-	let borderClasses = $derived(
-		withBorder ? 'border-border border-2' : 'border-2 border-transparent'
-	);
+	let hasErrors = $derived((errors?.length ?? 0) > 0);
 
 	let resizeClass = $derived(
 		resize === 'y'
@@ -52,135 +74,41 @@
 					? 'resize'
 					: 'resize-none'
 	);
+
+	const handleInput: FormEventHandler<HTMLTextAreaElement> = (event) => {
+		onValueChange?.(event.currentTarget.value);
+		oninput?.(event);
+	};
 </script>
 
-<label class={cn('block w-full text-sm font-medium select-none', className)}>
-	<!-- Label and Errors -->
-	{#if label || hasErrors}
-		<div class="inline-flex flex-row items-center align-middle">
-			{#if label}
-				<p class="indent-2">
-					{label}
-				</p>
-			{/if}
-			{#if hasErrors}
-				{#each errors as error, i (i)}
-					<p class="indent-2 font-spacemono text-xs text-red-400">
-						({error})
-					</p>
-				{/each}
-			{/if}
-		</div>
-	{/if}
+<div class={cn(FIELD_ROOT, className)}>
+	<KleriFieldLabel {label} {errors} for={controlId} />
 
 	<!-- Main Textarea -->
 	<div
-		class={cn(
-			'my-1 flex w-full flex-row items-start gap-2 overflow-hidden rounded-kleri py-3 pl-4 outline-black focus-within:kleri-border focus:ring-black focus:outline-black active:ring-black active:outline-black dark:focus-within:kleri-border-dark',
-			borderClasses,
-			hasErrors && 'border-red-400 focus-within:border-red-400 focus:border-red-400'
-		)}
-		class:shake-it={hasErrors || shake}
+		class={fieldShell({ withBorder, hasErrors, disabled, align: 'start' })}
+		class:kleri-shake={hasErrors || shake}
 	>
 		{#if InputIcon}
-			<InputIcon size={22} strokeWidth={2.5} class="mt-1 shrink-0 text-foreground" />
+			<InputIcon
+				size={FIELD_ICON_SIZE}
+				strokeWidth={FIELD_ICON_STROKE}
+				class="mt-0.5 shrink-0 text-foreground"
+			/>
 		{/if}
 
 		<textarea
+			id={controlId}
 			bind:this={ref}
-			value={value ?? ''}
-			oninput={(e) => (value = e.currentTarget.value)}
 			{required}
+			{disabled}
 			{rows}
 			{placeholder}
 			aria-invalid={hasErrors || undefined}
-			class={cn(
-				'w-full flex-1 resize-none border-0 bg-transparent px-1 text-foreground placeholder-muted-foreground outline-none focus:ring-0 focus:outline-none',
-				resizeClass
-			)}
+			class={cn(FIELD_CONTROL, 'kleri-scrollbar', resizeClass)}
+			bind:value
 			{...restProps}
+			oninput={handleInput}
 		></textarea>
 	</div>
-</label>
-
-<style>
-	@keyframes shake-it {
-		0% {
-			transform: translateX(0);
-		}
-
-		10% {
-			transform: translateX(-9px);
-		}
-
-		20% {
-			transform: translateX(8px);
-		}
-
-		30% {
-			transform: translateX(-7px);
-		}
-
-		40% {
-			transform: translateX(6px);
-		}
-
-		50% {
-			transform: translateX(-5px);
-		}
-
-		60% {
-			transform: translateX(4px);
-		}
-
-		70% {
-			transform: translateX(-3px);
-		}
-
-		80% {
-			transform: translateX(2px);
-		}
-
-		90% {
-			transform: translateX(-1px);
-		}
-
-		100% {
-			transform: translateX(0);
-		}
-	}
-
-	.shake-it {
-		animation: shake-it 0.5s ease-in-out;
-	}
-
-	textarea {
-		outline: none;
-		scrollbar-width: thin;
-		scrollbar-color: var(--color-kleri-2) transparent;
-	}
-
-	textarea::-webkit-scrollbar {
-		width: 8px;
-	}
-
-	textarea::-webkit-scrollbar-track {
-		background: transparent;
-	}
-
-	textarea::-webkit-scrollbar-thumb {
-		background-color: var(--color-kleri-2);
-		border-radius: 9999px;
-		border: 2px solid transparent;
-		background-clip: padding-box;
-	}
-
-	textarea::-webkit-scrollbar-thumb:hover {
-		background-color: color-mix(in srgb, var(--color-kleri-2) 80%, white);
-	}
-
-	textarea:focus {
-		outline: none;
-		box-shadow: none;
-	}
-</style>
+</div>

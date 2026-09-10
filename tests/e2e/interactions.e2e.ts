@@ -127,7 +127,7 @@ test.describe('KleriInput', () => {
 		await shakeToggle.click();
 
 		// Error state is visible in the live preview
-		await expect(page.locator('#kleri-input p').filter({ hasText: 'Invalid input' })).toBeVisible({
+		await expect(page.locator('#kleri-input').getByText('(Invalid input)')).toBeVisible({
 			timeout: 3000
 		});
 	});
@@ -152,9 +152,9 @@ test.describe('KleriTextarea', () => {
 		await shakeToggle.click();
 
 		// Error state is visible in the live preview
-		await expect(
-			page.locator('#kleri-textarea p').filter({ hasText: 'Invalid input' })
-		).toBeVisible({ timeout: 3000 });
+		await expect(page.locator('#kleri-textarea').getByText('(Invalid input)')).toBeVisible({
+			timeout: 3000
+		});
 	});
 });
 

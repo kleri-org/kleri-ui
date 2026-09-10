@@ -5,6 +5,7 @@
 	import { convertFileSrc } from '@tauri-apps/api/core';
 	import { open } from '@tauri-apps/plugin-dialog';
 	import type { HTMLAttributes } from 'svelte/elements';
+	import type { ClassValue } from 'clsx';
 	import type { WithElementRef } from '$lib/utils.js';
 	import {
 		type FileTypeName,
@@ -56,9 +57,9 @@
 		onRejected?: (rejected: Array<{ path: string; reason: string }>) => void;
 
 		/**
-		 * Optional class to append to the wrapper
+		 * Optional class to append to the dropzone
 		 */
-		class?: string;
+		class?: ClassValue;
 
 		/**
 		 * When `false`, the dropzone accepts only a single file.
@@ -68,6 +69,17 @@
 		multiple?: boolean;
 
 		label?: string;
+
+		/**
+		 * Validation errors. Shown next to the label.
+		 */
+		errors?: string[];
+
+		/**
+		 * Blocks dropping and browsing, and dims the dropzone.
+		 * @default false
+		 */
+		disabled?: boolean;
 
 		/**
 		 * Main heading text displayed when the dropzone is idle.
@@ -99,10 +111,12 @@
 		onDrop,
 		onRejected,
 		label,
+		errors,
+		disabled = false,
 		mainText = 'Drag and Drop Your file here',
 		subText: consumerSubText,
 		errorDuration = 3000,
-		class: className = '',
+		class: className,
 		files = $bindable([]),
 		...restProps
 	}: Props = $props();
@@ -310,6 +324,7 @@
 	// -----------------------------------------------------------------------
 
 	export async function handleClick() {
+		if (disabled) return;
 		try {
 			const filters =
 				allowedTypes && allowedTypes.length > 0
@@ -325,13 +340,13 @@
 
 			const selected = await open({
 				directory: false,
-				multiple: true,
+				multiple,
 				filters
 			});
 
 			if (!selected) return;
 
-			// open() returns string[] | null when multiple: true
+			// open() returns string[] | null when multiple, string | null otherwise
 			const paths = Array.isArray(selected) ? selected : selected ? [selected] : [];
 			handlePaths(paths);
 		} catch (error) {
@@ -340,7 +355,8 @@
 	}
 
 	function handleKeyDown(e: KeyboardEvent) {
-		if (e.key === 'Enter') {
+		if (e.key === 'Enter' || e.key === ' ') {
+			e.preventDefault();
 			handleClick();
 		}
 	}
@@ -377,6 +393,7 @@
 	onMount(async () => {
 		try {
 			const unlisten = await getCurrentWebview().onDragDropEvent((event) => {
+				if (disabled) return;
 				if (event.payload.type === 'over' || event.payload.type === 'enter') {
 					const inside = isEventInside(event.payload.position);
 					if (inside) {
@@ -431,6 +448,8 @@
 	{mainText}
 	subText={resolvedSubText}
 	{label}
+	{errors}
+	{disabled}
 	class={className}
 	{imagePreview}
 	bind:ref={dropzoneEl}

@@ -1,166 +1,128 @@
 <script lang="ts">
-	import type { Component } from 'svelte';
-	import type { HTMLInputAttributes } from 'svelte/elements';
+	import type { FormEventHandler, HTMLInputAttributes } from 'svelte/elements';
 	import type { ClassValue } from 'clsx';
-	import type { WithElementRef } from '$lib/utils';
+	import type { WithElementRef } from '$lib/utils.js';
 
-	import { cn } from '$lib/utils';
+	import { cn } from '$lib/utils.js';
 	import { Eye, EyeOff } from '@lucide/svelte';
+	import KleriFieldLabel from './KleriFieldLabel.svelte';
+	import {
+		FIELD_CONTROL,
+		FIELD_ICON_SIZE,
+		FIELD_ICON_STROKE,
+		FIELD_ROOT,
+		fieldShell,
+		type FieldIcon
+	} from './field.js';
 
 	type Props = {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		value?: any;
+		/** Current value. Bindable. */
+		value?: string | number | null;
+		/** Text shown above the field. */
 		label?: string;
+		/** Validation errors. Shown next to the label and shake the field. */
 		errors?: string[];
-		InputIcon?: Component;
+		/** Leading icon component, e.g. a `@lucide/svelte` icon. */
+		InputIcon?: FieldIcon;
 		placeholder?: string;
+		/** Any native input type. `password` adds a visibility toggle. */
 		type?: string;
 		required?: boolean;
+		disabled?: boolean;
+		/** Draw the resting border. @default true */
 		withBorder?: boolean;
-		class?: ClassValue;
+		/** Play the shake animation. Errors trigger it on their own. */
 		shake?: boolean;
-	} & WithElementRef<HTMLInputAttributes>;
+		/** Called with the new value on every input event. */
+		onValueChange?: (value: string) => void;
+		/** Id of the control. Auto-generated when omitted, and used to link the label. */
+		id?: string;
+		class?: ClassValue;
+	} & WithElementRef<HTMLInputAttributes, HTMLInputElement>;
 
 	let {
-		value = $bindable(),
+		value = $bindable(''),
 		label,
-		errors = $bindable(),
+		errors,
 		InputIcon,
 		class: className,
 		withBorder = true,
 		placeholder = '',
-		required,
+		required = false,
+		disabled = false,
 		type = 'text',
+		shake = false,
+		onValueChange,
+		oninput,
+		id,
+		ref = $bindable<HTMLInputElement | null>(null),
 		...restProps
 	}: Props = $props();
+
+	const uid = $props.id();
+	let controlId = $derived(id ?? uid);
 
 	let isPasswordVisible = $state(false);
 	let currentInputType = $derived(
 		type === 'password' ? (isPasswordVisible ? 'text' : 'password') : type
 	);
 
-	let borderClasses = $derived(
-		withBorder ? 'border-border border-2' : 'border-2 border-transparent'
-	);
+	let hasErrors = $derived((errors?.length ?? 0) > 0);
+
+	const handleInput: FormEventHandler<HTMLInputElement> = (event) => {
+		onValueChange?.(event.currentTarget.value);
+		oninput?.(event);
+	};
 </script>
 
-<label class={cn('block w-full text-sm font-medium select-none', className)}>
-	<!-- Label and Errors -->
-	{#if label || (errors && errors.length > 0)}
-		<div class="inline-flex flex-row items-center align-middle">
-			{#if label}
-				<p class="indent-2">
-					{label}
-				</p>
-			{/if}
-			{#if errors}
-				{#each errors as error, i (i)}
-					<p class="indent-2 font-spacemono text-xs text-red-400">
-						({error})
-					</p>
-				{/each}
-			{/if}
-		</div>
-	{/if}
+<div class={cn(FIELD_ROOT, className)}>
+	<KleriFieldLabel {label} {errors} for={controlId} />
 
 	<!-- Main Input -->
 	<div
-		class={cn(
-			'my-1 flex w-full flex-row items-center justify-end gap-2 overflow-hidden rounded-kleri py-3 pl-4 outline-black focus-within:kleri-border focus:ring-black focus:outline-black active:ring-black active:outline-black dark:focus-within:kleri-border-dark',
-			borderClasses,
-			errors &&
-				errors.length > 0 &&
-				'border-red-400 focus-within:border-red-400 focus:border-red-400'
-		)}
-		class:shake-it={errors && errors.length > 0}
+		class={fieldShell({ withBorder, hasErrors, disabled })}
+		class:kleri-shake={hasErrors || shake}
 	>
-		<InputIcon size={22} strokeWidth={2.5} class="text-foreground" />
+		{#if InputIcon}
+			<InputIcon
+				size={FIELD_ICON_SIZE}
+				strokeWidth={FIELD_ICON_STROKE}
+				class="shrink-0 text-foreground"
+			/>
+		{/if}
 
 		<input
+			id={controlId}
+			bind:this={ref}
 			type={currentInputType}
 			{required}
-			class="-my-3 w-full border-0 bg-transparent px-1 text-foreground placeholder-muted-foreground outline-none focus:ring-0 focus:outline-none"
-			bind:value
+			{disabled}
 			{placeholder}
+			aria-invalid={hasErrors || undefined}
+			class={FIELD_CONTROL}
+			bind:value
 			{...restProps}
+			oninput={handleInput}
 		/>
 
 		{#if type === 'password'}
 			<button
 				type="button"
-				class="flex cursor-pointer items-center justify-center pr-3 text-foreground transition-colors focus:outline-hidden"
+				{disabled}
+				aria-label={isPasswordVisible ? 'Hide password' : 'Show password'}
+				aria-pressed={isPasswordVisible}
+				class="flex shrink-0 cursor-pointer items-center justify-center text-foreground transition-colors hover:text-kleri-2 focus-visible:text-kleri-2 focus-visible:outline-hidden disabled:cursor-not-allowed"
 				onclick={(e) => {
 					e.preventDefault();
 					isPasswordVisible = !isPasswordVisible;
 				}}
 			>
 				{#if isPasswordVisible}
-					<EyeOff size={22} strokeWidth={2.5} />
+					<EyeOff size={FIELD_ICON_SIZE} strokeWidth={FIELD_ICON_STROKE} />
 				{:else}
-					<Eye size={22} strokeWidth={2.5} />
+					<Eye size={FIELD_ICON_SIZE} strokeWidth={FIELD_ICON_STROKE} />
 				{/if}
 			</button>
 		{/if}
 	</div>
-</label>
-
-<style>
-	@keyframes shake-it {
-		0% {
-			transform: translateX(0);
-		}
-
-		10% {
-			transform: translateX(-9px);
-		}
-
-		20% {
-			transform: translateX(8px);
-		}
-
-		30% {
-			transform: translateX(-7px);
-		}
-
-		40% {
-			transform: translateX(6px);
-		}
-
-		50% {
-			transform: translateX(-5px);
-		}
-
-		60% {
-			transform: translateX(4px);
-		}
-
-		70% {
-			transform: translateX(-3px);
-		}
-
-		80% {
-			transform: translateX(2px);
-		}
-
-		90% {
-			transform: translateX(-1px);
-		}
-
-		100% {
-			transform: translateX(0);
-		}
-	}
-
-	.shake-it {
-		animation: shake-it 0.5s ease-in-out;
-	}
-
-	input {
-		outline: none;
-	}
-
-	input:focus {
-		outline: none;
-		box-shadow: none;
-	}
-</style>
+</div>

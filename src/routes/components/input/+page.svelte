@@ -241,7 +241,8 @@
 							type={inputProps.type}
 							required={inputProps.required}
 							withBorder={inputProps.withBorder}
-							bind:errors={inputProps.errors}
+							errors={inputProps.errors}
+							shake={inputProps.shake}
 						/>
 					</div>
 				</div>
@@ -321,7 +322,8 @@
 							withBorder={textareaProps.withBorder}
 							resize={textareaProps.resize as 'none' | 'y' | 'x' | 'both'}
 							rows={textareaProps.rows}
-							bind:errors={textareaProps.errors}
+							errors={textareaProps.errors}
+							shake={textareaProps.shake}
 						/>
 					</div>
 				</div>
@@ -404,6 +406,7 @@
 							max={sliderProps.max}
 							step={sliderProps.step}
 							errors={sliderErrors}
+							shake={sliderProps.shake}
 							valueFormatter={(v: number) => `${v}%`}
 						/>
 					</div>

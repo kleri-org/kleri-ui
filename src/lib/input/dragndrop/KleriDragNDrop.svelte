@@ -2,6 +2,7 @@
 	import { onDestroy } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import type { HTMLAttributes } from 'svelte/elements';
+	import type { ClassValue } from 'clsx';
 	import type { WithElementRef } from '$lib/utils.js';
 	import {
 		type FileTypeName,
@@ -57,9 +58,9 @@
 		onRejected?: (rejected: Array<{ file: File; reason: string }>) => void;
 
 		/**
-		 * Optional class to append to the wrapper
+		 * Optional class to append to the dropzone
 		 */
-		class?: string;
+		class?: ClassValue;
 
 		/**
 		 * When `false`, the dropzone accepts only a single file.
@@ -69,6 +70,17 @@
 		multiple?: boolean;
 
 		label?: string;
+
+		/**
+		 * Validation errors. Shown next to the label.
+		 */
+		errors?: string[];
+
+		/**
+		 * Blocks dropping and browsing, and dims the dropzone.
+		 * @default false
+		 */
+		disabled?: boolean;
 
 		/**
 		 * Main heading text displayed when the dropzone is idle.
@@ -95,10 +107,12 @@
 		onDrop,
 		onRejected,
 		label,
+		errors,
+		disabled = false,
 		mainText = 'Drag and Drop Your file here',
 		subText: consumerSubText,
 		errorDuration = 3000,
-		class: className = '',
+		class: className,
 		...restProps
 	}: Props = $props();
 
@@ -308,6 +322,7 @@
 	// -----------------------------------------------------------------------
 
 	function handleClick() {
+		if (disabled) return;
 		fileInput?.click();
 	}
 
@@ -320,12 +335,14 @@
 	}
 
 	function handleKeyDown(e: KeyboardEvent) {
-		if (e.key === 'Enter') {
+		if (e.key === 'Enter' || e.key === ' ') {
+			e.preventDefault();
 			handleClick();
 		}
 	}
 
 	function handleDragOver(e: DragEvent) {
+		if (disabled) return;
 		e.preventDefault();
 		if (e.dataTransfer) {
 			e.dataTransfer.dropEffect = 'copy';
@@ -333,6 +350,7 @@
 	}
 
 	function handleDragEnter() {
+		if (disabled) return;
 		enterCounter++;
 		if (enterCounter === 1) {
 			status = { state: 'hover' };
@@ -340,6 +358,7 @@
 	}
 
 	function handleDragLeave() {
+		if (disabled) return;
 		enterCounter--;
 		if (enterCounter <= 0) {
 			enterCounter = 0;
@@ -351,6 +370,7 @@
 	}
 
 	function handleDrop(e: DragEvent) {
+		if (disabled) return;
 		e.preventDefault();
 		enterCounter = 0;
 
@@ -375,7 +395,8 @@
 <!-- Hidden file input for click‑to‑browse -->
 <input
 	type="file"
-	multiple
+	{multiple}
+	{disabled}
 	accept={getAcceptString(allowedTypes)}
 	class="hidden"
 	bind:this={fileInput}
@@ -387,6 +408,8 @@
 	{mainText}
 	subText={resolvedSubText}
 	{label}
+	{errors}
+	{disabled}
 	class={className}
 	imagePreview={previewUrl}
 	onclick={handleClick}

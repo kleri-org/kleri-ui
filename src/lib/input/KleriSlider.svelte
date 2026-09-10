@@ -1,19 +1,35 @@
 <script lang="ts">
 	import { Slider } from 'bits-ui';
 	import type { ClassValue } from 'clsx';
-	import { cn } from '$lib/utils';
+	import { cn } from '$lib/utils.js';
+	import KleriFieldLabel from './KleriFieldLabel.svelte';
+	import { FIELD_ROOT } from './field.js';
 
 	interface Props {
+		/** Text shown above the slider. */
 		label?: string;
+		/** Current value: a number for `single`, an array for `multiple`. Bindable. */
 		value?: number | number[];
+		/** Show the (formatted) value next to the label. */
 		showValue?: boolean;
+		/** `single` for one thumb, `multiple` for a range. @default 'single' */
 		type?: 'single' | 'multiple';
+		/** Formats each value for display. */
 		valueFormatter?: (value: number) => string;
+		/** Validation errors. Shown next to the label and shake the slider. */
 		errors?: string[];
 		disabled?: boolean;
 		min?: number;
 		max?: number;
 		step?: number;
+		/** Play the shake animation. Errors trigger it on their own. */
+		shake?: boolean;
+		/** Called with the new value whenever the slider changes. */
+		onValueChange?: (value: number | number[]) => void;
+		/** Accessible name for the thumbs. Falls back to `label`. */
+		ariaLabel?: string;
+		/** Id of the label element, used to link it to the slider. Auto-generated when omitted. */
+		id?: string;
 		class?: ClassValue;
 	}
 
@@ -28,44 +44,41 @@
 		min = 0,
 		max = 100,
 		step = 1,
+		shake = false,
+		onValueChange,
+		ariaLabel,
+		id,
 		class: className
 	}: Props = $props();
 
+	const uid = $props.id();
+	let controlId = $derived(id ?? uid);
+
+	let hasErrors = $derived((errors?.length ?? 0) > 0);
 	let displayValue = $derived(
 		Array.isArray(value) ? value.map(valueFormatter).join(' – ') : valueFormatter(value as number)
 	);
 </script>
 
-<label class="block w-full text-sm font-medium select-none">
-	<!-- Label and Value/Errors -->
-	<div class="inline-flex flex-row items-center align-middle">
-		{#if label}
-			<p class="indent-2">{label}</p>
-		{/if}
-		{#if showValue}
-			<p class="indent-2 font-spacemono text-xs text-muted-foreground">
-				{displayValue}
-			</p>
-		{/if}
-		{#if errors}
-			{#each errors as error, i (i)}
-				<p class="indent-2 font-spacemono text-xs text-red-400">
-					({error})
-				</p>
-			{/each}
-		{/if}
-	</div>
+<div class={cn(FIELD_ROOT, className)}>
+	<KleriFieldLabel id={controlId} {label} {errors} hint={showValue ? displayValue : undefined} />
 
 	<!-- Slider -->
-	<div class={cn('my-1 w-full', errors && errors.length > 0 && 'shake-it', className)}>
+	<div class="my-1 w-full" class:kleri-shake={hasErrors || shake}>
 		<Slider.Root
 			{type}
-			bind:value={value as never}
+			bind:value={
+				// `type` decides whether bits-ui wants a number or a number[]; the
+				// public `value` prop covers both, so the cast is unavoidable here.
+				value as never
+			}
 			{min}
 			{max}
 			{step}
 			{disabled}
-			class="relative flex w-full touch-none items-center select-none data-disabled:opacity-50"
+			onValueChange={((next: number | number[]) => onValueChange?.(next)) as never}
+			aria-labelledby={label ? controlId : undefined}
+			class="relative flex w-full touch-none items-center select-none data-disabled:cursor-not-allowed data-disabled:opacity-50"
 		>
 			{#snippet children({ thumbItems })}
 				<span class="relative h-2 w-full grow cursor-pointer overflow-hidden rounded-full bg-muted">
@@ -74,56 +87,11 @@
 				{#each thumbItems as thumb (thumb.index)}
 					<Slider.Thumb
 						index={thumb.index}
-						class="relative block size-4 shrink-0 cursor-pointer rounded-full border-2 border-white bg-white shadow-md ring-kleri-2/50 select-none after:absolute after:-inset-2 hover:ring-2 focus-visible:ring-2 focus-visible:outline-hidden active:ring-2 disabled:pointer-events-none disabled:opacity-50"
+						aria-label={ariaLabel ?? label}
+						class="relative block size-4 shrink-0 cursor-pointer rounded-full border-2 border-white bg-white shadow-md ring-kleri-2/50 select-none after:absolute after:-inset-2 hover:ring-2 focus-visible:ring-2 focus-visible:outline-hidden active:ring-2 data-disabled:pointer-events-none data-disabled:opacity-50"
 					/>
 				{/each}
 			{/snippet}
 		</Slider.Root>
 	</div>
-</label>
-
-<style>
-	@keyframes shake-it {
-		0% {
-			transform: translateX(0);
-		}
-		10% {
-			transform: translateX(-9px);
-		}
-		20% {
-			transform: translateX(8px);
-		}
-		30% {
-			transform: translateX(-7px);
-		}
-		40% {
-			transform: translateX(6px);
-		}
-		50% {
-			transform: translateX(-5px);
-		}
-		60% {
-			transform: translateX(4px);
-		}
-		70% {
-			transform: translateX(-3px);
-		}
-		80% {
-			transform: translateX(2px);
-		}
-		90% {
-			transform: translateX(-1px);
-		}
-		100% {
-			transform: translateX(0);
-		}
-	}
-
-	.shake-it {
-		animation: shake-it 0.5s ease-in-out;
-	}
-
-	.kleri-bg {
-		background: linear-gradient(90deg, var(--color-kleri-1), var(--color-kleri-2));
-	}
-</style>
+</div>
