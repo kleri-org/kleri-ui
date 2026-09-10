@@ -2,6 +2,7 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import { getCurrentWebview } from '@tauri-apps/api/webview';
+	import { convertFileSrc } from '@tauri-apps/api/core';
 	import { open } from '@tauri-apps/plugin-dialog';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { WithElementRef } from '$lib/utils.js';
@@ -9,7 +10,8 @@
 		type FileTypeName,
 		getDefaultSubText,
 		getErrorSubText,
-		FILE_TYPE_REGISTRY
+		FILE_TYPE_REGISTRY,
+		IMAGE_EXTENSIONS
 	} from '$lib/input/dragndrop/dragndrop-utils.js';
 	import DragNDropChrome from '$lib/input/dragndrop/DragNDropChrome.svelte';
 	import { Popover, PopoverContent, PopoverTrigger } from '$lib/menus/popover/index.js';
@@ -114,6 +116,9 @@
 	let isDestroyed = false;
 	let popoverOpen = $state(false);
 
+	/** The dropzone element, used to hit-test window-level drag events. */
+	let dropzoneEl = $state<HTMLElement | null>(null);
+
 	/** Extract the file name from a full path. */
 	function getFileName(path: string): string {
 		return path.split('/').pop() ?? path;
@@ -139,6 +144,16 @@
 		} else if ((status as Extract<DropzoneStatus, { state: 'accepted' }>).fileCount !== count) {
 			status = { state: 'accepted', fileCount: count };
 		}
+	});
+
+	// Image preview URL (Tauri asset protocol) for the most recent image path.
+	let imagePreview = $derived.by(() => {
+		if (typeof window === 'undefined') return null;
+		const imgPath =
+			[...files]
+				.reverse()
+				.find((p) => IMAGE_EXTENSIONS.some((ext) => p.toLowerCase().endsWith(ext))) ?? null;
+		return imgPath ? convertFileSrc(imgPath) : null;
 	});
 
 	// -----------------------------------------------------------------------
@@ -334,18 +349,60 @@
 	// Tauri drag‑and‑drop events
 	// -----------------------------------------------------------------------
 
+	/**
+	 * Whether a drag event landed on *this* dropzone.
+	 *
+	 * `onDragDropEvent` is a window-level listener, so every mounted dropzone
+	 * hears every drop.  Without this check a page with two dropzones (a colour
+	 * and a mono logo, say) would fill both from a single file.  The payload
+	 * carries physical pixels relative to the window; the webview fills the
+	 * window on every platform we build for, so dividing by the device pixel
+	 * ratio lands in the same space as `getBoundingClientRect`.
+	 */
+	function isEventInside(position: { x: number; y: number }): boolean {
+		if (!dropzoneEl) return false;
+
+		const rect = dropzoneEl.getBoundingClientRect();
+		// A hidden or unlaid-out element has a zero-area box and can never be
+		// the drop target.
+		if (rect.width === 0 || rect.height === 0) return false;
+
+		const ratio = window.devicePixelRatio || 1;
+		const x = position.x / ratio;
+		const y = position.y / ratio;
+
+		return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+	}
+
 	onMount(async () => {
 		try {
 			const unlisten = await getCurrentWebview().onDragDropEvent((event) => {
 				if (event.payload.type === 'over' || event.payload.type === 'enter') {
-					status = { state: 'hover' };
+					const inside = isEventInside(event.payload.position);
+					if (inside) {
+						status = { state: 'hover' };
+					} else if (status.state === 'hover') {
+						// The cursor moved off this zone onto a sibling.
+						status =
+							files.length > 0 ? { state: 'accepted', fileCount: files.length } : { state: 'idle' };
+					}
 				} else if (event.payload.type === 'drop') {
+					if (!isEventInside(event.payload.position)) {
+						if (status.state === 'hover') {
+							status =
+								files.length > 0
+									? { state: 'accepted', fileCount: files.length }
+									: { state: 'idle' };
+						}
+						return;
+					}
 					const paths = event.payload.paths ?? [];
 					handlePaths(paths);
 				} else {
 					// cancelled or leave
 					if (status.state !== 'error') {
-						status = { state: 'idle' };
+						status =
+							files.length > 0 ? { state: 'accepted', fileCount: files.length } : { state: 'idle' };
 					}
 				}
 			});
@@ -375,6 +432,8 @@
 	subText={resolvedSubText}
 	{label}
 	class={className}
+	{imagePreview}
+	bind:ref={dropzoneEl}
 	onclick={handleClick}
 	onkeydown={handleKeyDown}
 	{...restProps}

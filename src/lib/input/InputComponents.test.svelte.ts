@@ -2,6 +2,7 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/svelte';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Mail } from '@lucide/svelte';
 import KleriInput from './KleriInput.svelte';
+import KleriTextarea from './KleriTextarea.svelte';
 import KleriSwitch from './KleriSwitch.svelte';
 import KleriSlider from './KleriSlider.svelte';
 
@@ -48,6 +49,48 @@ describe('KleriInput', () => {
 
 		await fireEvent.click(screen.getByRole('button'));
 		expect(input).toHaveAttribute('type', 'text');
+	});
+});
+describe('KleriTextarea', () => {
+	afterEach(() => {
+		cleanup();
+	});
+
+	it('renders label, placeholder, required state, and an editable textarea', async () => {
+		render(KleriTextarea, {
+			props: {
+				label: 'Bio',
+				placeholder: 'Tell us about yourself',
+				required: true,
+				InputIcon: Mail,
+				value: ''
+			}
+		});
+
+		const textarea = screen.getByPlaceholderText('Tell us about yourself');
+		expect(screen.getByText('Bio')).toBeInTheDocument();
+		expect(textarea).toBeRequired();
+		expect(textarea).toHaveAttribute('rows', '4');
+
+		await fireEvent.input(textarea, { target: { value: 'Hello from kleri' } });
+		expect(textarea).toHaveValue('Hello from kleri');
+	});
+
+	it('shows validation errors', () => {
+		render(KleriTextarea, {
+			props: { label: 'About', InputIcon: Mail, errors: ['Required', 'Too short'] }
+		});
+
+		expect(screen.getByText('(Required)')).toBeInTheDocument();
+		expect(screen.getByText('(Too short)')).toBeInTheDocument();
+	});
+
+	it('applies the shake animation when shake is true', () => {
+		const { container } = render(KleriTextarea, {
+			props: { label: 'Bio', shake: true }
+		});
+
+		expect(container.querySelector('.shake-it')).not.toBeNull();
 	});
 });
 

@@ -104,7 +104,11 @@
 
 <Dialog.Root bind:open onOpenChange={handleOpenChange} {...restProps}>
 	{#if trigger}
-		<Dialog.Trigger bind:ref={triggerElement} onclick={handleTriggerClick}>
+		<Dialog.Trigger
+			bind:ref={triggerElement}
+			onclick={handleTriggerClick}
+			class={cn('transition-opacity duration-200', open && 'opacity-0', triggerClass)}
+		>
 			{@render trigger()}
 		</Dialog.Trigger>
 	{:else}
@@ -113,7 +117,7 @@
 			onclick={handleTriggerClick}
 			class={cn(
 				'w-full rounded-kleri border-2 border-black bg-primary p-2 px-4 text-base font-normal text-background ring-0 transition-opacity duration-200 hover:text-black hover:ring-0 hover:shadow-black/50 hover:kleri-bg disabled:cursor-not-allowed disabled:border-none disabled:bg-primary/50 disabled:text-black disabled:shadow-none disabled:ring-0',
-				(open || isClosing) && 'opacity-0',
+				open && 'opacity-0',
 				triggerClass
 			)}
 		>
@@ -201,7 +205,7 @@
 					</Dialog.Description>
 				{/if}
 
-				<div class="no-scrollbar max-h-[60vh] overflow-y-auto px-8 pt-4 pb-5">
+				<div class="no-scrollbar max-h-[85vh] overflow-y-auto px-8 pt-4 pb-5">
 					{@render children?.()}
 				</div>
 			</div>

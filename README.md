@@ -216,6 +216,45 @@ Text input with label, error display, icon, and password toggle.
 | `shake`       | `boolean`             | `false`  | Trigger shake animation                   |
 | `class`       | `ClassValue`          | —        | Additional CSS classes                    |
 
+#### KleriTextarea
+
+Multi-line text box with label, error display, optional icon, and shake animation.
+
+```svelte
+<script>
+	import { KleriTextarea } from '@kleri/ui';
+	import { FileText } from '@lucide/svelte';
+	let value = $state('');
+	let errors = $state([]);
+</script>
+
+<KleriTextarea
+	bind:value
+	label="Bio"
+	bind:errors
+	placeholder="Tell us about yourself"
+	InputIcon={FileText}
+	rows={4}
+	resize="none"
+	withBorder={true}
+	required={true}
+/>
+```
+
+| Prop          | Type                             | Default  | Description                               |
+| ------------- | -------------------------------- | -------- | ----------------------------------------- |
+| `value`       | `string` (bindable)              | `""`     | Textarea value                            |
+| `label`       | `string`                         | —        | Label text                                |
+| `errors`      | `string[]` (bindable)            | `[]`     | Error messages (shakes textarea)          |
+| `placeholder` | `string`                         | `""`     | Placeholder text                          |
+| `InputIcon`   | `Component`                      | —        | Icon component (lucide-svelte compatible) |
+| `rows`        | `number`                         | `4`      | Visible rows                              |
+| `resize`      | `'none' \| 'y' \| 'x' \| 'both'` | `'none'` | CSS resize behavior                       |
+| `withBorder`  | `boolean`                        | `true`   | Show border                               |
+| `required`    | `boolean`                        | —        | HTML required attribute                   |
+| `shake`       | `boolean`                        | `false`  | Trigger shake animation                   |
+| `class`       | `ClassValue`                     | —        | Additional CSS classes                    |
+
 ---
 
 #### KleriSwitch

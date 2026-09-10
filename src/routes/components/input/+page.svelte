@@ -1,6 +1,7 @@
 <script lang="ts">
 	import KleriSwitch from '$lib/input/KleriSwitch.svelte';
 	import KleriInput from '$lib/input/KleriInput.svelte';
+	import KleriTextarea from '$lib/input/KleriTextarea.svelte';
 	import KleriSlider from '$lib/input/KleriSlider.svelte';
 	import KleriDragNDrop from '$lib/input/dragndrop/KleriDragNDrop.svelte';
 	import { KleriToggleGroup, KleriToggleGroupItem } from '$lib/toggle';
@@ -41,6 +42,34 @@
 			inputProps.errors = ['Invalid input'];
 		} else {
 			inputProps.errors = [];
+		}
+	});
+	let textareaProps = $state({
+		value: '',
+		label: 'Bio',
+		placeholder: 'Tell us about yourself',
+		required: false,
+		withBorder: true,
+		resize: 'none',
+		rows: 4,
+		shake: false,
+		errors: [] as string[]
+	});
+	const textareaSchema = {
+		label: { type: 'string' as const, label: 'Label' },
+		placeholder: { type: 'string' as const, label: 'Placeholder' },
+		required: { type: 'boolean' as const, label: 'Required' },
+		withBorder: { type: 'boolean' as const, label: 'With Border' },
+		resize: { type: 'string' as const, label: 'Resize (none | y | x | both)' },
+		rows: { type: 'number' as const, label: 'Rows' },
+		shake: { type: 'boolean' as const, label: 'Shake' }
+	};
+
+	$effect(() => {
+		if (textareaProps.shake) {
+			textareaProps.errors = ['Invalid input'];
+		} else {
+			textareaProps.errors = [];
 		}
 	});
 
@@ -203,6 +232,44 @@
 					Props
 				</h2>
 				<PropControls schema={inputSchema} bind:values={inputProps} />
+			</div>
+		</div>
+	</section>
+	<!-- KleriTextarea -->
+	<section id="kleri-textarea" class="scroll-mt-8 space-y-6">
+		<div class="space-y-2">
+			<h2 class="text-2xl font-bold text-foreground">KleriTextarea</h2>
+			<p class="text-muted-foreground">
+				Multi-line text box with label, error states, optional icon, and shake animation.
+			</p>
+		</div>
+		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+			<div class="space-y-4 lg:col-span-2">
+				<div
+					class="flex min-h-60 items-center justify-center rounded-xl border-2 border-border/50 bg-card/30 p-12"
+				>
+					<div class="w-full max-w-sm">
+						<KleriTextarea
+							bind:value={textareaProps.value}
+							label={textareaProps.label}
+							placeholder={textareaProps.placeholder}
+							required={textareaProps.required}
+							withBorder={textareaProps.withBorder}
+							resize={textareaProps.resize as 'none' | 'y' | 'x' | 'both'}
+							rows={textareaProps.rows}
+							bind:errors={textareaProps.errors}
+						/>
+					</div>
+				</div>
+				<CodePreview component="KleriTextarea" props={textareaProps} />
+			</div>
+			<div class="h-fit rounded-xl border-2 border-border/50 bg-card/30 p-6">
+				<h2
+					class="mb-4 font-spacemono text-sm font-semibold tracking-wider text-foreground uppercase"
+				>
+					Props
+				</h2>
+				<PropControls schema={textareaSchema} bind:values={textareaProps} />
 			</div>
 		</div>
 	</section>

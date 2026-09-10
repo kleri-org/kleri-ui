@@ -132,6 +132,41 @@
 	let resolvedSubText = $derived(consumerSubText ?? getDefaultSubText(allowedTypes));
 
 	// -----------------------------------------------------------------------
+	// Image preview (object URL lifecycle)
+	// -----------------------------------------------------------------------
+
+	/** Returns the most recently added image file, or null when none. */
+	function getLatestImage(files: File[]): File | null {
+		for (let i = files.length - 1; i >= 0; i--) {
+			if (isAllowedFile(files[i], ['image'])) return files[i];
+		}
+		return null;
+	}
+
+	let previewUrl = $state<string | null>(null);
+	// Plain (non-reactive) trackers so the effect depends only on acceptedFiles.
+	let currentPreviewFile: File | null = null;
+	let currentPreviewObjectUrl: string | null = null;
+
+	$effect(() => {
+		const imageFile = getLatestImage(acceptedFiles);
+		if (imageFile === currentPreviewFile) return;
+
+		if (currentPreviewObjectUrl) {
+			URL.revokeObjectURL(currentPreviewObjectUrl);
+			currentPreviewObjectUrl = null;
+		}
+
+		currentPreviewFile = imageFile;
+		if (imageFile) {
+			currentPreviewObjectUrl = URL.createObjectURL(imageFile);
+			previewUrl = currentPreviewObjectUrl;
+		} else {
+			previewUrl = null;
+		}
+	});
+
+	// -----------------------------------------------------------------------
 	// File handling
 	// -----------------------------------------------------------------------
 
@@ -330,6 +365,10 @@
 	onDestroy(() => {
 		isDestroyed = true;
 		clearErrorTimeout();
+		if (currentPreviewObjectUrl) {
+			URL.revokeObjectURL(currentPreviewObjectUrl);
+			currentPreviewObjectUrl = null;
+		}
 	});
 </script>
 
@@ -349,6 +388,7 @@
 	subText={resolvedSubText}
 	{label}
 	class={className}
+	imagePreview={previewUrl}
 	onclick={handleClick}
 	onkeydown={handleKeyDown}
 	ondragover={handleDragOver}

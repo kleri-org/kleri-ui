@@ -132,6 +132,31 @@ test.describe('KleriInput', () => {
 		});
 	});
 });
+test.describe('KleriTextarea', () => {
+	test.beforeEach(async ({ page }) => {
+		await page.goto('/components/input');
+		await page.locator('#kleri-textarea').scrollIntoViewIfNeeded();
+	});
+
+	test('accepts typed input', async ({ page }) => {
+		const textarea = page.locator('#kleri-textarea').getByLabel('Bio');
+		await expect(textarea).toBeVisible();
+
+		await textarea.fill('Hello from kleri');
+		await expect(textarea).toHaveValue('Hello from kleri');
+	});
+
+	test('shake animation triggers on error', async ({ page }) => {
+		// Toggle "Shake" in PropControls boolean switch
+		const shakeToggle = page.locator('#kleri-textarea').getByRole('switch', { name: 'Shake' });
+		await shakeToggle.click();
+
+		// Error state is visible in the live preview
+		await expect(
+			page.locator('#kleri-textarea p').filter({ hasText: 'Invalid input' })
+		).toBeVisible({ timeout: 3000 });
+	});
+});
 
 test.describe('KleriTooltip', () => {
 	test.beforeEach(async ({ page }) => {
