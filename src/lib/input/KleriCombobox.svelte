@@ -93,6 +93,14 @@
 		searchValue = event.currentTarget.value;
 	}
 
+	/**
+	 * Clicking the field is a request to see the options, exactly like the
+	 * chevron. Without this the list only appears once the user types.
+	 */
+	function handleInputClick() {
+		if (!open) open = true;
+	}
+
 	function handleOpenChange(nextOpen: boolean) {
 		if (!nextOpen) searchValue = '';
 	}
@@ -129,6 +137,7 @@
 				aria-label={ariaLabel ?? label ?? placeholder}
 				aria-invalid={hasErrors || undefined}
 				oninput={handleInput}
+				onclick={handleInputClick}
 				class={FIELD_CONTROL}
 			/>
 			<Combobox.Trigger
