@@ -1,6 +1,7 @@
 <script lang="ts">
 	import KleriSwitch from '$lib/input/KleriSwitch.svelte';
 	import KleriInput from '$lib/input/KleriInput.svelte';
+	import KleriCombobox from '$lib/input/KleriCombobox.svelte';
 	import KleriTextarea from '$lib/input/KleriTextarea.svelte';
 	import KleriSlider from '$lib/input/KleriSlider.svelte';
 	import KleriDragNDrop from '$lib/input/dragndrop/KleriDragNDrop.svelte';
@@ -35,6 +36,27 @@
 		required: { type: 'boolean' as const, label: 'Required' },
 		withBorder: { type: 'boolean' as const, label: 'With Border' },
 		shake: { type: 'boolean' as const, label: 'Shake' }
+	};
+
+	const frameworkOptions = [
+		{ value: 'svelte', label: 'Svelte', description: 'Compiler-first UI framework' },
+		{ value: 'sveltekit', label: 'SvelteKit', description: 'Full-stack Svelte framework' },
+		{ value: 'react', label: 'React', description: 'Component library for the web' },
+		{ value: 'solid', label: 'Solid', description: 'Fine-grained reactive UI' }
+	];
+	let comboboxProps = $state({
+		value: '',
+		label: 'Framework',
+		placeholder: 'Search a framework…',
+		disabled: false,
+		required: false,
+		errors: [] as string[]
+	});
+	const comboboxSchema = {
+		label: { type: 'string' as const, label: 'Label' },
+		placeholder: { type: 'string' as const, label: 'Placeholder' },
+		disabled: { type: 'boolean' as const, label: 'Disabled' },
+		required: { type: 'boolean' as const, label: 'Required' }
 	};
 
 	$effect(() => {
@@ -235,6 +257,48 @@
 			</div>
 		</div>
 	</section>
+
+	<!-- KleriCombobox -->
+	<section id="kleri-combobox" class="scroll-mt-8 space-y-6">
+		<div class="space-y-2">
+			<h2 class="text-2xl font-bold text-foreground">KleriCombobox</h2>
+			<p class="text-muted-foreground">
+				Searchable option picker with accessible keyboard navigation and selected-state feedback.
+			</p>
+		</div>
+		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+			<div class="space-y-4 lg:col-span-2">
+				<div
+					class="flex min-h-60 items-center justify-center rounded-xl border-2 border-border/50 bg-card/30 p-12"
+				>
+					<div class="w-full max-w-sm">
+						<KleriCombobox
+							items={frameworkOptions}
+							bind:value={comboboxProps.value}
+							label={comboboxProps.label}
+							placeholder={comboboxProps.placeholder}
+							disabled={comboboxProps.disabled}
+							required={comboboxProps.required}
+							errors={comboboxProps.errors}
+						/>
+					</div>
+				</div>
+				<CodePreview
+					component="KleriCombobox"
+					props={{ ...comboboxProps, items: frameworkOptions }}
+				/>
+			</div>
+			<div class="h-fit rounded-xl border-2 border-border/50 bg-card/30 p-6">
+				<h2
+					class="mb-4 font-spacemono text-sm font-semibold tracking-wider text-foreground uppercase"
+				>
+					Props
+				</h2>
+				<PropControls schema={comboboxSchema} bind:values={comboboxProps} />
+			</div>
+		</div>
+	</section>
+
 	<!-- KleriTextarea -->
 	<section id="kleri-textarea" class="scroll-mt-8 space-y-6">
 		<div class="space-y-2">

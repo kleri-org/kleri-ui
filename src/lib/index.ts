@@ -21,6 +21,8 @@ export type { ButtonGroupItem } from './button/KleriButtonGroup/types.js';
 
 export { default as KleriSwitch } from './input/KleriSwitch.svelte';
 export { default as KleriInput } from './input/KleriInput.svelte';
+export { default as KleriCombobox } from './input/KleriCombobox.svelte';
+export type { KleriComboboxItem } from './input/KleriCombobox.svelte';
 export { default as KleriTextarea } from './input/KleriTextarea.svelte';
 export { default as KleriSlider } from './input/KleriSlider.svelte';
 export { default as KleriDragNDrop } from './input/dragndrop/KleriDragNDrop.svelte';

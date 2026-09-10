@@ -32,7 +32,7 @@
 		{
 			name: 'Input',
 			description: 'Switches, text inputs, and form controls',
-			count: 3,
+			count: 4,
 			comingSoon: false,
 			route: '/components/input',
 			icon: TextCursorInput

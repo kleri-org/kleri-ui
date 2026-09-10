@@ -62,6 +62,7 @@
 			items: [
 				{ name: 'KleriSwitch', id: 'kleri-switch', icon: ToggleLeft },
 				{ name: 'KleriInput', id: 'kleri-input', icon: TextCursorInput },
+				{ name: 'KleriCombobox', id: 'kleri-combobox', icon: TextCursorInput },
 				{ name: 'KleriTextarea', id: 'kleri-textarea', icon: Text },
 				{ name: 'KleriSlider', id: 'kleri-slider', icon: SlidersHorizontal },
 				{ name: 'KleriToggleGroup', id: 'kleri-toggle-group', icon: ToggleRight },

@@ -2,6 +2,7 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/svelte';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Mail } from '@lucide/svelte';
 import KleriInput from './KleriInput.svelte';
+import KleriCombobox from './KleriCombobox.svelte';
 import KleriTextarea from './KleriTextarea.svelte';
 import KleriSwitch from './KleriSwitch.svelte';
 import KleriSlider from './KleriSlider.svelte';
@@ -49,6 +50,46 @@ describe('KleriInput', () => {
 
 		await fireEvent.click(screen.getByRole('button'));
 		expect(input).toHaveAttribute('type', 'text');
+	});
+});
+
+describe('KleriCombobox', () => {
+	afterEach(() => {
+		cleanup();
+	});
+
+	const items = [
+		{ value: 'svelte', label: 'Svelte', description: 'Compiler-first UI framework' },
+		{ value: 'react', label: 'React', description: 'Component library for the web' }
+	];
+
+	it('opens, filters, and selects an option', async () => {
+		render(KleriCombobox, {
+			props: { label: 'Framework', placeholder: 'Search frameworks', items }
+		});
+
+		const input = screen.getByRole('combobox', { name: 'Framework' });
+		await fireEvent.pointerDown(screen.getByRole('button', { name: 'Open Framework' }), {
+			button: 0,
+			pointerType: 'mouse'
+		});
+		await fireEvent.input(input, { target: { value: 'svelte' } });
+		expect(screen.getByText('Svelte')).toBeInTheDocument();
+		expect(screen.queryByText('React')).not.toBeInTheDocument();
+
+		const option = screen.getByText('Svelte');
+		await fireEvent.pointerDown(option, { button: 0, pointerType: 'mouse' });
+		await fireEvent.pointerUp(option, { button: 0, pointerType: 'mouse' });
+		expect(input).toHaveValue('Svelte');
+	});
+
+	it('renders errors and prevents interaction when disabled', () => {
+		render(KleriCombobox, {
+			props: { label: 'Framework', items, errors: ['Choose one'], disabled: true }
+		});
+
+		expect(screen.getByText('(Choose one)')).toBeInTheDocument();
+		expect(screen.getByRole('combobox', { name: 'Framework' })).toBeDisabled();
 	});
 });
 describe('KleriTextarea', () => {
