@@ -2,7 +2,7 @@
 	import { ToggleGroup as ToggleGroupPrimitive } from 'bits-ui';
 	import { cn } from '$lib/utils.js';
 	import { setToggleGroupCtx } from './toggle-group-context.js';
-	import type { ToggleVariants } from './toggle-variants.js';
+	import { kleriToggleActiveClass, type ToggleVariants } from './toggle-variants.js';
 
 	let {
 		ref = $bindable(null),
@@ -11,10 +11,17 @@
 		size = 'default',
 		variant = 'default',
 		orientation = 'horizontal',
+		activeClass = kleriToggleActiveClass,
 		...restProps
 	}: ToggleGroupPrimitive.RootProps &
 		ToggleVariants & {
 			orientation?: 'horizontal' | 'vertical';
+			/**
+			 * Tailwind classes applied to items while they are active, e.g.
+			 * `activeClass="bg-primary text-white"`. Plain utilities only —
+			 * the active state is applied for you, no prefix needed.
+			 */
+			activeClass?: string;
 		} = $props();
 
 	setToggleGroupCtx({
@@ -26,6 +33,12 @@
 		},
 		get orientation() {
 			return orientation;
+		},
+		get activeClass() {
+			return activeClass;
+		},
+		get value() {
+			return value as string | string[] | undefined;
 		}
 	});
 </script>

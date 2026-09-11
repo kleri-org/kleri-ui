@@ -3,6 +3,7 @@ export { default as KleriToggleGroupItem } from './KleriToggleGroupItem.svelte';
 
 export {
 	kleriToggleVariants,
+	kleriToggleActiveClass,
 	type ToggleVariant,
 	type ToggleSize,
 	type ToggleVariants

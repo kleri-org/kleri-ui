@@ -3,6 +3,9 @@ import type { ToggleVariants } from './toggle-variants.js';
 
 interface ToggleGroupContext extends ToggleVariants {
 	orientation?: 'horizontal' | 'vertical';
+	activeClass?: string;
+	/** Live selection state, mirrored from `ToggleGroup.Root`. */
+	value?: string | string[];
 }
 
 export function setToggleGroupCtx(props: ToggleGroupContext) {

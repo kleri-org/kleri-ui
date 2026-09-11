@@ -6,7 +6,7 @@
 	import KleriTextarea from '$lib/input/KleriTextarea.svelte';
 	import KleriSlider from '$lib/input/KleriSlider.svelte';
 	import KleriDragNDrop from '$lib/input/dragndrop/KleriDragNDrop.svelte';
-	import { KleriToggleGroup, KleriToggleGroupItem } from '$lib/toggle';
+	import { KleriToggleGroup, KleriToggleGroupItem, kleriToggleActiveClass } from '$lib/toggle';
 	import { MonitorCog, Moon, Sun } from '@lucide/svelte';
 	import { PropControls, CodePreview } from '$lib/preview';
 
@@ -165,12 +165,17 @@
 	let toggleGroupProps = $state({
 		variant: 'default',
 		size: 'default',
-		orientation: 'horizontal'
+		orientation: 'horizontal',
+		activeClass: kleriToggleActiveClass
 	});
 	const toggleGroupSchema = {
 		variant: { type: 'string' as const, label: 'Variant (default | outline | ghost)' },
 		size: { type: 'string' as const, label: 'Size (sm | default | lg)' },
-		orientation: { type: 'string' as const, label: 'Orientation (horizontal | vertical)' }
+		orientation: { type: 'string' as const, label: 'Orientation (horizontal | vertical)' },
+		activeClass: {
+			type: 'string' as const,
+			label: 'Active Class (tailwind)'
+		}
 	};
 
 	let sliderValue = $state(50);
@@ -431,6 +436,7 @@
 						variant={toggleGroupProps.variant as 'default' | 'outline' | 'ghost'}
 						size={toggleGroupProps.size as 'sm' | 'default' | 'lg'}
 						orientation={toggleGroupProps.orientation as 'horizontal' | 'vertical'}
+						activeClass={toggleGroupProps.activeClass}
 					>
 						<KleriToggleGroupItem value="bold">Bold</KleriToggleGroupItem>
 						<KleriToggleGroupItem value="italic">Italic</KleriToggleGroupItem>

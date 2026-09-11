@@ -46,6 +46,7 @@ export { default as KleriWindowsControls } from './tauri/KleriWindowsControls.sv
 export { default as KleriToggleGroup } from './toggle/KleriToggleGroup.svelte';
 export { default as KleriToggleGroupItem } from './toggle/KleriToggleGroupItem.svelte';
 export type { ToggleVariant, ToggleSize, ToggleVariants } from './toggle/toggle-variants.js';
+export { kleriToggleActiveClass } from './toggle/toggle-variants.js';
 export {
 	Dialog,
 	DialogClose,
