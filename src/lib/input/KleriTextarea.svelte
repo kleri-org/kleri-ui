@@ -108,7 +108,6 @@
 			class={cn(FIELD_CONTROL, 'kleri-scrollbar', resizeClass)}
 			bind:value
 			{...restProps}
-			oninput={handleInput}
-		></textarea>
+			oninput={handleInput}></textarea>
 	</div>
 </div>

@@ -4,12 +4,9 @@ export const kleriToggleVariants = tv({
 	base: 'inline-flex cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap border-2 font-normal transition-colors transition-transform duration-150 ease-out select-none active:scale-[0.97] focus-visible:z-10 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0',
 	variants: {
 		variant: {
-			default:
-				'border-transparent bg-muted/30 text-foreground hover:bg-muted data-[state=on]:kleri-bg data-[state=on]:border-black data-[state=on]:text-black',
-			outline:
-				'border-border bg-transparent text-foreground hover:bg-muted/50 data-[state=on]:kleri-bg data-[state=on]:border-black data-[state=on]:text-black',
-			ghost:
-				'border-transparent bg-transparent text-foreground hover:bg-muted/50 data-[state=on]:kleri-bg data-[state=on]:border-black data-[state=on]:text-black'
+			default: 'border-transparent bg-muted/30 text-foreground data-[state=off]:hover:bg-muted',
+			outline: 'border-border bg-transparent text-foreground data-[state=off]:hover:bg-muted/50',
+			ghost: 'border-transparent bg-transparent text-foreground data-[state=off]:hover:bg-muted/50'
 		},
 		size: {
 			sm: 'h-7 min-w-7 rounded-lg px-2.5 text-xs [&_svg]:size-3.5',
@@ -26,3 +23,10 @@ export const kleriToggleVariants = tv({
 export type ToggleVariant = VariantProps<typeof kleriToggleVariants>['variant'];
 export type ToggleSize = VariantProps<typeof kleriToggleVariants>['size'];
 export type ToggleVariants = VariantProps<typeof kleriToggleVariants>;
+
+/**
+ * Default classes applied to a toggle group item while it is active. Plain
+ * Tailwind utilities — the component applies them only in the active state, so
+ * no `data-[state=on]:` prefix is needed.
+ */
+export const kleriToggleActiveClass = 'kleri-bg';
