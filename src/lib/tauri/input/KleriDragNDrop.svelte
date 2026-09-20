@@ -1,109 +1,41 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
-	import { fade } from 'svelte/transition';
+	import { onDestroy } from 'svelte';
 	import { getCurrentWebview } from '@tauri-apps/api/webview';
 	import { convertFileSrc } from '@tauri-apps/api/core';
 	import { open } from '@tauri-apps/plugin-dialog';
-	import type { HTMLAttributes } from 'svelte/elements';
-	import type { ClassValue } from 'clsx';
-	import type { WithElementRef } from '$lib/utils.js';
 	import {
-		type FileTypeName,
 		getDefaultSubText,
 		getErrorSubText,
+		createErrorTimer,
+		getFileName,
+		restingStatus,
 		FILE_TYPE_REGISTRY,
-		IMAGE_EXTENSIONS
+		IMAGE_EXTENSIONS,
+		type DropzoneStatus
 	} from '$lib/input/dragndrop/dragndrop-utils.js';
+	import type { DropzoneBaseProps, DropzoneEntry } from '$lib/input/dragndrop/dragndrop-props.js';
 	import DragNDropChrome from '$lib/input/dragndrop/DragNDropChrome.svelte';
-	import { Popover, PopoverContent, PopoverTrigger } from '$lib/menus/popover/index.js';
-	import { KleriButtonGroup } from '$lib/button/KleriButtonGroup/index.js';
-	import { FileText, Files, X } from '@lucide/svelte';
+	import DragNDropFileList from '$lib/input/dragndrop/DragNDropFileList.svelte';
+	import { syncDropzoneStatus } from '$lib/input/dragndrop/use-dropzone-status.svelte.js';
 
-	// -----------------------------------------------------------------------
-	// Status type (mirrors DragNDropChrome)
-	// -----------------------------------------------------------------------
-
-	type DropzoneStatus =
-		| { state: 'idle' }
-		| { state: 'hover' }
-		| { state: 'accepted'; fileCount: number }
-		| { state: 'error'; message: string };
-
-	// -----------------------------------------------------------------------
-	// Props
-	// -----------------------------------------------------------------------
-
-	type Props = {
-		/**
-		 * Allowed file types.  Pass an empty array or omit to accept any file.
-		 *
-		 * Built‑in values: `"image"`, `"pdf"`.  Custom types can be registered
-		 * via `FILE_TYPE_REGISTRY` in `dragndrop-utils.ts`.
-		 */
-		allowedTypes?: FileTypeName[];
-
+	type Props = DropzoneBaseProps & {
 		/**
 		 * Called with the accepted file paths after a successful drop or file
-		 * selection.  Only fires when at least one path passes validation.
+		 * selection. Only fires when at least one path passes validation.
 		 */
 		onDrop?: (paths: string[]) => void;
 
 		/**
-		 * Called with paths that were rejected (wrong type) after a drop or
-		 * file selection.  Fires for both partial and full rejections.
+		 * Called with paths that were rejected (wrong type) after a drop or file
+		 * selection. Fires for both partial and full rejections.
 		 *
-		 * When all files are rejected, `onDrop` does **not** fire.
+		 * When all paths are rejected, `onDrop` does **not** fire.
 		 */
 		onRejected?: (rejected: Array<{ path: string; reason: string }>) => void;
 
-		/**
-		 * Optional class to append to the dropzone
-		 */
-		class?: ClassValue;
-
-		/**
-		 * When `false`, the dropzone accepts only a single file.
-		 * Additional files are silently ignored.
-		 * @default true
-		 */
-		multiple?: boolean;
-
-		label?: string;
-
-		/**
-		 * Validation errors. Shown next to the label.
-		 */
-		errors?: string[];
-
-		/**
-		 * Blocks dropping and browsing, and dims the dropzone.
-		 * @default false
-		 */
-		disabled?: boolean;
-
-		/**
-		 * Main heading text displayed when the dropzone is idle.
-		 * @default "Drag and Drop Your file here"
-		 */
-		mainText?: string;
-
-		/**
-		 * Hint text shown below the main heading.
-		 * When omitted, a description is auto‑generated from `allowedTypes`.
-		 */
-		subText?: string;
-
-		/**
-		 * Duration (in ms) the error state is shown before reverting to idle.
-		 * @default 3000
-		 */
-		errorDuration?: number;
-
-		/**
-		 * Bindable list of accepted file paths.
-		 */
+		/** Bindable list of accepted file paths. */
 		files?: string[];
-	} & WithElementRef<HTMLAttributes<HTMLDivElement>>;
+	};
 
 	let {
 		allowedTypes = undefined,
@@ -126,39 +58,27 @@
 	// -----------------------------------------------------------------------
 
 	let status = $state<DropzoneStatus>({ state: 'idle' });
-	let errorTimeout: ReturnType<typeof setTimeout> | null = null;
-	let isDestroyed = false;
-	let popoverOpen = $state(false);
 
 	/** The dropzone element, used to hit-test window-level drag events. */
 	let dropzoneEl = $state<HTMLElement | null>(null);
 
-	/** Extract the file name from a full path. */
-	function getFileName(path: string): string {
-		return path.split('/').pop() ?? path;
-	}
-
-	let unlistenFn: (() => void) | undefined;
-
-	// -----------------------------------------------------------------------
-	// Derived
-	// -----------------------------------------------------------------------
+	// Back to the resting state, not blindly to idle: a rejected drop on top of
+	// an existing selection should return to showing that selection.
+	const errorTimer = createErrorTimer(() => {
+		status = restingStatus(files.length);
+	});
 
 	let resolvedSubText = $derived(consumerSubText ?? getDefaultSubText(allowedTypes));
 
-	// Sync status when files are modified externally
-	$effect(() => {
-		const count = files.length;
-		if (count === 0) {
-			if (status.state !== 'idle' && status.state !== 'error') {
-				status = { state: 'idle' };
-			}
-		} else if (status.state !== 'accepted') {
-			status = { state: 'accepted', fileCount: count };
-		} else if ((status as Extract<DropzoneStatus, { state: 'accepted' }>).fileCount !== count) {
-			status = { state: 'accepted', fileCount: count };
-		}
-	});
+	let entries = $derived<DropzoneEntry[]>(
+		files.map((path) => ({ key: path, name: getFileName(path) }))
+	);
+
+	syncDropzoneStatus(
+		() => files.length,
+		() => status,
+		(next) => (status = next)
+	);
 
 	// Image preview URL (Tauri asset protocol) for the most recent image path.
 	let imagePreview = $derived.by(() => {
@@ -171,19 +91,16 @@
 	});
 
 	// -----------------------------------------------------------------------
-	// Path validation (extension‑only — no MIME available for paths)
+	// Path validation (extension-only — no MIME available for paths)
 	// -----------------------------------------------------------------------
 
 	function isAllowedPath(path: string): boolean {
 		if (!allowedTypes || allowedTypes.length === 0) return true;
 
 		const lower = path.toLowerCase();
-		for (const typeName of allowedTypes) {
-			const entry = FILE_TYPE_REGISTRY[typeName];
-			if (!entry) continue;
-			if (entry.extensions.some((ext) => lower.endsWith(ext))) return true;
-		}
-		return false;
+		return allowedTypes.some((typeName) =>
+			FILE_TYPE_REGISTRY[typeName]?.extensions.some((ext) => lower.endsWith(ext))
+		);
 	}
 
 	function classifyPaths(paths: string[]): {
@@ -197,10 +114,7 @@
 			if (isAllowedPath(path)) {
 				accepted.push(path);
 			} else {
-				rejected.push({
-					path,
-					reason: getErrorSubText(allowedTypes ?? [])
-				});
+				rejected.push({ path, reason: getErrorSubText(allowedTypes ?? []) });
 			}
 		}
 
@@ -210,68 +124,35 @@
 	function handlePaths(paths: string[]) {
 		if (paths.length === 0) return;
 
-		clearErrorTimeout();
+		errorTimer.clear();
 
 		const { accepted, rejected } = classifyPaths(paths);
 
-		// All rejected — show error
-		if (accepted.length === 0) {
-			if (rejected.length > 0 && onRejected) {
-				onRejected(rejected);
-			}
-			const message =
-				allowedTypes && allowedTypes.length > 0
-					? getErrorSubText(allowedTypes)
-					: 'File type not supported';
+		if (rejected.length > 0) onRejected?.(rejected);
 
-			status = { state: 'error', message };
-			startErrorTimeout();
+		// All rejected — show the error and keep the current selection.
+		if (accepted.length === 0) {
+			status = {
+				state: 'error',
+				message:
+					allowedTypes && allowedTypes.length > 0
+						? getErrorSubText(allowedTypes)
+						: 'File type not supported'
+			};
+			errorTimer.start(errorDuration);
 			return;
 		}
 
-		// Fire onRejected for any rejected paths
-		if (rejected.length > 0 && onRejected) {
-			onRejected(rejected);
-		}
-
-		// Apply multiple/single logic
-		if (multiple === false) {
-			// Replace with first accepted path
+		if (!multiple) {
 			files = [accepted[0]];
 		} else {
-			// Append new paths, skip duplicates by name
-			const existingNames = new Set(files.map((p) => getFileName(p)));
-			const newPaths = accepted.filter((p) => !existingNames.has(getFileName(p)));
-			files = [...files, ...newPaths];
+			// Append new paths, skipping duplicates by name.
+			const existingNames = new Set(files.map(getFileName));
+			files = [...files, ...accepted.filter((p) => !existingNames.has(getFileName(p)))];
 		}
 
-		// Update visual state
-		status = { state: 'accepted', fileCount: files.length };
-
-		// Fire onDrop with the updated list
-		if (onDrop) {
-			onDrop(files);
-		}
-	}
-
-	// -----------------------------------------------------------------------
-	// Error timeout
-	// -----------------------------------------------------------------------
-
-	function clearErrorTimeout() {
-		if (errorTimeout !== null) {
-			clearTimeout(errorTimeout);
-			errorTimeout = null;
-		}
-	}
-
-	function startErrorTimeout() {
-		clearErrorTimeout();
-		errorTimeout = setTimeout(() => {
-			if (!isDestroyed) {
-				status = { state: 'idle' };
-			}
-		}, errorDuration);
+		status = restingStatus(files.length);
+		onDrop?.(files);
 	}
 
 	// -----------------------------------------------------------------------
@@ -279,76 +160,52 @@
 	// -----------------------------------------------------------------------
 
 	/**
-	 * Resets the dropzone to its idle state, clears the file list,
-	 * and cancels any pending error timeout.
+	 * Resets the dropzone to its idle state, clears the file list, and cancels
+	 * any pending error timeout. Does not fire `onDrop`.
 	 */
 	export function reset() {
-		clearErrorTimeout();
+		errorTimer.clear();
 		status = { state: 'idle' };
 		files = [];
 	}
 
-	/**
-	 * Removes all paths from the accepted list.
-	 */
+	function setPaths(next: string[]) {
+		files = next;
+		status = restingStatus(files.length);
+		onDrop?.(files);
+	}
+
 	function removeAllPaths() {
-		popoverOpen = false;
-		clearErrorTimeout();
-		files = [];
-		status = { state: 'idle' };
-		if (onDrop) {
-			onDrop([]);
-		}
+		errorTimer.clear();
+		setPaths([]);
 	}
 
-	/**
-	 * Removes a path from the accepted list by index.
-	 */
 	function removePath(index: number) {
-		files = files.filter((_, i) => i !== index);
-
-		if (files.length === 0) {
-			popoverOpen = false;
-			status = { state: 'idle' };
-		} else {
-			status = { state: 'accepted', fileCount: files.length };
-		}
-
-		if (onDrop) {
-			onDrop(files);
-		}
+		setPaths(files.filter((_, i) => i !== index));
 	}
 
 	// -----------------------------------------------------------------------
-	// Click‑to‑browse
+	// Click-to-browse
 	// -----------------------------------------------------------------------
 
 	export async function handleClick() {
 		if (disabled) return;
 		try {
-			const filters =
-				allowedTypes && allowedTypes.length > 0
-					? [
-							{
-								name: 'Allowed files',
-								extensions: allowedTypes.flatMap(
-									(t) => FILE_TYPE_REGISTRY[t]?.extensions.map((e) => e.slice(1)) ?? []
-								)
-							}
-						]
-					: [];
+			const extensions =
+				allowedTypes?.flatMap(
+					(t) => FILE_TYPE_REGISTRY[t]?.extensions.map((e) => e.slice(1)) ?? []
+				) ?? [];
 
 			const selected = await open({
 				directory: false,
 				multiple,
-				filters
+				filters: extensions.length > 0 ? [{ name: 'Allowed files', extensions }] : []
 			});
 
 			if (!selected) return;
 
-			// open() returns string[] | null when multiple, string | null otherwise
-			const paths = Array.isArray(selected) ? selected : selected ? [selected] : [];
-			handlePaths(paths);
+			// open() returns string[] | null when multiple, string | null otherwise.
+			handlePaths(Array.isArray(selected) ? selected : [selected]);
 		} catch (error) {
 			console.error('Failed to open file dialog:', error);
 		}
@@ -362,15 +219,15 @@
 	}
 
 	// -----------------------------------------------------------------------
-	// Tauri drag‑and‑drop events
+	// Tauri drag-and-drop events
 	// -----------------------------------------------------------------------
 
 	/**
 	 * Whether a drag event landed on *this* dropzone.
 	 *
 	 * `onDragDropEvent` is a window-level listener, so every mounted dropzone
-	 * hears every drop.  Without this check a page with two dropzones (a colour
-	 * and a mono logo, say) would fill both from a single file.  The payload
+	 * hears every drop. Without this check a page with two dropzones (a colour
+	 * and a mono logo, say) would fill both from a single file. The payload
 	 * carries physical pixels relative to the window; the webview fills the
 	 * window on every platform we build for, so dividing by the device pixel
 	 * ratio lands in the same space as `getBoundingClientRect`.
@@ -390,56 +247,64 @@
 		return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
 	}
 
-	onMount(async () => {
-		try {
-			const unlisten = await getCurrentWebview().onDragDropEvent((event) => {
+	/** Leaves the hover state without disturbing an error that is on screen. */
+	function clearHover() {
+		if (status.state === 'hover') {
+			status = restingStatus(files.length);
+		}
+	}
+
+	let unlistenFn: (() => void) | undefined;
+	let isDestroyed = false;
+
+	$effect(() => {
+		let cancelled = false;
+
+		getCurrentWebview()
+			.onDragDropEvent((event) => {
 				if (disabled) return;
+
 				if (event.payload.type === 'over' || event.payload.type === 'enter') {
-					const inside = isEventInside(event.payload.position);
-					if (inside) {
+					if (isEventInside(event.payload.position)) {
 						status = { state: 'hover' };
-					} else if (status.state === 'hover') {
+					} else {
 						// The cursor moved off this zone onto a sibling.
-						status =
-							files.length > 0 ? { state: 'accepted', fileCount: files.length } : { state: 'idle' };
+						clearHover();
 					}
 				} else if (event.payload.type === 'drop') {
 					if (!isEventInside(event.payload.position)) {
-						if (status.state === 'hover') {
-							status =
-								files.length > 0
-									? { state: 'accepted', fileCount: files.length }
-									: { state: 'idle' };
-						}
+						clearHover();
 						return;
 					}
-					const paths = event.payload.paths ?? [];
-					handlePaths(paths);
+					handlePaths(event.payload.paths ?? []);
 				} else {
 					// cancelled or leave
 					if (status.state !== 'error') {
-						status =
-							files.length > 0 ? { state: 'accepted', fileCount: files.length } : { state: 'idle' };
+						status = restingStatus(files.length);
 					}
 				}
+			})
+			.then((unlisten) => {
+				if (cancelled || isDestroyed) {
+					unlisten();
+				} else {
+					unlistenFn = unlisten;
+				}
+			})
+			.catch((error) => {
+				console.error('Failed to listen to Tauri drag/drop events:', error);
 			});
 
-			if (isDestroyed) {
-				unlisten();
-			} else {
-				unlistenFn = unlisten;
-			}
-		} catch (error) {
-			console.error('Failed to listen to Tauri drag/drop events:', error);
-		}
+		return () => {
+			cancelled = true;
+			unlistenFn?.();
+			unlistenFn = undefined;
+		};
 	});
 
 	onDestroy(() => {
 		isDestroyed = true;
-		clearErrorTimeout();
-		if (unlistenFn) {
-			unlistenFn();
-		}
+		errorTimer.clear();
 	});
 </script>
 
@@ -458,58 +323,14 @@
 	{...restProps}
 >
 	{#snippet corner()}
-		{#if files.length > 0}
-			<div transition:fade={{ duration: 150 }}>
-				<Popover bind:open={popoverOpen}>
-					<PopoverTrigger>
-						{#snippet child({ props: popoverProps })}
-							<KleriButtonGroup
-								size="xs"
-								onclick={(e) => e.stopPropagation()}
-								items={[
-									{
-										type: 'button',
-										label: '',
-										icon: Files,
-										tooltip: `${files.length} file${files.length !== 1 ? 's' : ''}`,
-										triggerProps: popoverProps,
-										class: 'rounded-r-none border-muted-foreground/50'
-									},
-									{
-										type: 'button',
-										label: '',
-										icon: X,
-										tooltip: 'Remove all files',
-										onclick: removeAllPaths,
-										class: 'rounded-l-none border-l-0 border-muted border-muted-foreground/50'
-									}
-								]}
-							/>
-						{/snippet}
-					</PopoverTrigger>
-					<PopoverContent class="w-full max-w-80" align="start" sideOffset={4}>
-						<div class="max-h-64 space-y-1.5 overflow-y-auto">
-							{#each files as path, i (path)}
-								<div
-									class="flex items-center gap-2 rounded-lg border border-border/40 bg-card/40 px-3 py-2"
-								>
-									<FileText class="size-4 shrink-0 text-muted-foreground/60" />
-									<span class="flex-1 truncate text-sm text-foreground">
-										{getFileName(path)}
-									</span>
-									<button
-										type="button"
-										class="shrink-0 rounded p-0.5 text-muted-foreground/60 transition-colors hover:text-destructive"
-										onclick={() => removePath(i)}
-									>
-										<X class="size-3.5" />
-									</button>
-								</div>
-							{/each}
-						</div>
-					</PopoverContent>
-				</Popover>
-			</div>
-		{/if}
+		<DragNDropFileList
+			{entries}
+			size="xs"
+			align="start"
+			contentClass="w-full max-w-80"
+			buttonClass="border-muted-foreground/50"
+			onRemove={removePath}
+			onRemoveAll={removeAllPaths}
+		/>
 	{/snippet}
 </DragNDropChrome>

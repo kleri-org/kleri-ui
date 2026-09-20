@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { cn } from '$lib/utils.js';
 	import { Dialog as DialogPrimitive } from 'bits-ui';
 
 	let {
@@ -9,9 +8,4 @@
 	}: DialogPrimitive.TriggerProps = $props();
 </script>
 
-<DialogPrimitive.Trigger
-	bind:ref
-	data-slot="dialog-trigger"
-	class={cn('', className)}
-	{...restProps}
-/>
+<DialogPrimitive.Trigger bind:ref data-slot="dialog-trigger" class={className} {...restProps} />

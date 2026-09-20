@@ -270,13 +270,19 @@ Toggle switch with brand checked state.
 <KleriSwitch bind:value={checked} />
 ```
 
-| Prop        | Type                         | Default           | Description            |
-| ----------- | ---------------------------- | ----------------- | ---------------------- |
-| `value`     | `boolean` (bindable)         | `false`           | Checked state          |
-| `onChecked` | `(checked: boolean) => void` | —                 | Change callback        |
-| `disabled`  | `boolean`                    | `false`           | Disabled state         |
-| `ariaLabel` | `string`                     | `"Toggle switch"` | Accessibility label    |
-| `class`     | `ClassValue`                 | —                 | Additional CSS classes |
+| Prop            | Type                       | Default           | Description                           |
+| --------------- | -------------------------- | ----------------- | ------------------------------------- |
+| `value`         | `boolean` (bindable)       | `false`           | Checked state                         |
+| `label`         | `string`                   | —                 | Text shown above the switch           |
+| `errors`        | `string[]`                 | —                 | Error messages (shakes the switch)    |
+| `onValueChange` | `(value: boolean) => void` | —                 | Called whenever the switch toggles    |
+| `disabled`      | `boolean`                  | `false`           | Disabled state                        |
+| `required`      | `boolean`                  | `false`           | HTML required attribute               |
+| `name`          | `string`                   | —                 | Name for native form submission       |
+| `shake`         | `boolean`                  | `false`           | Trigger shake animation               |
+| `ariaLabel`     | `string`                   | `"Toggle switch"` | Accessible name (unlabelled switches) |
+| `id`            | `string`                   | auto              | Control id, also used by the label    |
+| `class`         | `ClassValue`               | —                 | Additional CSS classes                |
 
 ---
 
@@ -547,6 +553,25 @@ Dynamic form controls generated from a schema.
 </script>
 
 <PropControls {schema} bind:values />
+```
+
+---
+
+### Tauri-only components
+
+These import `@tauri-apps/*`, which are **optional** peer dependencies, so they
+live behind a separate entry point and are not re-exported from `@kleri/ui`:
+
+```svelte
+<script>
+	import { KleriWindowsControls, KleriDragNDrop } from '@kleri/ui/tauri';
+</script>
+```
+
+Install the Tauri peers only if you use them:
+
+```bash
+bun add @tauri-apps/api @tauri-apps/plugin-dialog @tauri-apps/plugin-os
 ```
 
 ---

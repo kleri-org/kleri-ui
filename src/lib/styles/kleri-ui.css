@@ -1,5 +1,9 @@
 @import './fonts.css';
 @import './kleri-theme.css';
+/* Supplies the enter/exit utilities (animate-in, fade-in-0, zoom-in-95,
+   slide-in-from-*) that the dialog and popover components emit. Without
+   it those class names resolve to nothing and the components pop in. */
+@import 'tw-animate-css';
 
 @source '..';
 

@@ -6,7 +6,7 @@
 	import KleriTooltip from '$lib/tooltip/KleriTooltip.svelte';
 	import { getButtonGroupContext } from '../KleriButtonGroup/context.js';
 
-	type ButtonProps = WithElementRef<HTMLButtonAttributes>;
+	type ButtonProps = WithElementRef<HTMLButtonAttributes, HTMLButtonElement>;
 
 	interface ExtendedButtonProps extends ButtonProps {
 		tooltip?: string;
@@ -16,6 +16,7 @@
 	}
 
 	let {
+		ref = $bindable<HTMLButtonElement | null>(null),
 		children,
 		class: className,
 		tooltip,
@@ -28,6 +29,9 @@
 	const groupCtx = getButtonGroupContext();
 	const size = $derived(sizeProp ?? groupCtx?.size ?? 'sm');
 	const variant = $derived(variantProp ?? groupCtx?.variant ?? 'default');
+
+	const BASE =
+		'btn w-fit align-center rounded-kleri border-2 ring-0 font-normal hover:shadow-black/50 hover:ring-0 disabled:cursor-not-allowed disabled:bg-muted disabled:ring-0 disabled:shadow-none';
 
 	const sizeClasses = {
 		xs: 'text-xs px-2 h-8 rounded-md',
@@ -42,37 +46,28 @@
 		secondary:
 			'bg-secondary text-secondary-foreground hover:bg-accent hover:text-black border-muted-foreground'
 	};
+
+	// `sm` first so the smaller sizes inherit its vertical padding; `size` then
+	// overrides whatever it sets of its own.
+	const buttonClass = $derived(
+		cn(BASE, sizeClasses['sm'], sizeClasses[size], variantClasses[variant], className)
+	);
 </script>
+
+{#snippet button(extraProps: Record<string, unknown>)}
+	{@const btnProps = mergeProps(extraProps, triggerProps, restProps, { class: buttonClass })}
+	<button bind:this={ref} data-slot="button" {...btnProps}>
+		{@render children?.()}
+	</button>
+{/snippet}
 
 {#if tooltip}
 	<KleriTooltip side="bottom" sideOffset={5} delayDuration={0}>
 		{#snippet trigger(tooltipTriggerProps)}
-			{@const btnProps = mergeProps(tooltipTriggerProps, triggerProps, restProps, {
-				class: cn(
-					'btn w-fit align-center rounded-kleri border-2 ring-0 font-normal hover:shadow-black/50 hover:ring-0 disabled:cursor-not-allowed disabled:bg-muted disabled:ring-0 disabled:shadow-none',
-					sizeClasses['sm'],
-					sizeClasses[size],
-					variantClasses[variant],
-					className
-				)
-			})}
-			<button data-slot="button" {...btnProps}>
-				{@render children?.()}
-			</button>
+			{@render button(tooltipTriggerProps)}
 		{/snippet}
 		<p>{tooltip}</p>
 	</KleriTooltip>
 {:else}
-	{@const btnProps = mergeProps(triggerProps, restProps, {
-		class: cn(
-			'btn w-fit align-center rounded-kleri border-2 ring-0 font-normal hover:shadow-black/50 hover:ring-0 disabled:cursor-not-allowed disabled:bg-muted disabled:ring-0 disabled:shadow-none',
-			sizeClasses['sm'],
-			sizeClasses[size],
-			variantClasses[variant],
-			className
-		)
-	})}
-	<button data-slot="button" {...btnProps}>
-		{@render children?.()}
-	</button>
+	{@render button({})}
 {/if}

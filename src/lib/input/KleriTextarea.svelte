@@ -65,15 +65,14 @@
 
 	let hasErrors = $derived((errors?.length ?? 0) > 0);
 
-	let resizeClass = $derived(
-		resize === 'y'
-			? 'resize-y'
-			: resize === 'x'
-				? 'resize-x'
-				: resize === 'both'
-					? 'resize'
-					: 'resize-none'
-	);
+	const RESIZE_CLASSES = {
+		none: 'resize-none',
+		y: 'resize-y',
+		x: 'resize-x',
+		both: 'resize'
+	} as const;
+
+	let resizeClass = $derived(RESIZE_CLASSES[resize]);
 
 	const handleInput: FormEventHandler<HTMLTextAreaElement> = (event) => {
 		onValueChange?.(event.currentTarget.value);

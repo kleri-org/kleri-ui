@@ -22,12 +22,16 @@
 		...restProps
 	}: ButtonGroupProps = $props();
 
-	const ctx = $state<{ size?: typeof size; variant?: typeof variant }>({});
-	$effect(() => {
-		ctx.size = size;
-		ctx.variant = variant;
+	// Getters (not an `$effect`) so nested buttons read the group's size and
+	// variant on their very first render instead of a tick later.
+	setButtonGroupContext({
+		get size() {
+			return size;
+		},
+		get variant() {
+			return variant;
+		}
 	});
-	setButtonGroupContext(ctx);
 </script>
 
 <div

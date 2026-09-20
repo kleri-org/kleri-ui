@@ -39,12 +39,9 @@
 			class="inline-flex {btnHeight} {floating
 				? 'w-11 rounded-kleri'
 				: 'w-12.5'} items-center justify-center text-foreground select-none hover:bg-muted-foreground"
-			onclick={() => {
-				appWindow?.minimize();
-				console.log('Minimized');
-			}}
+			onclick={() => appWindow?.minimize()}
 		>
-			<Minus size={20} strokeWidth={2} />
+			<Minus size={20} strokeWidth={2} aria-hidden="true" />
 		</button>
 
 		{#if maximizable}
@@ -54,7 +51,7 @@
 					: 'w-12.5'} items-center justify-center text-foreground select-none hover:bg-muted-foreground"
 				onclick={() => appWindow?.toggleMaximize()}
 			>
-				<Square size={15} strokeWidth={2.5} />
+				<Square size={15} strokeWidth={2.5} aria-hidden="true" />
 			</button>
 		{/if}
 
@@ -64,7 +61,7 @@
 				: 'w-12.5'} items-center justify-center text-foreground select-none hover:bg-red-500 hover:text-black"
 			onclick={() => appWindow?.close()}
 		>
-			<X size={20} strokeWidth={2} />
+			<X size={20} strokeWidth={2} aria-hidden="true" />
 		</button>
 	{/if}
 </div>

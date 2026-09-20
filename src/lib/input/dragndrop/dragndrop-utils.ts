@@ -100,10 +100,9 @@ export function isAllowedFile(file: File, allowedTypes?: FileTypeName[]): boolea
 export function getAcceptString(allowedTypes?: FileTypeName[]): string | undefined {
 	if (!allowedTypes || allowedTypes.length === 0) return undefined;
 
-	return allowedTypes
-		.map((t) => FILE_TYPE_REGISTRY[t]?.accept)
-		.filter(Boolean)
-		.join(',');
+	const accepts = allowedTypes.map((t) => FILE_TYPE_REGISTRY[t]?.accept).filter(Boolean);
+
+	return accepts.length > 0 ? accepts.join(',') : undefined;
 }
 
 // ---------------------------------------------------------------------------
@@ -138,26 +137,113 @@ export function getDefaultSubText(allowedTypes?: FileTypeName[]): string | undef
 // Error message generation
 // ---------------------------------------------------------------------------
 
+/** `"a"` or `"an"` for `word`, based on its first letter. */
+function indefiniteArticle(word: string): string {
+	return /^[aeiou]/i.test(word) ? 'an' : 'a';
+}
+
 /**
  * Generates an error message telling the user what file types are expected.
  *
  * @example
  *   getErrorSubText(['image', 'pdf'])  // "Please upload an image or PDF file"
+ *   getErrorSubText(['pdf', 'image'])  // "Please upload a PDF or image file"
  *   getErrorSubText(['pdf'])           // "Please upload a PDF file"
+ *   getErrorSubText([])                // "Please upload a supported file"
  */
 export function getErrorSubText(allowedTypes: FileTypeName[]): string {
 	const labels = allowedTypes.map((t) => FILE_TYPE_REGISTRY[t]?.label ?? t);
 
-	if (labels.length === 1) {
-		return `Please upload a ${labels[0]} file`;
-	}
+	if (labels.length === 0) return 'Please upload a supported file';
 
-	const list = new Intl.ListFormat('en', {
-		style: 'long',
-		type: 'disjunction'
-	}).format(labels);
+	const list =
+		labels.length === 1
+			? labels[0]
+			: new Intl.ListFormat('en', { style: 'long', type: 'disjunction' }).format(labels);
 
-	return `Please upload an ${list} file`;
+	// The article agrees with the first label ("an image", "a PDF"), not with a
+	// hard-coded "an" that read wrong for every consonant-initial type.
+	return `Please upload ${indefiniteArticle(labels[0])} ${list} file`;
+}
+
+// ---------------------------------------------------------------------------
+// Presentation helpers
+// ---------------------------------------------------------------------------
+
+const BYTE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'] as const;
+
+/**
+ * Formats a byte count for display.
+ *
+ * @example
+ *   formatBytes(0)          // "0 B"
+ *   formatBytes(1536)       // "1.5 KB"
+ *   formatBytes(2 ** 60)    // "1 PB"  (clamped to the largest known unit)
+ */
+export function formatBytes(bytes: number): string {
+	if (!Number.isFinite(bytes) || bytes <= 0) return '0 B';
+
+	const k = 1024;
+	// Clamped: past ~1 TB the unclamped index ran off the end of the unit list
+	// and rendered "1.2 undefined".
+	const exponent = Math.min(Math.floor(Math.log(bytes) / Math.log(k)), BYTE_UNITS.length - 1);
+	const value = bytes / Math.pow(k, exponent);
+
+	return `${parseFloat(value.toFixed(1))} ${BYTE_UNITS[exponent]}`;
+}
+
+/**
+ * Extracts the file name from a full path, handling both POSIX (`/`) and
+ * Windows (`\\`) separators — Tauri reports native paths, so a Windows build
+ * otherwise showed the entire `C:\\Users\\...` path as the "name".
+ */
+export function getFileName(path: string): string {
+	const name = path.split(/[\\/]/).pop();
+	return name && name.length > 0 ? name : path;
+}
+
+// ---------------------------------------------------------------------------
+// Dropzone status
+// ---------------------------------------------------------------------------
+
+/** The single source of truth for a dropzone's visual state. */
+export type DropzoneStatus =
+	| { state: 'idle' }
+	| { state: 'hover' }
+	| { state: 'accepted'; fileCount: number }
+	| { state: 'error'; message: string };
+
+/** `accepted` when anything is selected, `idle` otherwise. */
+export function restingStatus(count: number): DropzoneStatus {
+	return count > 0 ? { state: 'accepted', fileCount: count } : { state: 'idle' };
+}
+
+/**
+ * A single pending "revert to idle" timer.
+ *
+ * Both dropzones need exactly this: show an error, drop back to idle after
+ * `errorDuration`, and never fire after the component is gone.
+ */
+export function createErrorTimer(revert: () => void) {
+	let handle: ReturnType<typeof setTimeout> | null = null;
+
+	return {
+		/** Cancels any pending revert. */
+		clear() {
+			if (handle !== null) {
+				clearTimeout(handle);
+				handle = null;
+			}
+		},
+		/** Restarts the timer; `clear()` (e.g. from `onDestroy`) cancels it. */
+		start(delayMs: number) {
+			this.clear();
+			handle = setTimeout(() => {
+				handle = null;
+				revert();
+			}, delayMs);
+		}
+	};
 }
 
 // ---------------------------------------------------------------------------

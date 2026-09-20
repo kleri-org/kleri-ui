@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { motion, useMotionTemplate, useMotionValue } from 'motion-sv';
+	import { motion, useMotionTemplate } from 'motion-sv';
 	import { cn } from '$lib/utils';
 	import { KLERI_COLOR_1, KLERI_COLOR_2 } from '$lib/constants';
+	import { useSpotlight, parkSpotlightsOnWindowExit } from './use-spotlight.svelte.js';
 	import type { HTMLButtonAttributes } from 'svelte/elements';
 	import type { Snippet } from 'svelte';
 
@@ -31,99 +32,49 @@
 		...restProps
 	}: KleriMagicButtonProps = $props();
 
-	let mouseX = $derived(useMotionValue(-gradientSize));
-	let mouseY = $derived(useMotionValue(-gradientSize));
-	let btnMouseX = $derived(useMotionValue(-gradientSize));
-	let btnMouseY = $derived(useMotionValue(-gradientSize));
+	// Two spotlights: the border tracks the padded wrapper, the glow tracks the
+	// button itself, so the two gradients stay aligned with their own boxes.
+	const border = useSpotlight(() => gradientSize);
+	const glow = useSpotlight(() => gradientSize);
 	let isHovered = $state(false);
 
-	let borderGradient = $derived(
-		useMotionTemplate`radial-gradient(${gradientSize}px circle at ${mouseX}px ${mouseY}px, ${gradientFrom}, ${gradientTo}, transparent 100%)`
+	function park() {
+		border.park();
+		glow.park();
+	}
+
+	parkSpotlightsOnWindowExit(park);
+
+	// `$derived` so a changed gradient prop rebuilds the template.
+	const borderGradient = $derived(
+		useMotionTemplate`radial-gradient(${gradientSize}px circle at ${border.x}px ${border.y}px, ${gradientFrom}, ${gradientTo}, transparent 100%)`
 	);
-	let overlayGradient = $derived(
-		useMotionTemplate`radial-gradient(${gradientSize}px circle at ${btnMouseX}px ${btnMouseY}px, ${gradientColor}, transparent 100%)`
+	const overlayGradient = $derived(
+		useMotionTemplate`radial-gradient(${gradientSize}px circle at ${glow.x}px ${glow.y}px, ${gradientColor}, transparent 100%)`
 	);
 
-	const reset = () => {
-		mouseX.set(-gradientSize);
-		mouseY.set(-gradientSize);
-	};
-
-	const resetBtn = () => {
-		btnMouseX.set(-gradientSize);
-		btnMouseY.set(-gradientSize);
-	};
-
-	const handleWrapperPointerMove = (e: PointerEvent) => {
-		const target = e.currentTarget as HTMLElement;
-		const rect = target.getBoundingClientRect();
-		mouseX.set(e.clientX - rect.left);
-		mouseY.set(e.clientY - rect.top);
-	};
-
-	const handleButtonPointerMove = (e: PointerEvent) => {
-		const target = e.currentTarget as HTMLElement;
-		const rect = target.getBoundingClientRect();
-		btnMouseX.set(e.clientX - rect.left);
-		btnMouseY.set(e.clientY - rect.top);
-	};
-
-	const handlePointerEnter = () => {
-		isHovered = true;
-	};
-
-	const handleWrapperPointerLeave = (e: PointerEvent) => {
+	function handleWrapperPointerLeave(e: PointerEvent) {
 		const wrapper = e.currentTarget as HTMLElement;
 		const related = e.relatedTarget as HTMLElement | null;
+		// Moving onto the inner button is not leaving the wrapper.
 		if (!related || !wrapper.contains(related)) {
 			isHovered = false;
-			reset();
-			resetBtn();
+			park();
 		}
-	};
-
-	$effect(() => {
-		reset();
-	});
-
-	$effect(() => {
-		const handleGlobalPointerOut = (e: PointerEvent) => {
-			if (!e.relatedTarget) {
-				reset();
-				resetBtn();
-			}
-		};
-
-		const handleVisibility = () => {
-			if (document.visibilityState !== 'visible') {
-				reset();
-				resetBtn();
-			}
-		};
-
-		window.addEventListener('pointerout', handleGlobalPointerOut);
-		window.addEventListener('blur', reset);
-		document.addEventListener('visibilitychange', handleVisibility);
-
-		return () => {
-			window.removeEventListener('pointerout', handleGlobalPointerOut);
-			window.removeEventListener('blur', reset);
-			document.removeEventListener('visibilitychange', handleVisibility);
-		};
-	});
+	}
 </script>
 
 <motion.div
 	class={cn('relative inline-flex overflow-hidden rounded-kleri p-0.5', className)}
 	style={{ background: borderGradient }}
-	onpointermove={handleWrapperPointerMove}
-	onpointerenter={handlePointerEnter}
+	onpointermove={border.track}
+	onpointerenter={() => (isHovered = true)}
 	onpointerleave={handleWrapperPointerLeave}
 	role="presentation"
 >
 	<button
 		class="relative flex w-full items-center justify-center overflow-hidden rounded-kleri bg-muted/80 px-6 py-2 text-base font-normal text-foreground ring-0 transition-colors duration-300 select-none disabled:cursor-not-allowed disabled:opacity-50"
-		onpointermove={handleButtonPointerMove}
+		onpointermove={glow.track}
 		{...restProps}
 	>
 		{@render children?.()}

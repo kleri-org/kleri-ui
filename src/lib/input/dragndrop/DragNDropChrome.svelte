@@ -12,16 +12,7 @@
 	import { cn } from '$lib/utils.js';
 	import KleriFieldLabel from '$lib/input/KleriFieldLabel.svelte';
 
-	// -----------------------------------------------------------------------
-	// Status discriminated union – the single source of truth for the
-	// dropzone's visual state.
-	// -----------------------------------------------------------------------
-
-	type DropzoneStatus =
-		| { state: 'idle' }
-		| { state: 'hover' }
-		| { state: 'accepted'; fileCount: number }
-		| { state: 'error'; message: string };
+	import type { DropzoneStatus } from './dragndrop-utils.js';
 
 	// -----------------------------------------------------------------------
 	// Props
@@ -85,9 +76,7 @@
 
 	// Text displayed in the sub‑text slot.
 	// Error always wins; otherwise consumer's subText (or nothing).
-	let displaySubText = $derived(
-		isError ? (status as Extract<DropzoneStatus, { state: 'error' }>).message : subText
-	);
+	let displaySubText = $derived(status.state === 'error' ? status.message : subText);
 </script>
 
 <!-- Label -->

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { motion } from 'motion-sv';
-	import KleriUiLogo from '../assetes/KleriUiLogo.svelte';
+	import KleriUiLogo from '../assets/KleriUiLogo.svelte';
 	import AnimatedGridPattern from '$lib/animation/AnimatedGridPattern.svelte';
 </script>
 
@@ -22,8 +22,7 @@
 			transition={{ duration: 0.8, ease: 'easeOut' }}
 		>
 			<span
-				class="kleri-text-animation font-spacemono
-					   text-xl leading-tight font-extrabold tracking-tight sm:text-3xl md:text-5xl"
+				class="kleri-text-animation font-spacemono text-xl leading-tight font-extrabold tracking-tight sm:text-3xl md:text-5xl"
 				>Kleri
 			</span>
 			<KleriUiLogo class="h-32 w-auto sm:h-40 md:h-48" />

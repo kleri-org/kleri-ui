@@ -65,11 +65,17 @@ test.describe('KleriUtilityButton', () => {
 			.getByRole('button', { name: 'Utility' });
 		await expect(utilityButton).toBeVisible();
 
+		// Scoped to the tooltip itself: the same text also appears in the page's
+		// code-preview block, so a bare getByText matched that instead and passed
+		// whether or not the tooltip ever opened.
+		const tooltip = page.getByRole('tooltip');
+		await expect(tooltip).toBeHidden();
+
 		// Hover to trigger bits-ui tooltip
 		await utilityButton.hover();
 
-		const tooltipContent = page.getByText('Click to perform action');
-		await expect(tooltipContent).toBeVisible({ timeout: 3000 });
+		await expect(tooltip).toBeVisible({ timeout: 3000 });
+		await expect(tooltip).toHaveText('Click to perform action');
 	});
 });
 

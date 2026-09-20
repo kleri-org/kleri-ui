@@ -4,7 +4,7 @@
 	import { afterNavigate } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { Tooltip } from 'bits-ui';
-	import KleriUiLogo from '../assetes/KleriUiLogo.svelte';
+	import KleriUiLogo from '../assets/KleriUiLogo.svelte';
 	import {
 		Heading1,
 		Heading2,
@@ -17,17 +17,17 @@
 		ChevronsUpDown,
 		ToggleLeft,
 		ToggleRight,
-		Text,
 		MessageCircle,
 		Zap,
 		Settings,
 		SlidersHorizontal,
-		Wand2,
 		CreditCard,
 		Waypoints,
 		Upload,
 		PanelRight,
-		AppWindow
+		AppWindow,
+		Wand,
+		TextCursor
 	} from '@lucide/svelte';
 
 	const { children } = $props();
@@ -65,7 +65,7 @@
 				{ name: 'KleriInput', id: 'kleri-input', icon: TextCursorInput },
 				{ name: 'KleriCombobox', id: 'kleri-combobox', icon: TextCursorInput },
 				{ name: 'KleriSelect', id: 'kleri-select', icon: ChevronsUpDown },
-				{ name: 'KleriTextarea', id: 'kleri-textarea', icon: Text },
+				{ name: 'KleriTextarea', id: 'kleri-textarea', icon: TextCursor },
 				{ name: 'KleriSlider', id: 'kleri-slider', icon: SlidersHorizontal },
 				{ name: 'KleriToggleGroup', id: 'kleri-toggle-group', icon: ToggleRight },
 				{ name: 'KleriDragNDrop', id: 'kleri-drag-n-drop', icon: Upload }
@@ -92,7 +92,7 @@
 		{
 			name: 'Magic',
 			route: '/components/magic',
-			icon: Wand2,
+			icon: Wand,
 			items: [
 				{ name: 'KleriMagicCard', id: 'kleri-magic-card', icon: CreditCard },
 				{ name: 'KleriMagicButton', id: 'kleri-magic-button', icon: Sparkles },

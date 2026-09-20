@@ -109,6 +109,30 @@
 	}
 </script>
 
+<!--
+The trigger and every option render the same leading visual: an avatar when the
+item has an image (falling back to its icon), a bare icon otherwise, or nothing.
+-->
+{#snippet visual(avatarUrl: string | null | undefined, Icon: Component | undefined, alt: string)}
+	{#if avatarUrl}
+		<Avatar.Root class="size-6 shrink-0 overflow-hidden rounded-full">
+			<Avatar.Image src={avatarUrl} {alt} class="size-full rounded-full object-cover" />
+			<Avatar.Fallback class="flex size-full items-center justify-center rounded-full bg-muted">
+				{#if Icon}
+					<Icon size={AVATAR_ICON_SIZE} strokeWidth={FIELD_ICON_STROKE} aria-hidden="true" />
+				{/if}
+			</Avatar.Fallback>
+		</Avatar.Root>
+	{:else if Icon}
+		<Icon
+			size={FIELD_ICON_SIZE}
+			strokeWidth={FIELD_ICON_STROKE}
+			class="shrink-0 text-foreground"
+			aria-hidden="true"
+		/>
+	{/if}
+{/snippet}
+
 <div class={cn(FIELD_ROOT, className)}>
 	<KleriFieldLabel {label} {errors} for={controlId} />
 
@@ -135,47 +159,10 @@
 			)}
 		>
 			<div class="flex min-w-0 flex-1 flex-row items-center gap-3 text-foreground">
+				{@render visual(selectedItem?.avatarUrl, triggerIcon, selectedItem?.label ?? '')}
 				{#if selectedItem}
-					{#if selectedItem.avatarUrl}
-						<Avatar.Root class="size-6 shrink-0 overflow-hidden rounded-full">
-							<Avatar.Image
-								src={selectedItem.avatarUrl}
-								alt={selectedItem.label}
-								class="size-full rounded-full object-cover"
-							/>
-							<Avatar.Fallback
-								class="flex size-full items-center justify-center rounded-full bg-muted"
-							>
-								{#if triggerIcon}
-									{@const Icon = triggerIcon}
-									<Icon
-										size={AVATAR_ICON_SIZE}
-										strokeWidth={FIELD_ICON_STROKE}
-										aria-hidden="true"
-									/>
-								{/if}
-							</Avatar.Fallback>
-						</Avatar.Root>
-					{:else if triggerIcon}
-						{@const Icon = triggerIcon}
-						<Icon
-							size={FIELD_ICON_SIZE}
-							strokeWidth={FIELD_ICON_STROKE}
-							class="shrink-0"
-							aria-hidden="true"
-						/>
-					{/if}
 					<span class="truncate">{selectedItem.label}</span>
 				{:else}
-					{#if triggerIcon}
-						{@const Icon = triggerIcon}
-						<Icon
-							size={FIELD_ICON_SIZE}
-							strokeWidth={FIELD_ICON_STROKE}
-							class="shrink-0"
-							aria-hidden="true"
-						/>
-					{/if}
 					<span class="truncate text-muted-foreground">{placeholder}</span>
 				{/if}
 			</div>
@@ -202,35 +189,7 @@
 							class="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm outline-hidden transition-colors data-disabled:cursor-not-allowed data-disabled:opacity-50 data-highlighted:bg-kleri-2/20 data-highlighted:text-foreground"
 						>
 							{#snippet children({ selected })}
-								{#if item.avatarUrl}
-									<Avatar.Root class="size-6 shrink-0 overflow-hidden rounded-full">
-										<Avatar.Image
-											src={item.avatarUrl}
-											alt={item.label}
-											class="size-full rounded-full object-cover"
-										/>
-										<Avatar.Fallback
-											class="flex size-full items-center justify-center rounded-full bg-muted"
-										>
-											{#if item.icon}
-												{@const ItemIcon = item.icon}
-												<ItemIcon
-													size={AVATAR_ICON_SIZE}
-													strokeWidth={FIELD_ICON_STROKE}
-													aria-hidden="true"
-												/>
-											{/if}
-										</Avatar.Fallback>
-									</Avatar.Root>
-								{:else if item.icon}
-									{@const ItemIcon = item.icon}
-									<ItemIcon
-										size={FIELD_ICON_SIZE}
-										strokeWidth={FIELD_ICON_STROKE}
-										class="shrink-0 text-foreground"
-										aria-hidden="true"
-									/>
-								{/if}
+								{@render visual(item.avatarUrl, item.icon, item.label)}
 								<span class="min-w-0 flex-1 truncate">{item.label}</span>
 								{#if selected}
 									<Check

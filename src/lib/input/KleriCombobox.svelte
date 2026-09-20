@@ -47,6 +47,8 @@
 		shake?: boolean;
 		/** Called with the new value whenever the selection changes. */
 		onValueChange?: (value: string) => void;
+		/** Called with the new state whenever the options list opens or closes. */
+		onOpenChange?: (open: boolean) => void;
 		/** Accessible name for the search input. Falls back to `label`, then `placeholder`. */
 		ariaLabel?: string;
 		/** Id of the control. Auto-generated when omitted, and used to link the label. */
@@ -70,6 +72,7 @@
 		withBorder = true,
 		shake = false,
 		onValueChange,
+		onOpenChange,
 		ariaLabel,
 		id,
 		class: className
@@ -103,6 +106,7 @@
 
 	function handleOpenChange(nextOpen: boolean) {
 		if (!nextOpen) searchValue = '';
+		onOpenChange?.(nextOpen);
 	}
 </script>
 

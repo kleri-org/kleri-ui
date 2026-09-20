@@ -19,7 +19,10 @@
 		shake?: boolean;
 		/** Called with the new state whenever the switch is toggled. */
 		onValueChange?: (value: boolean) => void;
-		/** Accessible name. Falls back to `label`. */
+		/**
+		 * Accessible name for a switch rendered without a `label`. When `label`
+		 * is set the rendered `<label for>` names the control instead.
+		 */
 		ariaLabel?: string;
 		/** Id of the control. Auto-generated when omitted, and used to link the label. */
 		id?: string;

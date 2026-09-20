@@ -1,13 +1,12 @@
 <script lang="ts">
 	import { Dialog, type WithoutChild } from 'bits-ui';
-	import type { Component, Snippet } from 'svelte';
+	import { onDestroy, type Component, type Snippet } from 'svelte';
 	import { cn } from '$lib/utils.js';
 	import { type ClassValue } from 'clsx';
 	import KleriTooltip from '$lib/tooltip/KleriTooltip.svelte';
 	import { X, Eraser } from '@lucide/svelte';
 
 	type Props = Dialog.RootProps & {
-		open?: boolean;
 		trigger?: Snippet;
 		buttonText?: string;
 		ButtonIcon?: Component;
@@ -39,6 +38,9 @@
 		...restProps
 	}: Props = $props();
 
+	/** Length of the morph keyframes; keep in sync with the style block below. */
+	const MORPH_DURATION = 300;
+
 	let triggerElement = $state<HTMLElement | null>(null);
 	let contentElement = $state<HTMLElement | null>(null);
 	let buttonRect: DOMRect | null = $state(null);
@@ -46,6 +48,22 @@
 	let isAnimating = $state(false);
 	let isClosing = $state(false);
 	let internalOpen = $state(false);
+
+	/** Every pending timer, so none of them outlive the component. */
+	const timers = new Set<ReturnType<typeof setTimeout>>();
+
+	function later(fn: () => void, delayMs: number) {
+		const handle = setTimeout(() => {
+			timers.delete(handle);
+			fn();
+		}, delayMs);
+		timers.add(handle);
+	}
+
+	onDestroy(() => {
+		for (const handle of timers) clearTimeout(handle);
+		timers.clear();
+	});
 
 	function handleTriggerClick() {
 		if (triggerElement) {
@@ -60,10 +78,10 @@
 			if (triggerElement) {
 				buttonRect = triggerElement.getBoundingClientRect();
 			}
-			setTimeout(() => {
+			later(() => {
 				open = false;
 				internalOpen = false;
-			}, 300);
+			}, MORPH_DURATION);
 		} else if (newOpen) {
 			open = true;
 			internalOpen = true;
@@ -72,11 +90,15 @@
 			// or wrapped content stays clipped while the dialog is open. A timeout
 			// (not animationend) because the keyframes reference CSS vars that are
 			// unset on the first frame, which can prevent the event from firing.
-			setTimeout(() => {
+			later(() => {
 				if (internalOpen && !isClosing) isAnimating = false;
-			}, 300);
+			}, MORPH_DURATION);
 		}
 	}
+
+	// `onClose` must fire on an open -> closed transition only. Keying it off
+	// `!open` alone fired it once on mount, before the dialog had ever opened.
+	let wasOpen = false;
 
 	$effect(() => {
 		if (open && contentElement && !contentRect) {
@@ -87,18 +109,20 @@
 			});
 		}
 
-		if (!open && !internalOpen) {
-			setTimeout(() => {
+		const isClosed = !open && !internalOpen;
+
+		if (isClosed && wasOpen) {
+			later(() => {
 				isClosing = false;
 				isAnimating = false;
 				buttonRect = null;
 				contentRect = null;
 			}, 50);
 
-			if (onClose) {
-				onClose();
-			}
+			onClose?.();
 		}
+
+		wasOpen = !isClosed;
 	});
 </script>
 
@@ -136,7 +160,7 @@
 
 	<Dialog.Portal>
 		<Dialog.Overlay
-			class="data-closed:fade-out-0 data-open:fade-in-0 data-closed:animate-out data-open:animate-in fixed inset-0 z-50 bg-black/60 data-closed:duration-200 data-open:duration-300"
+			class="fixed inset-0 z-50 bg-black/60 data-closed:animate-out data-closed:duration-200 data-closed:fade-out-0 data-open:animate-in data-open:duration-300 data-open:fade-in-0"
 		/>
 		<Dialog.Content
 			bind:ref={contentElement}
@@ -144,9 +168,9 @@
 			{...contentProps}
 			class={cn(
 				'fixed z-50 rounded-kleri border border-border bg-background shadow-xl shadow-black/40 outline-none',
-				isAnimating && buttonRect && contentRect && internalOpen ? 'morph-open' : '',
-				isClosing && buttonRect && contentRect ? 'morph-close' : '',
-				!isAnimating && !isClosing ? 'dialog-final' : '',
+				isAnimating && buttonRect && contentRect && internalOpen ? 'kleri-morph-open' : '',
+				isClosing && buttonRect && contentRect ? 'kleri-morph-close' : '',
+				!isAnimating && !isClosing ? 'kleri-morph-final' : '',
 				className
 			)}
 			style={buttonRect && contentRect
@@ -160,7 +184,7 @@
 				`
 				: undefined}
 		>
-			<div class="dialog-inner">
+			<div class="kleri-morph-inner">
 				<Dialog.Title
 					class="sticky top-0 z-10 flex w-full flex-row flex-nowrap items-center justify-between border-b border-border/50 bg-background/80 px-8 py-4 backdrop-blur-xl"
 				>
@@ -214,7 +238,7 @@
 </Dialog.Root>
 
 <style>
-	.dialog-inner {
+	.kleri-morph-inner {
 		width: 100%;
 		height: auto;
 		overflow: visible;
@@ -222,7 +246,7 @@
 		position: relative;
 	}
 
-	:global(.dialog-final) {
+	:global(.kleri-morph-final) {
 		width: var(--end-width);
 		/* Height stays content-driven: text wraps and dynamic content (tab
 		   switches, form errors) change it after the open animation. The close
@@ -233,19 +257,19 @@
 		transform: translate(-50%, -50%);
 	}
 
-	:global(.morph-open) {
-		animation: morphOpen 0.3s ease-out forwards;
+	:global(.kleri-morph-open) {
+		animation: kleriMorphOpen 0.3s ease-out forwards;
 		overflow: hidden;
 		text-wrap: nowrap;
 	}
 
-	:global(.morph-close) {
-		animation: morphClose 0.3s ease-in forwards;
+	:global(.kleri-morph-close) {
+		animation: kleriMorphClose 0.3s ease-in forwards;
 		overflow: hidden;
 		text-wrap: nowrap;
 	}
 
-	@keyframes morphOpen {
+	@keyframes -global-kleriMorphOpen {
 		0% {
 			left: var(--start-left);
 			top: var(--start-top);
@@ -270,7 +294,7 @@
 		}
 	}
 
-	@keyframes morphClose {
+	@keyframes -global-kleriMorphClose {
 		0% {
 			left: 50%;
 			top: 50%;

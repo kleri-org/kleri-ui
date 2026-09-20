@@ -56,25 +56,31 @@
 	let highlightedHtml = $state('');
 
 	onMount(async () => {
-		highlighter = await getHighlighter();
+		try {
+			highlighter = await getHighlighter();
+		} catch (error) {
+			// The plain <pre> fallback below stays on screen.
+			console.error('Failed to load the syntax highlighter:', error);
+		}
+	});
+
+	// Runs for the first highlight too, as soon as `highlighter` resolves.
+	$effect(() => {
+		if (!highlighter) return;
 		highlightedHtml = highlighter.codeToHtml(code, {
 			lang: 'tsx',
 			themes: { light: 'kleri-light', dark: 'kleri-dark' }
 		});
 	});
 
-	$effect(() => {
-		if (highlighter) {
-			highlightedHtml = highlighter.codeToHtml(code, {
-				lang: 'tsx',
-				themes: { light: 'kleri-light', dark: 'kleri-dark' }
-			});
+	async function copyCode() {
+		try {
+			await navigator.clipboard.writeText(code);
+			copied = true;
+		} catch (error) {
+			// Clipboard access is denied outside a secure context; don't claim success.
+			console.error('Failed to copy to the clipboard:', error);
 		}
-	});
-
-	function copyCode() {
-		navigator.clipboard.writeText(code);
-		copied = true;
 	}
 </script>
 

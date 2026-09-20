@@ -2,14 +2,15 @@
 	import { Tooltip } from 'bits-ui';
 	import { type Snippet } from 'svelte';
 
-	type Props = Tooltip.RootProps & {
+	type Props = Omit<Tooltip.RootProps, 'children' | 'child'> & {
+		/** Trigger element, rendered with the props bits-ui needs on it. */
 		trigger: Snippet<[Record<string, unknown>]>;
+		/** Tooltip body. */
 		children?: Snippet<[]>;
 		triggerProps?: Tooltip.TriggerProps;
 		side?: 'top' | 'right' | 'bottom' | 'left';
 		sideOffset?: number;
 		arrow?: boolean;
-		disabled?: boolean;
 	};
 
 	let {
@@ -20,12 +21,12 @@
 		sideOffset,
 		triggerProps = {},
 		trigger,
-		disabled = false
+		...restProps
 	}: Props = $props();
 </script>
 
 <Tooltip.Provider>
-	<Tooltip.Root bind:open {disabled}>
+	<Tooltip.Root bind:open {...restProps}>
 		<Tooltip.Trigger {...triggerProps}>
 			{#snippet child({ props })}
 				{@render trigger(props)}

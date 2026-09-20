@@ -40,7 +40,7 @@ describe('MeteorAnimation', () => {
 		});
 
 		await waitFor(() => {
-			expect(container.querySelectorAll('span[id^="meteor-"]')).toHaveLength(6);
+			expect(container.querySelectorAll('span[data-slot="meteor"]')).toHaveLength(6);
 		});
 	});
 
@@ -50,7 +50,7 @@ describe('MeteorAnimation', () => {
 		});
 
 		await waitFor(() => {
-			expect(container.querySelectorAll('span[id^="meteor-"]')).toHaveLength(0);
+			expect(container.querySelectorAll('span[data-slot="meteor"]')).toHaveLength(0);
 		});
 	});
 });

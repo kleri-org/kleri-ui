@@ -4,7 +4,7 @@
 	import { cn } from '$lib/utils';
 	import { CircleCheckBig } from '@lucide/svelte';
 
-	type ButtonProps = WithElementRef<HTMLButtonAttributes>;
+	type ButtonProps = WithElementRef<HTMLButtonAttributes, HTMLButtonElement>;
 
 	interface ExtendedButtonProps extends ButtonProps {
 		showSuccess?: boolean;
@@ -14,6 +14,7 @@
 	}
 
 	let {
+		ref = $bindable<HTMLButtonElement | null>(null),
 		children,
 		class: className,
 		showSuccess = false,
@@ -37,6 +38,7 @@
 </script>
 
 <button
+	bind:this={ref}
 	class={cn(
 		'btn align-center w-full rounded-kleri border-2 border-black bg-primary p-2 text-base font-normal text-black ring-0 transition-none duration-0 select-none hover:text-black hover:ring-0 hover:shadow-black/50 hover:kleri-bg disabled:cursor-not-allowed disabled:border-none disabled:bg-primary/50 disabled:text-black disabled:shadow-none disabled:ring-0',
 		className

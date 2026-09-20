@@ -103,12 +103,26 @@ const kleriDark = {
 
 const jsEngine = createJavaScriptRegexEngine({ forgiving: true });
 
-const highlighterSingleton = createHighlighterCore({
-	themes: [kleriLight, kleriDark],
-	langs: [html, javascript, svelte, tsx],
-	engine: jsEngine
-});
+let highlighterSingleton: ReturnType<typeof createHighlighterCore> | null = null;
 
+/**
+ * Returns the shared highlighter, creating it on first use.
+ *
+ * Lazy rather than created at module scope so that merely importing this module
+ * (which happens during SSR) neither does the work nor leaves a rejected
+ * promise unhandled. A failed attempt is not cached, so the next call retries.
+ */
 export async function getHighlighter() {
-	return await highlighterSingleton;
+	highlighterSingleton ??= createHighlighterCore({
+		themes: [kleriLight, kleriDark],
+		langs: [html, javascript, svelte, tsx],
+		engine: jsEngine
+	});
+
+	try {
+		return await highlighterSingleton;
+	} catch (error) {
+		highlighterSingleton = null;
+		throw error;
+	}
 }
