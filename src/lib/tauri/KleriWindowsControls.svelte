@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Minus, Square, X } from '@lucide/svelte';
-	import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
+	import { WebviewWindow, getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
 	import { platform, type Platform } from '@tauri-apps/plugin-os';
 	import { isTauri } from '@tauri-apps/api/core';
 	import { onMount } from 'svelte';
@@ -14,15 +14,17 @@
 	});
 
 	let {
-		appWindow = undefined,
+		appWindow = isTauri() ? getCurrentWebviewWindow() : undefined,
 		maximizable = true,
 		buttonHeight = 'h-10',
-		floating = false
+		floating = false,
+		absolute = true
 	}: {
 		appWindow?: WebviewWindow;
 		maximizable?: boolean;
 		buttonHeight?: string;
 		floating?: boolean;
+		absolute?: boolean;
 	} = $props();
 
 	let btnHeight = $derived(floating ? 'h-8' : buttonHeight);
@@ -30,7 +32,7 @@
 
 <div
 	data-tauri-drag-region
-	class="absolute top-0 z-99 flex min-h-10 w-full flex-row justify-end bg-transparent"
+	class="{absolute ? 'absolute top-0 z-99 w-full' : 'relative'} flex min-h-10 flex-row justify-end bg-transparent"
 	class:pt-2={floating}
 	class:pr-2={floating}
 >
