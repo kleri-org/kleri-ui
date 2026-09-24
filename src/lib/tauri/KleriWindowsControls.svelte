@@ -32,7 +32,9 @@
 
 <div
 	data-tauri-drag-region
-	class="{absolute ? 'absolute top-0 z-99 w-full' : 'relative'} flex min-h-10 flex-row justify-end bg-transparent"
+	class="{absolute
+		? 'absolute top-0 z-99 w-full'
+		: 'relative'} flex min-h-10 flex-row justify-end bg-transparent"
 	class:pt-2={floating}
 	class:pr-2={floating}
 >

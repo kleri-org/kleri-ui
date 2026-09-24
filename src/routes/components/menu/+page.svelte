@@ -298,7 +298,7 @@
 	</section>
 
 	<!-- Dialog -->
-	<section id="dialog" class="scroll-mt-8 space-y-6">
+	<section id="kleri-morph-dialog" class="scroll-mt-8 space-y-6">
 		<div class="space-y-2">
 			<h2 class="text-2xl font-bold text-foreground">Morph Dialog</h2>
 			<p class="text-muted-foreground">
@@ -311,17 +311,18 @@
 				<div
 					class="flex min-h-60 items-center justify-center rounded-xl border-2 border-border/50 bg-card/30 p-12"
 				>
+					{#snippet dialogDescription()}
+						Configure your preferences and application settings.
+					{/snippet}
 					<KleriMorphDialog
 						buttonText={dialogProps.buttonText}
 						ButtonIcon={Settings}
 						form={dialogProps.showForm ? 'demo-form' : undefined}
+						description={dialogProps.showDescription ? dialogDescription : undefined}
 					>
 						{#snippet title()}
 							<span class="text-lg font-semibold">Settings</span>
 						{/snippet}
-						{#if dialogProps.showDescription}
-							Configure your preferences and application settings.
-						{/if}
 
 						<div class="space-y-4">
 							<p class="text-sm text-muted-foreground">

@@ -27,7 +27,8 @@
 		PanelRight,
 		AppWindow,
 		Wand,
-		TextCursor
+		TextCursor,
+		SquareStack
 	} from '@lucide/svelte';
 
 	const { children } = $props();
@@ -103,7 +104,10 @@
 			name: 'Menu',
 			route: '/components/menu',
 			icon: PanelRight,
-			items: [{ name: 'Popover', id: 'popover', icon: PanelRight }]
+			items: [
+				{ name: 'Popover', id: 'popover', icon: PanelRight },
+				{ name: 'KleriMorphDialog', id: 'kleri-morph-dialog', icon: SquareStack }
+			]
 		},
 		{
 			name: 'Window Controls',

@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { Dialog, type WithoutChild } from 'bits-ui';
-	import { onDestroy, type Component, type Snippet } from 'svelte';
+	import { untrack, type Component, type Snippet } from 'svelte';
 	import { cn } from '$lib/utils.js';
 	import { type ClassValue } from 'clsx';
 	import KleriTooltip from '$lib/tooltip/KleriTooltip.svelte';
 	import { X, Eraser } from '@lucide/svelte';
+	import { DialogMorph } from './morph.js';
 
 	type Props = Dialog.RootProps & {
 		trigger?: Snippet;
@@ -18,11 +19,14 @@
 		class?: ClassValue;
 		triggerClass?: ClassValue;
 		contentProps?: WithoutChild<Dialog.ContentProps>;
+		/** Fires once the dialog has fully closed (after the close animation). */
 		onClose?: () => void;
 	};
 
 	let {
 		open = $bindable(false),
+		onOpenChange,
+		onOpenChangeComplete,
 		trigger,
 		buttonText,
 		ButtonIcon,
@@ -38,110 +42,49 @@
 		...restProps
 	}: Props = $props();
 
-	/** Length of the morph keyframes; keep in sync with the style block below. */
-	const MORPH_DURATION = 300;
-
 	let triggerElement = $state<HTMLElement | null>(null);
-	let contentElement = $state<HTMLElement | null>(null);
-	let buttonRect: DOMRect | null = $state(null);
-	let contentRect: DOMRect | null = $state(null);
-	let isAnimating = $state(false);
-	let isClosing = $state(false);
-	let internalOpen = $state(false);
+	let panelElement = $state<HTMLElement | null>(null);
 
-	/** Every pending timer, so none of them outlive the component. */
-	const timers = new Set<ReturnType<typeof setTimeout>>();
+	const morph = new DialogMorph();
 
-	function later(fn: () => void, delayMs: number) {
-		const handle = setTimeout(() => {
-			timers.delete(handle);
-			fn();
-		}, delayMs);
-		timers.add(handle);
-	}
+	$effect(() => () => morph.destroy());
 
-	onDestroy(() => {
-		for (const handle of timers) clearTimeout(handle);
-		timers.clear();
-	});
-
-	function handleTriggerClick() {
-		if (triggerElement) {
-			buttonRect = triggerElement.getBoundingClientRect();
-			isAnimating = true;
-		}
-	}
-
-	function handleOpenChange(newOpen: boolean) {
-		if (!newOpen && internalOpen) {
-			isClosing = true;
-			if (triggerElement) {
-				buttonRect = triggerElement.getBoundingClientRect();
-			}
-			later(() => {
-				open = false;
-				internalOpen = false;
-			}, MORPH_DURATION);
-		} else if (newOpen) {
-			open = true;
-			internalOpen = true;
-			// The morph-open state forces nowrap + hidden overflow so the dialog
-			// doesn't reflow mid-animation; it must not persist past the animation
-			// or wrapped content stays clipped while the dialog is open. A timeout
-			// (not animationend) because the keyframes reference CSS vars that are
-			// unset on the first frame, which can prevent the event from firing.
-			later(() => {
-				if (internalOpen && !isClosing) isAnimating = false;
-			}, MORPH_DURATION);
-		}
-	}
-
-	// `onClose` must fire on an open -> closed transition only. Keying it off
-	// `!open` alone fired it once on mount, before the dialog had ever opened.
-	let wasOpen = false;
-
+	// Effects flush before the browser paints, so the panel's first frame is
+	// already drawn over the trigger. Closing needs no delay: bits-ui keeps the
+	// panel (and overlay) mounted until their animations finish, which lets the
+	// morph and the overlay fade run together.
 	$effect(() => {
-		if (open && contentElement && !contentRect) {
-			requestAnimationFrame(() => {
-				if (contentElement) {
-					contentRect = contentElement.getBoundingClientRect();
-				}
-			});
-		}
-
-		const isClosed = !open && !internalOpen;
-
-		if (isClosed && wasOpen) {
-			later(() => {
-				isClosing = false;
-				isAnimating = false;
-				buttonRect = null;
-				contentRect = null;
-			}, 50);
-
-			onClose?.();
-		}
-
-		wasOpen = !isClosed;
+		const panel = panelElement;
+		if (!panel) return;
+		const isOpen = open;
+		untrack(() => {
+			const targets = { panel, trigger: triggerElement };
+			if (isOpen) morph.enter(targets);
+			else morph.exit(targets);
+		});
 	});
+
+	function handleOpenChangeComplete(isOpen: boolean) {
+		onOpenChangeComplete?.(isOpen);
+		if (!isOpen) onClose?.();
+	}
 </script>
 
-<Dialog.Root bind:open onOpenChange={handleOpenChange} {...restProps}>
+<Dialog.Root
+	bind:open
+	{onOpenChange}
+	onOpenChangeComplete={handleOpenChangeComplete}
+	{...restProps}
+>
 	{#if trigger}
-		<Dialog.Trigger
-			bind:ref={triggerElement}
-			onclick={handleTriggerClick}
-			class={cn('transition-opacity duration-200', open && 'opacity-0', triggerClass)}
-		>
+		<Dialog.Trigger bind:ref={triggerElement} class={cn(triggerClass)}>
 			{@render trigger()}
 		</Dialog.Trigger>
 	{:else}
 		<Dialog.Trigger
 			bind:ref={triggerElement}
-			onclick={handleTriggerClick}
 			class={cn(
-				'w-full rounded-kleri border-2 border-black bg-primary p-2 px-4 text-base font-normal text-background ring-0 transition-opacity duration-200 hover:text-black hover:ring-0 hover:shadow-black/50 hover:kleri-bg disabled:cursor-not-allowed disabled:border-none disabled:bg-primary/50 disabled:text-black disabled:shadow-none disabled:ring-0',
-				open && 'opacity-0',
+				'w-full rounded-kleri border-2 border-black bg-primary p-2 px-4 text-base font-normal text-background ring-0 hover:text-black hover:ring-0 hover:shadow-black/50 hover:kleri-bg disabled:cursor-not-allowed disabled:border-none disabled:bg-primary/50 disabled:text-black disabled:shadow-none disabled:ring-0',
 				triggerClass
 			)}
 		>
@@ -160,33 +103,20 @@
 
 	<Dialog.Portal>
 		<Dialog.Overlay
-			class="fixed inset-0 z-50 bg-black/60 data-closed:animate-out data-closed:duration-200 data-closed:fade-out-0 data-open:animate-in data-open:duration-300 data-open:fade-in-0"
+			class="fixed inset-0 z-50 bg-black/60 data-closed:animate-out data-closed:duration-200 data-closed:ease-in data-closed:fade-out-0 data-open:animate-in data-open:duration-300 data-open:ease-out data-open:fade-in-0 motion-reduce:duration-150"
 		/>
 		<Dialog.Content
-			bind:ref={contentElement}
+			bind:ref={panelElement}
 			preventScroll={false}
 			{...contentProps}
 			class={cn(
-				'fixed z-50 rounded-kleri border border-border bg-background shadow-xl shadow-black/40 outline-none',
-				isAnimating && buttonRect && contentRect && internalOpen ? 'kleri-morph-open' : '',
-				isClosing && buttonRect && contentRect ? 'kleri-morph-close' : '',
-				!isAnimating && !isClosing ? 'kleri-morph-final' : '',
+				'kleri-morph-panel fixed inset-0 z-50 m-auto flex h-fit max-h-[calc(100dvh-2rem)] w-fit max-w-[min(42rem,calc(100vw-2rem))] flex-col rounded-kleri border border-border bg-background shadow-2xl shadow-black/50 outline-none',
 				className
 			)}
-			style={buttonRect && contentRect
-				? `
-					--start-left: ${buttonRect.left}px;
-					--start-top: ${buttonRect.top}px;
-					--start-width: ${buttonRect.width}px;
-					--start-height: ${buttonRect.height}px;
-					--end-width: ${contentRect.width}px;
-					--end-height: ${contentRect.height}px;
-				`
-				: undefined}
 		>
-			<div class="kleri-morph-inner">
+			<div class="flex min-h-0 w-full flex-1 flex-col" data-kleri-morph-content>
 				<Dialog.Title
-					class="sticky top-0 z-10 flex w-full flex-row flex-nowrap items-center justify-between border-b border-border/50 bg-background/80 px-8 py-4 backdrop-blur-xl"
+					class="flex w-full shrink-0 flex-row flex-nowrap items-center justify-between border-b border-border/50 px-8 py-4"
 				>
 					<div class="w-full text-nowrap select-none">
 						{@render title()}
@@ -202,7 +132,7 @@
 									<button
 										type="reset"
 										{form}
-										class="cursor-pointer rounded-md p-2 hover:bg-yellow-100/20 hover:text-yellow-400"
+										class="cursor-pointer rounded-md p-2 transition-colors duration-150 hover:bg-yellow-100/20 hover:text-yellow-400"
 									>
 										<Eraser class="size-4" />
 									</button>
@@ -212,24 +142,26 @@
 						{/if}
 
 						<Dialog.Close
-							class="z-20 cursor-pointer focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
+							class="z-20 cursor-pointer rounded-md focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
 						>
 							<div
-								class="group flex h-full flex-col items-center justify-center rounded-md p-2 align-middle hover:bg-red-100/20"
+								class="group flex h-full flex-col items-center justify-center rounded-md p-2 align-middle transition-colors duration-150 hover:bg-red-100/20"
 							>
-								<X class="size-5 text-foreground group-hover:text-red-400" />
+								<X
+									class="size-5 text-foreground transition-colors duration-150 group-hover:text-red-400"
+								/>
 							</div>
 						</Dialog.Close>
 					</div>
 				</Dialog.Title>
 
 				{#if description}
-					<Dialog.Description class="px-8 pt-3 text-sm text-nowrap text-muted-foreground">
+					<Dialog.Description class="shrink-0 px-8 pt-3 text-sm text-muted-foreground">
 						{@render description()}
 					</Dialog.Description>
 				{/if}
 
-				<div class="no-scrollbar max-h-[85vh] overflow-y-auto px-8 pt-4 pb-5">
+				<div class="no-scrollbar min-h-0 flex-1 overflow-y-auto px-8 pt-4 pb-5">
 					{@render children?.()}
 				</div>
 			</div>
@@ -238,82 +170,29 @@
 </Dialog.Root>
 
 <style>
-	.kleri-morph-inner {
-		width: 100%;
-		height: auto;
-		overflow: visible;
-		will-change: opacity;
-		position: relative;
+	/* Transition-only styles, toggled by DialogMorph via data-kleri-morph. */
+	:global(.kleri-morph-panel[data-kleri-morph]) {
+		will-change: transform, opacity;
 	}
 
-	:global(.kleri-morph-final) {
-		width: var(--end-width);
-		/* Height stays content-driven: text wraps and dynamic content (tab
-		   switches, form errors) change it after the open animation. The close
-		   animation re-locks it from --end-height. */
-		height: auto;
-		left: 50%;
-		top: 50%;
-		transform: translate(-50%, -50%);
-	}
-
-	:global(.kleri-morph-open) {
-		animation: kleriMorphOpen 0.3s ease-out forwards;
+	:global(.kleri-morph-panel[data-kleri-morph^='morph']) {
+		/* The panel is scaled; its content is counter-scaled from the same corner
+		   and clipped to the (rounded) morphing box. */
 		overflow: hidden;
-		text-wrap: nowrap;
+		/* clip, not hidden: a hidden box is a scroll container, and focusing the
+		   close button on open would scroll the counter-scaled content sideways. */
+		overflow: clip;
+		transform-origin: 0 0;
 	}
 
-	:global(.kleri-morph-close) {
-		animation: kleriMorphClose 0.3s ease-in forwards;
-		overflow: hidden;
-		text-wrap: nowrap;
+	:global(.kleri-morph-panel[data-kleri-morph^='morph'] > [data-kleri-morph-content]) {
+		transform-origin: 0 0;
+		will-change: transform, opacity;
 	}
 
-	@keyframes -global-kleriMorphOpen {
-		0% {
-			left: var(--start-left);
-			top: var(--start-top);
-			width: var(--start-width);
-			height: var(--start-height);
-			max-width: none;
-			max-height: none;
-			transform: translate(0, 0);
-			opacity: 1;
-			filter: blur(10px);
-		}
-		100% {
-			left: 50%;
-			top: 50%;
-			width: var(--end-width);
-			height: var(--end-height);
-			max-width: var(--end-width);
-			max-height: var(--end-height);
-			transform: translate(-50%, -50%);
-			opacity: 1;
-			filter: blur(0);
-		}
-	}
-
-	@keyframes -global-kleriMorphClose {
-		0% {
-			left: 50%;
-			top: 50%;
-			width: var(--end-width);
-			height: var(--end-height);
-			max-width: var(--end-width);
-			max-height: var(--end-height);
-			transform: translate(-50%, -50%);
-			opacity: 1;
-		}
-		100% {
-			left: var(--start-left);
-			top: var(--start-top);
-			width: var(--start-width);
-			height: var(--start-height);
-			max-width: none;
-			max-height: none;
-			transform: translate(0, 0);
-			opacity: 1;
-		}
+	/* A closing panel is on its way out: let clicks reach the page beneath. */
+	:global(.kleri-morph-panel[data-kleri-morph$='-out']) {
+		/* !important: bits-ui sets pointer-events inline. */
+		pointer-events: none !important;
 	}
 </style>
