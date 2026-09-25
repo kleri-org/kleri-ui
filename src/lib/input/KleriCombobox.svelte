@@ -82,6 +82,8 @@
 	let controlId = $derived(id ?? uid);
 
 	let searchValue = $state('');
+	/** The whole field, so the options list lines up with its full width. */
+	let shellEl = $state<HTMLElement | null>(null);
 	let hasErrors = $derived((errors?.length ?? 0) > 0);
 	let filteredItems = $derived(
 		searchValue.trim() === ''
@@ -126,6 +128,7 @@
 		onOpenChange={handleOpenChange}
 	>
 		<div
+			bind:this={shellEl}
 			class={fieldShell({ withBorder, hasErrors, disabled })}
 			class:kleri-shake={hasErrors || shake}
 		>
@@ -154,8 +157,9 @@
 
 		<Combobox.Portal>
 			<Combobox.Content
+				customAnchor={shellEl}
 				sideOffset={8}
-				class="z-50 w-[var(--bits-combobox-anchor-width)] min-w-[var(--bits-combobox-anchor-width)] overflow-hidden rounded-kleri border-2 border-border bg-popover p-1 text-popover-foreground shadow-xl outline-hidden"
+				class="kleri-dropdown z-50 w-[var(--bits-combobox-anchor-width)] min-w-[var(--bits-combobox-anchor-width)] overflow-hidden rounded-kleri border-2 border-border bg-popover p-1 text-popover-foreground shadow-xl outline-hidden"
 			>
 				<Combobox.Viewport class="kleri-scrollbar max-h-64 overflow-y-auto p-1">
 					{#each filteredItems as item (item.value)}

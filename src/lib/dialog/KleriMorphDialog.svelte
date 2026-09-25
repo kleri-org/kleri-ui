@@ -110,7 +110,7 @@
 			preventScroll={false}
 			{...contentProps}
 			class={cn(
-				'kleri-morph-panel fixed inset-0 z-50 m-auto flex h-fit max-h-[calc(100dvh-2rem)] w-fit max-w-[min(42rem,calc(100vw-2rem))] flex-col rounded-kleri border border-border bg-background shadow-2xl shadow-black/50 outline-none',
+				'kleri-morph-panel fixed inset-0 z-50 m-auto flex h-fit max-h-[calc(100dvh-2rem)] w-fit max-w-[calc(100vw-2rem)] flex-col rounded-kleri border border-border bg-background shadow-2xl shadow-black/50 outline-none',
 				className
 			)}
 		>
@@ -156,7 +156,11 @@
 				</Dialog.Title>
 
 				{#if description}
-					<Dialog.Description class="shrink-0 px-8 pt-3 text-sm text-muted-foreground">
+					<!-- w-0 min-w-full: the text wraps to the width the body sets instead of
+					     stretching the fit-content panel to one long line. -->
+					<Dialog.Description
+						class="w-0 min-w-full shrink-0 px-8 pt-3 text-sm text-muted-foreground"
+					>
 						{@render description()}
 					</Dialog.Description>
 				{/if}

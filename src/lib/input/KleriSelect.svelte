@@ -178,7 +178,7 @@ item has an image (falling back to its icon), a bare icon otherwise, or nothing.
 		<Select.Portal>
 			<Select.Content
 				sideOffset={8}
-				class="z-50 w-[var(--bits-select-anchor-width)] min-w-[var(--bits-select-anchor-width)] overflow-hidden rounded-kleri border-2 border-border bg-popover p-1 text-popover-foreground shadow-xl outline-hidden"
+				class="kleri-dropdown z-50 w-[var(--bits-select-anchor-width)] min-w-[var(--bits-select-anchor-width)] overflow-hidden rounded-kleri border-2 border-border bg-popover p-1 text-popover-foreground shadow-xl outline-hidden"
 			>
 				<Select.Viewport class="kleri-scrollbar max-h-64 overflow-y-auto p-1">
 					{#each items as item (item.value)}
