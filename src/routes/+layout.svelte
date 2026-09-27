@@ -28,7 +28,10 @@
 		AppWindow,
 		Wand,
 		TextCursor,
-		SquareStack
+		SquareStack,
+		CalendarDays,
+		Plug,
+		LayoutPanelTop
 	} from '@lucide/svelte';
 
 	const { children } = $props();
@@ -107,6 +110,16 @@
 			items: [
 				{ name: 'Popover', id: 'popover', icon: PanelRight },
 				{ name: 'KleriMorphDialog', id: 'kleri-morph-dialog', icon: SquareStack }
+			]
+		},
+		{
+			name: 'Calendar',
+			route: '/components/calendar',
+			icon: CalendarDays,
+			items: [
+				{ name: 'KleriCalendar', id: 'kleri-calendar', icon: CalendarDays },
+				{ name: 'Integrations', id: 'calendar-integrations', icon: Plug },
+				{ name: 'Custom views', id: 'calendar-custom-views', icon: LayoutPanelTop }
 			]
 		},
 		{

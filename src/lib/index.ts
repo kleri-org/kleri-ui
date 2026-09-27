@@ -86,6 +86,23 @@ export {
 	PopoverTrigger
 } from './menus/popover/index.js';
 
+export {
+	KleriCalendar,
+	CalendarStore,
+	createCalendarStore,
+	createMemoryProvider,
+	createGoogleCalendarProvider,
+	createMicrosoftCalendarProvider,
+	createIcsFeedProvider,
+	defaultCalendarViews,
+	type CalendarEvent,
+	type CalendarInfo,
+	type CalendarOccurrence,
+	type CalendarProvider,
+	type CalendarViewDefinition,
+	type EventDraft
+} from './calendar/index.js';
+
 /**
  * `KleriWindowsControls` is **not** re-exported here on purpose: it imports
  * `@tauri-apps/api`, an optional peer dependency, so pulling it into the root

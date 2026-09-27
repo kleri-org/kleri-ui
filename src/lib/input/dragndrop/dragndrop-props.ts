@@ -12,7 +12,7 @@ export type DropzoneBaseProps = {
 	/**
 	 * Allowed file types. Pass an empty array or omit to accept any file.
 	 *
-	 * Built-in values: `"image"`, `"pdf"`. Custom types can be registered via
+	 * Built-in values: `"image"`, `"pdf"`, `"ics"`. Custom types can be registered via
 	 * `FILE_TYPE_REGISTRY` in `dragndrop-utils.ts`.
 	 *
 	 * @example

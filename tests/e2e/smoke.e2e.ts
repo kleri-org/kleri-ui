@@ -22,7 +22,7 @@ test.describe('Landing page', () => {
 });
 
 test.describe('Navigation', () => {
-	test('sidebar lists all 9 component categories', async ({ page }) => {
+	test('sidebar lists all 10 component categories', async ({ page }) => {
 		await gotoHydrated(page, '/components');
 
 		const sidebar = page.locator('aside');
@@ -37,6 +37,7 @@ test.describe('Navigation', () => {
 			'Settings',
 			'Magic',
 			'Menu',
+			'Calendar',
 			'Window Controls'
 		];
 		for (const name of categories) {
@@ -54,6 +55,7 @@ test.describe('Navigation', () => {
 			{ name: 'Settings', path: '/components/settings' },
 			{ name: 'Magic', path: '/components/magic' },
 			{ name: 'Menu', path: '/components/menu' },
+			{ name: 'Calendar', path: '/components/calendar' },
 			{ name: 'Window Controls', path: '/components/window-controls' }
 		];
 
@@ -73,7 +75,7 @@ test.describe('Navigation', () => {
 
 		const cardLinks = page.locator('section a[href^="/components/"]');
 		const count = await cardLinks.count();
-		expect(count).toBe(9);
+		expect(count).toBe(10);
 
 		// Click each card and verify navigation
 		const routes = [
@@ -85,6 +87,7 @@ test.describe('Navigation', () => {
 			'href="/components/settings"',
 			'href="/components/magic"',
 			'href="/components/menu"',
+			'href="/components/calendar"',
 			'href="/components/window-controls"'
 		];
 		for (const route of routes) {

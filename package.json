@@ -68,6 +68,10 @@
 		"./popover": {
 			"types": "./dist/menus/popover/index.d.ts",
 			"svelte": "./dist/menus/popover/index.js"
+		},
+		"./calendar": {
+			"types": "./dist/calendar/index.d.ts",
+			"svelte": "./dist/calendar/index.js"
 		}
 	},
 	"peerDependencies": {
@@ -152,6 +156,8 @@
 		"components",
 		"kleri",
 		"tailwindcss",
-		"daisyui"
+		"daisyui",
+		"calendar",
+		"scheduling"
 	]
 }

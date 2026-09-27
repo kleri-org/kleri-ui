@@ -24,6 +24,21 @@ test.describe('Accessibility audits', () => {
 		expect(results.violations).toEqual([]);
 	});
 
+	test('calendar component page has no critical a11y violations', async ({ page }) => {
+		await gotoHydrated(page, '/components/calendar');
+		// Let the demo calendars finish their simulated sync.
+		await page
+			.getByRole('button', { name: /^Daily stand-up,/ })
+			.first()
+			.waitFor({ state: 'attached' });
+
+		const results = await new AxeBuilder({ page })
+			.withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+			.analyze();
+
+		expect(results.violations).toEqual([]);
+	});
+
 	test('button component page has no critical a11y violations', async ({ page }) => {
 		await gotoHydrated(page, '/components/button');
 

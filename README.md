@@ -557,6 +557,127 @@ Dynamic form controls generated from a schema.
 
 ---
 
+### Calendar
+
+`KleriCalendar` is a full scheduling surface: day, week, month and agenda
+views, drag to create/move/resize, recurring events, time zones, guest
+availability with suggested times, RSVP, video conferencing and calendar
+integrations. Everything lives behind its own entry point:
+
+```svelte
+<script lang="ts">
+	import { CalendarStore, KleriCalendar, createMemoryProvider } from '@kleri/ui/calendar';
+
+	const store = new CalendarStore({
+		providers: [createMemoryProvider({ calendars: [{ id: 'work', name: 'Work' }] })],
+		persistKey: 'my-app-calendar' // remembers visibility and colors
+	});
+
+	let view = $state('week');
+	let date = $state(new Date());
+</script>
+
+<div class="h-[720px]">
+	<KleriCalendar {store} bind:view bind:date self={{ email: 'me@example.com' }} />
+</div>
+```
+
+The calendar fills its container, so give the parent a height.
+
+| Prop                                                   | Type                             | Default                  | Description                                           |
+| ------------------------------------------------------ | -------------------------------- | ------------------------ | ----------------------------------------------------- |
+| `store`                                                | `CalendarStore`                  | —                        | Data source aggregating every provider                |
+| `view`                                                 | `string` (bindable)              | `'week'`                 | Active view id                                        |
+| `date`                                                 | `Date` (bindable)                | today                    | Focus date                                            |
+| `views`                                                | `CalendarViewDefinition[]`       | day, week, month, agenda | Views in the switcher; add your own                   |
+| `locale`                                               | `string`                         | browser                  | Drives all date/time formatting                       |
+| `timeZone`                                             | `string`                         | system                   | IANA zone to display times in                         |
+| `weekStartsOn`                                         | `number`                         | from locale              | `0` = Sunday                                          |
+| `hideWeekends`                                         | `boolean`                        | `false`                  | Hide Sat/Sun in multi-day views                       |
+| `hour12`                                               | `boolean`                        | from locale              | 12- or 24-hour clock                                  |
+| `workingHours`                                         | `WorkingHours \| null`           | Mon–Fri 9–17             | Shading and "find a time" window                      |
+| `slotDuration`                                         | `number`                         | `15`                     | Snap step (minutes) for dragging and time lists       |
+| `hourHeight`                                           | `number`                         | `52`                     | Pixel height of an hour                               |
+| `dayStartHour` / `dayEndHour`                          | `number`                         | `0` / `24`               | Hours rendered by time grids                          |
+| `defaultEventDuration`                                 | `number`                         | `30`                     | Minutes for click-created events                      |
+| `readOnly`                                             | `boolean`                        | `false`                  | Disable every edit                                    |
+| `showWeekNumbers`                                      | `boolean`                        | `false`                  | ISO week numbers                                      |
+| `dimPastEvents`                                        | `boolean`                        | `true`                   | De-emphasise finished events                          |
+| `self`                                                 | `CalendarPerson`                 | —                        | Organizer of new events, RSVP target                  |
+| `contacts`                                             | `CalendarPerson[]`               | `[]`                     | Suggestions in the guest field                        |
+| `integrations`                                         | `CalendarIntegration[]`          | `[]`                     | Accounts offered in "Add calendar" (your OAuth)       |
+| `conferenceProviders`                                  | `ConferenceProvider[]`           | `[]`                     | Extra conferencing, e.g. Zoom                         |
+| `icsProxy`                                             | `(url) => string`                | —                        | Route iCalendar feed URLs through your backend (CORS) |
+| `labels`                                               | `Partial<CalendarLabels>`        | English                  | Override any string                                   |
+| `filter`                                               | `(occurrence) => boolean`        | —                        | Hide occurrences                                      |
+| `eventContent`                                         | `Snippet`                        | —                        | Custom content inside every event                     |
+| `eventDetails`                                         | `Snippet`                        | —                        | Extra section in the details popover                  |
+| `onEventCreated` / `onEventUpdated` / `onEventDeleted` | callbacks                        | —                        | Mutation hooks                                        |
+| `onRangeChange`                                        | `({ start, end, view }) => void` | —                        | Visible range changed                                 |
+| `onReconnect`                                          | `(source) => void`               | —                        | A provider's credentials expired                      |
+
+**Integrations.** Each source is a `CalendarProvider`. Google Calendar,
+Microsoft Graph (Outlook) and iCalendar feeds are built in, with token
+refresh on 401, retries with backoff (honouring `Retry-After`) and abort
+support. Your app keeps ownership of OAuth — adapters only need a token getter:
+
+```ts
+import {
+	createGoogleCalendarProvider,
+	createMicrosoftCalendarProvider,
+	createIcsFeedProvider
+} from '@kleri/ui/calendar';
+
+store.addProvider(
+	createGoogleCalendarProvider({
+		account: user.email,
+		getAccessToken: ({ forceRefresh }) => auth.token(forceRefresh)
+	})
+);
+store.addProvider(createMicrosoftCalendarProvider({ getAccessToken: () => msalToken() }));
+store.addProvider(
+	createIcsFeedProvider({
+		url: 'webcal://example.com/team.ics',
+		proxy: (u) => `/api/ics?url=${encodeURIComponent(u)}`
+	})
+);
+```
+
+Implement the interface for anything else (your backend, CalDAV…): only
+`listCalendars` and `listEvents` are required; writes, RSVPs and free/busy are
+optional and advertised through `capabilities`.
+
+**Custom views.** Views are plain definitions — a timeline or chart view slots
+in next to the built-ins and reuses the data, popovers and scheduling flows via
+`getCalendarContext()`:
+
+```ts
+const timelineView: CalendarViewDefinition = {
+	id: 'timeline',
+	label: 'Timeline',
+	component: TimelineView,
+	range: (date, ctx) => ({
+		start: startOfWeek(date, ctx.weekStartsOn),
+		end: addDays(startOfWeek(date, ctx.weekStartsOn), 14)
+	}),
+	step: (date, dir) => addDays(date, 14 * dir),
+	title: (range, ctx) => formatDateRange(ctx.locale, range.start, addDays(range.end, -1))
+};
+// <KleriCalendar views={[...defaultCalendarViews, timelineView]} />
+```
+
+**Keyboard.** `T` today · `J`/`K` next/previous · `D` `W` `M` `A` views · `C`
+create · `E` edit · `/` search · `?` all shortcuts. On a focused event:
+`Alt+↑/↓` moves by a slot, `Alt+Shift+↑/↓` changes the end, `Alt+←/→` moves
+a day, `Delete` removes it.
+
+The core is also exported for standalone use: RRULE parsing/expansion
+(`parseRRule`, `expandRecurrence`, `describeRecurrence`), iCalendar
+import/export (`parseICS`, `serializeICS`), time zones (`createZonedClock`),
+free-slot search (`findAvailableSlots`) and layout algorithms.
+
+---
+
 ### Tauri-only components
 
 These import `@tauri-apps/*`, which are **optional** peer dependencies, so they
@@ -605,6 +726,8 @@ Exported as constants and CSS variables:
 | `kleri-border`         | Animated gradient border (light mode)         |
 | `kleri-border-dark`    | Animated gradient border (dark mode)          |
 | `bg-kleri_blur`        | 30% background with 40px blur                 |
+| `kleri-calendar`       | Calendar surface tokens (grid lines, today…)  |
+| `kleri-event`          | Event tinted by `--event-color`, RSVP states  |
 
 ### Border Radius
 

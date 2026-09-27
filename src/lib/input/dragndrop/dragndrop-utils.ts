@@ -6,7 +6,7 @@
  * A named file type that the dropzone knows how to validate, accept in the
  * file picker, and describe in auto-generated help text.
  *
- * Built‑in: `"image"`, `"pdf"`.  Pass any string to the registry to add
+ * Built‑in: `"image"`, `"pdf"`, `"ics"`.  Pass any string to the registry to add
  * custom types without touching component code.
  */
 export type FileTypeName = string;
@@ -38,6 +38,12 @@ export const FILE_TYPE_REGISTRY: Record<FileTypeName, FileTypeEntry> = {
 		mime: 'application/pdf',
 		accept: 'application/pdf',
 		label: 'PDF'
+	},
+	ics: {
+		extensions: ['.ics', '.ical', '.icalendar', '.ifb'],
+		mime: 'text/calendar',
+		accept: '.ics,.ical,.icalendar,.ifb,text/calendar',
+		label: 'iCalendar (.ics)'
 	}
 };
 

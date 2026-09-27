@@ -8,7 +8,8 @@
 		Settings,
 		Wand,
 		PanelRight,
-		AppWindow
+		AppWindow,
+		CalendarDays
 	} from '@lucide/svelte';
 	import { onMount } from 'svelte';
 
@@ -76,6 +77,14 @@
 			comingSoon: false,
 			route: '/components/menu',
 			icon: PanelRight
+		},
+		{
+			name: 'Calendar',
+			description: 'Scheduling, recurring events and calendar integrations',
+			count: 1,
+			comingSoon: false,
+			route: '/components/calendar',
+			icon: CalendarDays
 		},
 		{
 			name: 'Window Controls',
