@@ -29,8 +29,9 @@
 		onToday: () => void;
 		onStep: (direction: 1 | -1) => void;
 		onToggleSidebar: () => void;
-		onCreate: () => void;
-		onShortcuts: () => void;
+		/** Receives the clicked button, which the editor morphs from. */
+		onCreate: (origin?: HTMLElement) => void;
+		onShortcuts: (origin?: HTMLElement) => void;
 		/** Search input element, so the `/` shortcut can focus it. */
 		searchInput?: HTMLInputElement | null;
 		extra?: Snippet;
@@ -190,7 +191,7 @@
 			class={cn(iconButton, 'hidden @4xl:flex')}
 			aria-label={ctx.labels.keyboardShortcuts}
 			title="{ctx.labels.keyboardShortcuts} (?)"
-			onclick={onShortcuts}
+			onclick={(e) => onShortcuts(e.currentTarget)}
 		>
 			<Keyboard class="size-[18px]" />
 		</button>
@@ -232,7 +233,7 @@
 				class="flex h-9 shrink-0 items-center gap-1.5 rounded-kleri border-2 border-black bg-primary px-3 text-sm font-medium text-black transition-colors hover:kleri-bg focus-visible:ring-2 focus-visible:ring-kleri-2 focus-visible:outline-none"
 				aria-label={ctx.labels.create}
 				title="{ctx.labels.create} (C)"
-				onclick={onCreate}
+				onclick={(e) => onCreate(e.currentTarget)}
 			>
 				<Plus class="size-4" strokeWidth={2.5} />
 				<span class="hidden @xl:inline">{ctx.labels.create}</span>

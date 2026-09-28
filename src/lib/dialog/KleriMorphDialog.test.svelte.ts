@@ -53,4 +53,20 @@ describe('KleriMorphDialog', () => {
 
 		expect(await screen.findByRole('dialog')).toBeInTheDocument();
 	});
+
+	it('renders no trigger when opened programmatically from an origin', async () => {
+		render(KleriMorphDialog, { props: { title, children, origin: null, open: true } });
+
+		const dialog = await screen.findByRole('dialog');
+		expect(screen.getAllByRole('button').every((button) => dialog.contains(button))).toBe(true);
+	});
+
+	it('renders a custom panel in place of the built-in chrome', async () => {
+		const panel = createRawSnippet(() => ({ render: () => '<p>Custom panel</p>' }));
+		render(KleriMorphDialog, { props: { panel, origin: null, open: true } });
+
+		const dialog = await screen.findByRole('dialog');
+		expect(screen.getByText('Custom panel')).toBeInTheDocument();
+		expect(dialog.querySelector('[data-dialog-close]')).toBeNull();
+	});
 });

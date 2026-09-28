@@ -355,9 +355,16 @@
 		| { kind: 'details'; key: string; anchor: HTMLElement }
 		| { kind: 'create'; range: WallRange; anchor: HTMLElement; calendarId: string };
 
+	/** `origin` is the element the editor morphs from (and back to on close). */
 	type EditorState =
-		| { id: number; mode: 'create'; initial: EditorInitial }
-		| { id: number; mode: 'edit'; initial: EditorInitial; occurrence: DisplayOccurrence };
+		| { id: number; mode: 'create'; initial: EditorInitial; origin: HTMLElement | null }
+		| {
+				id: number;
+				mode: 'edit';
+				initial: EditorInitial;
+				occurrence: DisplayOccurrence;
+				origin: HTMLElement | null;
+		  };
 
 	let popover = $state.raw<PopoverState | null>(null);
 	let draft = $state.raw<WallRange | null>(null);
@@ -365,11 +372,15 @@
 	let editorOpen = $state(false);
 	let editorSeq = 0;
 	let scopePrompt = $state.raw<{
+		id: number;
 		action: 'edit' | 'delete' | 'move';
 		resolve: (scope: EditScope | null) => void;
 	} | null>(null);
+	let scopeSeq = 0;
 	let connectOpen = $state(false);
+	let connectOrigin = $state.raw<HTMLElement | null>(null);
 	let shortcutsOpen = $state(false);
+	let shortcutsOrigin = $state.raw<HTMLElement | null>(null);
 
 	let detailsOccurrence = $derived.by(() => {
 		const current = popover;
@@ -391,14 +402,9 @@
 	function askScope(action: 'edit' | 'delete' | 'move'): Promise<EditScope | null> {
 		// Only one prompt at a time: a newer question cancels the one still open.
 		scopePrompt?.resolve(null);
+		// The prompt stays mounted until its close animation ends (see ScopeDialog's onClosed).
 		return new Promise((resolve) => {
-			scopePrompt = {
-				action,
-				resolve: (scope) => {
-					scopePrompt = null;
-					resolve(scope);
-				}
-			};
+			scopePrompt = { id: ++scopeSeq, action, resolve };
 		});
 	}
 
@@ -438,20 +444,31 @@
 			.find((o) => o.event.id === event.id && o.calendar.id === event.calendarId);
 	}
 
-	function openEditorForCreate(initial: EditorInitial) {
+	/** Opens the full editor, morphing from `origin` (by default the open popover's anchor). */
+	function openEditorForCreate(
+		initial: EditorInitial,
+		origin: HTMLElement | null = popover?.anchor ?? null
+	) {
 		popover = null;
 		draft = { start: initial.start, end: initial.end, allDay: initial.allDay };
-		editor = { id: ++editorSeq, mode: 'create', initial };
+		editor = { id: ++editorSeq, mode: 'create', initial, origin };
 		editorOpen = true;
 	}
 
 	function openEditorForEdit(occurrence: DisplayOccurrence) {
+		// Morph from the event itself: the element the popover opened from, or its first segment.
+		const origin =
+			popover?.kind === 'details' && popover.key === occurrence.key
+				? popover.anchor
+				: (rootEl?.querySelector<HTMLElement>(`[data-event-key="${CSS.escape(occurrence.key)}"]`) ??
+					null);
 		popover = null;
 		const { event } = occurrence;
 		editor = {
 			id: ++editorSeq,
 			mode: 'edit',
 			occurrence,
+			origin,
 			initial: {
 				calendarId: occurrence.calendar.id,
 				start: occurrence.displayStart,
@@ -825,7 +842,7 @@
 				break;
 			case 'c':
 				if (!config.readOnly && store.defaultCalendar) {
-					openEditorForCreate({ calendarId: store.defaultCalendar.id, ...defaultNewRange() });
+					openEditorForCreate({ calendarId: store.defaultCalendar.id, ...defaultNewRange() }, null);
 				}
 				break;
 			case '/':
@@ -840,6 +857,7 @@
 				}
 				break;
 			case '?':
+				shortcutsOrigin = null;
 				shortcutsOpen = true;
 				break;
 			case 'r':
@@ -911,11 +929,17 @@
 				<CalendarSidebar
 					{date}
 					{range}
-					onCreate={() =>
+					onCreate={(origin) =>
 						store.defaultCalendar &&
-						openEditorForCreate({ calendarId: store.defaultCalendar.id, ...defaultNewRange() })}
+						openEditorForCreate(
+							{ calendarId: store.defaultCalendar.id, ...defaultNewRange() },
+							origin ?? null
+						)}
 					onConnect={integrations.length || allowIcsSubscribe || allowIcsImport
-						? () => (connectOpen = true)
+						? (origin) => {
+								connectOrigin = origin ?? null;
+								connectOpen = true;
+							}
 						: undefined}
 					{onReconnect}
 					onDisconnect={allowDisconnect ? disconnect : undefined}
@@ -941,10 +965,16 @@
 				onToday={goToday}
 				onStep={step}
 				onToggleSidebar={() => (showSidebar = !showSidebar)}
-				onCreate={() =>
+				onCreate={(origin) =>
 					store.defaultCalendar &&
-					openEditorForCreate({ calendarId: store.defaultCalendar.id, ...defaultNewRange() })}
-				onShortcuts={() => (shortcutsOpen = true)}
+					openEditorForCreate(
+						{ calendarId: store.defaultCalendar.id, ...defaultNewRange() },
+						origin ?? null
+					)}
+				onShortcuts={(origin) => {
+					shortcutsOrigin = origin ?? null;
+					shortcutsOpen = true;
+				}}
 				extra={toolbarExtra}
 			/>
 			<div class="relative min-h-0 flex-1" aria-busy={store.isLoading}>
@@ -1033,6 +1063,7 @@
 				{@const state = editor}
 				<EventEditor
 					bind:open={editorOpen}
+					origin={state.origin}
 					mode={state.mode}
 					initial={state.initial}
 					occurrenceKey={state.mode === 'edit' ? state.occurrence.key : undefined}
@@ -1058,11 +1089,21 @@
 		{/if}
 
 		{#if scopePrompt}
-			<ScopeDialog action={scopePrompt.action} onResolve={scopePrompt.resolve} />
+			{@const prompt = scopePrompt}
+			{#key prompt.id}
+				<ScopeDialog
+					action={prompt.action}
+					onResolve={prompt.resolve}
+					onClosed={() => {
+						if (scopePrompt?.id === prompt.id) scopePrompt = null;
+					}}
+				/>
+			{/key}
 		{/if}
 
 		<ConnectCalendarDialog
 			bind:open={connectOpen}
+			origin={connectOrigin}
 			{integrations}
 			allowSubscribe={allowIcsSubscribe}
 			allowImport={allowIcsImport}
@@ -1070,7 +1111,7 @@
 			onConnected={connected}
 			onImported={(count) => toast(mergedLabels.importDone(count))}
 		/>
-		<ShortcutsDialog bind:open={shortcutsOpen} {views} />
+		<ShortcutsDialog bind:open={shortcutsOpen} origin={shortcutsOrigin} {views} />
 		<CalendarToasts {toasts} onDismiss={dismissToast} />
 	{/if}
 

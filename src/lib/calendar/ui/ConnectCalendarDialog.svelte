@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Dialog as DialogPrimitive } from 'bits-ui';
-	import { ChevronRight, Link2, Loader2, X } from '@lucide/svelte';
+	import { ChevronRight, Link2, Loader2 } from '@lucide/svelte';
+	import KleriMorphDialog from '$lib/dialog/KleriMorphDialog.svelte';
 	import KleriInput from '$lib/input/KleriInput.svelte';
 	import KleriSelect from '$lib/input/KleriSelect.svelte';
 	import KleriDragNDrop from '$lib/input/dragndrop/KleriDragNDrop.svelte';
@@ -26,6 +26,8 @@
 		icsProxy?: (url: string) => string;
 		onConnected: (provider: CalendarProvider) => void;
 		onImported: (count: number) => void;
+		/** Element the dialog morphs from, e.g. the sidebar's "Add calendar" button. */
+		origin?: HTMLElement | null;
 	}
 
 	let {
@@ -35,7 +37,8 @@
 		allowImport = true,
 		icsProxy,
 		onConnected,
-		onImported
+		onImported,
+		origin = null
 	}: Props = $props();
 	const ctx = getCalendarContext();
 
@@ -147,117 +150,95 @@
 	}
 </script>
 
-<DialogPrimitive.Root bind:open>
-	<DialogPrimitive.Portal>
-		<DialogPrimitive.Overlay
-			class="fixed inset-0 z-50 bg-black/60 data-open:animate-in data-open:fade-in-0"
-		/>
-		<DialogPrimitive.Content
-			class="fixed top-1/2 left-1/2 z-50 flex max-h-[88vh] w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-kleri border border-border bg-background shadow-2xl shadow-black/40 outline-hidden data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95"
-		>
-			<div class="flex items-start justify-between gap-4 border-b border-(--kc-line) p-5">
-				<div>
-					<DialogPrimitive.Title class="text-lg font-semibold"
-						>{ctx.labels.connectTitle}</DialogPrimitive.Title
-					>
-					<DialogPrimitive.Description class="mt-1 text-sm text-muted-foreground"
-						>{ctx.labels.connectDescription}</DialogPrimitive.Description
-					>
-				</div>
-				<DialogPrimitive.Close
-					class="rounded-lg p-1.5 text-muted-foreground hover:bg-muted/60 hover:text-foreground"
-					aria-label={ctx.labels.close}
-				>
-					<X class="size-5" />
-				</DialogPrimitive.Close>
-			</div>
-
-			<div class="flex kleri-scrollbar flex-col gap-6 overflow-y-auto p-5">
-				{#if integrations.length}
-					<ul class="flex flex-col gap-2">
-						{#each integrations as integration (integration.id)}
-							<li>
-								<button
-									type="button"
-									disabled={connecting !== null}
-									class="group flex w-full items-center gap-3 rounded-kleri border-2 border-border p-3 text-left transition-colors hover:border-kleri-2 hover:bg-kleri-2/5 disabled:cursor-wait disabled:opacity-70"
-									onclick={() => connect(integration)}
-								>
-									<span
-										class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted/40"
-									>
-										{#if integration.icon}
-											<integration.icon class="size-5" />
-										{:else}
-											<ProviderIcon kind={integration.id} class="size-5" />
-										{/if}
-									</span>
-									<span class="min-w-0 flex-1">
-										<span class="block font-medium">{integration.label}</span>
-										{#if integration.description}
-											<span class="block text-xs text-muted-foreground"
-												>{integration.description}</span
-											>
-										{/if}
-									</span>
-									{#if connecting === integration.id}
-										<Loader2
-											class="size-5 animate-spin text-kleri-1 dark:text-kleri-2"
-											aria-label={ctx.labels.connecting}
-										/>
-									{:else}
-										<ChevronRight
-											class="size-5 text-muted-foreground transition-transform group-hover:translate-x-0.5"
-										/>
-									{/if}
-								</button>
-							</li>
-						{/each}
-					</ul>
-					{#if connectError}
-						<p class="-mt-4 font-spacemono text-xs text-destructive" role="alert">{connectError}</p>
-					{/if}
-				{/if}
-
-				{#if allowSubscribe}
-					<form class="flex flex-col gap-1" onsubmit={subscribe}>
-						<KleriInput
-							bind:value={url}
-							label={ctx.labels.subscribeUrl}
-							placeholder="webcal://…"
-							type="url"
-							InputIcon={Link2}
-							errors={urlErrors}
-						/>
-						<div class="flex items-center justify-between gap-3">
-							<p class="indent-2 text-xs text-muted-foreground">{ctx.labels.subscribeUrlHint}</p>
-							<button
-								type="submit"
-								disabled={subscribing || !url.trim()}
-								class="flex shrink-0 items-center gap-2 rounded-kleri border-2 border-border px-4 py-1.5 text-sm transition-colors hover:border-kleri-2 disabled:opacity-50"
+<KleriMorphDialog bind:open {origin} class="w-[calc(100vw-2rem)] max-w-lg">
+	{#snippet title()}
+		<span class="text-lg font-semibold">{ctx.labels.connectTitle}</span>
+	{/snippet}
+	{#snippet description()}
+		{ctx.labels.connectDescription}
+	{/snippet}
+	<div class="flex flex-col gap-6">
+		{#if integrations.length}
+			<ul class="flex flex-col gap-2">
+				{#each integrations as integration (integration.id)}
+					<li>
+						<button
+							type="button"
+							disabled={connecting !== null}
+							class="group flex w-full items-center gap-3 rounded-kleri border-2 border-border p-3 text-left transition-colors hover:border-kleri-2 hover:bg-kleri-2/5 disabled:cursor-wait disabled:opacity-70"
+							onclick={() => connect(integration)}
+						>
+							<span
+								class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted/40"
 							>
-								{#if subscribing}<Loader2 class="size-4 animate-spin" />{/if}
-								{ctx.labels.subscribe}
-							</button>
-						</div>
-					</form>
-				{/if}
+								{#if integration.icon}
+									<integration.icon class="size-5" />
+								{:else}
+									<ProviderIcon kind={integration.id} class="size-5" />
+								{/if}
+							</span>
+							<span class="min-w-0 flex-1">
+								<span class="block font-medium">{integration.label}</span>
+								{#if integration.description}
+									<span class="block text-xs text-muted-foreground">{integration.description}</span>
+								{/if}
+							</span>
+							{#if connecting === integration.id}
+								<Loader2
+									class="size-5 animate-spin text-kleri-1 dark:text-kleri-2"
+									aria-label={ctx.labels.connecting}
+								/>
+							{:else}
+								<ChevronRight
+									class="size-5 text-muted-foreground transition-transform group-hover:translate-x-0.5"
+								/>
+							{/if}
+						</button>
+					</li>
+				{/each}
+			</ul>
+			{#if connectError}
+				<p class="-mt-4 font-spacemono text-xs text-destructive" role="alert">{connectError}</p>
+			{/if}
+		{/if}
 
-				{#if allowImport}
-					<div class="flex flex-col gap-2">
-						<KleriSelect items={targets} bind:value={importTarget} label={ctx.labels.importInto} />
-						<KleriDragNDrop
-							label={ctx.labels.importFile}
-							allowedTypes={['ics']}
-							multiple={false}
-							disabled={importing}
-							errors={importErrors}
-							mainText={importing ? ctx.labels.connecting : 'Drop an .ics file or click to browse'}
-							onDrop={importFile}
-						/>
-					</div>
-				{/if}
+		{#if allowSubscribe}
+			<form class="flex flex-col gap-1" onsubmit={subscribe}>
+				<KleriInput
+					bind:value={url}
+					label={ctx.labels.subscribeUrl}
+					placeholder="webcal://…"
+					type="url"
+					InputIcon={Link2}
+					errors={urlErrors}
+				/>
+				<div class="flex items-center justify-between gap-3">
+					<p class="indent-2 text-xs text-muted-foreground">{ctx.labels.subscribeUrlHint}</p>
+					<button
+						type="submit"
+						disabled={subscribing || !url.trim()}
+						class="flex shrink-0 items-center gap-2 rounded-kleri border-2 border-border px-4 py-1.5 text-sm transition-colors hover:border-kleri-2 disabled:opacity-50"
+					>
+						{#if subscribing}<Loader2 class="size-4 animate-spin" />{/if}
+						{ctx.labels.subscribe}
+					</button>
+				</div>
+			</form>
+		{/if}
+
+		{#if allowImport}
+			<div class="flex flex-col gap-2">
+				<KleriSelect items={targets} bind:value={importTarget} label={ctx.labels.importInto} />
+				<KleriDragNDrop
+					label={ctx.labels.importFile}
+					allowedTypes={['ics']}
+					multiple={false}
+					disabled={importing}
+					errors={importErrors}
+					mainText={importing ? ctx.labels.connecting : 'Drop an .ics file or click to browse'}
+					onDrop={importFile}
+				/>
 			</div>
-		</DialogPrimitive.Content>
-	</DialogPrimitive.Portal>
-</DialogPrimitive.Root>
+		{/if}
+	</div>
+</KleriMorphDialog>

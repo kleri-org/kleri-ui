@@ -50,6 +50,7 @@
 	import { Dialog as DialogPrimitive } from 'bits-ui';
 	import { cn } from '$lib/utils.js';
 	import KleriButton from '$lib/button/KleriButton/KleriButton.svelte';
+	import KleriMorphDialog from '$lib/dialog/KleriMorphDialog.svelte';
 	import KleriInput from '$lib/input/KleriInput.svelte';
 	import KleriTextarea from '$lib/input/KleriTextarea.svelte';
 	import KleriSwitch from '$lib/input/KleriSwitch.svelte';
@@ -100,6 +101,8 @@
 		onSubmit: (submit: EditorSubmit) => Promise<boolean | void>;
 		onDelete?: () => void;
 		onClosed?: () => void;
+		/** Element the editor morphs from, e.g. the event or the create button. */
+		origin?: HTMLElement | null;
 	}
 
 	let {
@@ -114,7 +117,8 @@
 		conferenceProviders = [],
 		onSubmit,
 		onDelete,
-		onClosed
+		onClosed,
+		origin = null
 	}: Props = $props();
 
 	const ctx = getCalendarContext();
@@ -445,393 +449,392 @@
 	}
 </script>
 
-<DialogPrimitive.Root bind:open onOpenChangeComplete={(next) => !next && onClosed?.()}>
-	<DialogPrimitive.Portal>
-		<DialogPrimitive.Overlay
-			class="fixed inset-0 z-50 bg-black/60 backdrop-blur-[2px] data-closed:animate-out data-closed:duration-200 data-closed:fade-out-0 data-open:animate-in data-open:duration-300 data-open:fade-in-0"
-		/>
-		<DialogPrimitive.Content
-			class="fixed top-1/2 left-1/2 z-50 flex max-h-[min(92vh,52rem)] w-[calc(100vw-1.5rem)] max-w-3xl -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-kleri border border-border bg-background shadow-2xl shadow-black/40 outline-hidden duration-200 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95"
-			onEscapeKeydown={guardDismiss}
-			onInteractOutside={guardDismiss}
-			onkeydown={(e: KeyboardEvent) => {
-				if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) void submit();
-			}}
-		>
-			<form class="flex min-h-0 flex-1 flex-col" onsubmit={submit} novalidate>
-				<!-- Header: title -->
-				<div class="flex items-start gap-3 border-b border-(--kc-line) px-5 pt-5 pb-3">
-					<span
-						class="mt-3 size-3.5 shrink-0 rounded-[4px]"
-						style:background-color={form.color ?? calendar?.color ?? 'var(--color-kleri-2)'}
-						aria-hidden="true"
-					></span>
-					<div class="min-w-0 flex-1">
-						<DialogPrimitive.Title class="sr-only"
-							>{mode === 'edit' ? ctx.labels.editEvent : ctx.labels.newEvent}</DialogPrimitive.Title
-						>
-						<!-- svelte-ignore a11y_autofocus -->
-						<input
-							bind:value={form.title}
-							autofocus={mode === 'create'}
-							placeholder={ctx.labels.addTitle}
-							aria-label={ctx.labels.title}
-							class="w-full border-0 border-b-2 border-transparent bg-transparent px-0 py-1 text-2xl font-semibold outline-none placeholder:text-muted-foreground focus:border-kleri-2 focus:ring-0"
+<KleriMorphDialog
+	bind:open
+	{origin}
+	onClose={onClosed}
+	class="max-h-[min(92vh,52rem)] w-[calc(100vw-1.5rem)] max-w-3xl"
+	contentProps={{
+		onEscapeKeydown: guardDismiss,
+		onInteractOutside: guardDismiss,
+		onkeydown: (e: KeyboardEvent) => {
+			if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) void submit();
+		}
+	}}
+>
+	{#snippet panel()}
+		<form class="flex min-h-0 flex-1 flex-col" onsubmit={submit} novalidate>
+			<!-- Header: title -->
+			<div class="flex items-start gap-3 border-b border-(--kc-line) px-5 pt-5 pb-3">
+				<span
+					class="mt-3 size-3.5 shrink-0 rounded-[4px]"
+					style:background-color={form.color ?? calendar?.color ?? 'var(--color-kleri-2)'}
+					aria-hidden="true"
+				></span>
+				<div class="min-w-0 flex-1">
+					<DialogPrimitive.Title class="sr-only"
+						>{mode === 'edit' ? ctx.labels.editEvent : ctx.labels.newEvent}</DialogPrimitive.Title
+					>
+					<!-- svelte-ignore a11y_autofocus -->
+					<input
+						bind:value={form.title}
+						autofocus={mode === 'create'}
+						placeholder={ctx.labels.addTitle}
+						aria-label={ctx.labels.title}
+						class="w-full border-0 border-b-2 border-transparent bg-transparent px-0 py-1 text-2xl font-semibold outline-none placeholder:text-muted-foreground focus:border-kleri-2 focus:ring-0"
+					/>
+				</div>
+				<button
+					type="button"
+					class="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
+					aria-label={ctx.labels.close}
+					onclick={requestClose}
+				>
+					<X class="size-5" />
+				</button>
+			</div>
+
+			<div class="kleri-scrollbar min-h-0 flex-1 overflow-y-auto px-5 py-4">
+				<!-- When -->
+				<section class="flex flex-col gap-2" aria-label={ctx.labels.date}>
+					<div class="grid grid-cols-2 gap-x-3 sm:grid-cols-[1.3fr_1fr_1fr_1.3fr]">
+						<DateField
+							value={form.startDate}
+							label={ctx.labels.start}
+							onValueChange={setStartDate}
+						/>
+						{#if !form.allDay}
+							<TimeField
+								value={form.startMinutes}
+								label="&nbsp;"
+								step={ctx.config.slotDuration}
+								onValueChange={setStartMinutes}
+							/>
+							<TimeField
+								bind:value={form.endMinutes}
+								label={ctx.labels.end}
+								step={ctx.config.slotDuration}
+								durationFrom={sameDay ? form.startMinutes : undefined}
+								errors={showErrors ? timeErrors : undefined}
+							/>
+						{/if}
+						<DateField
+							bind:value={form.endDate}
+							label={form.allDay ? ctx.labels.end : ctx.labels.endDate}
+							min={form.startDate}
+							errors={showErrors && form.allDay ? timeErrors : undefined}
 						/>
 					</div>
-					<button
-						type="button"
-						class="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
-						aria-label={ctx.labels.close}
-						onclick={requestClose}
-					>
-						<X class="size-5" />
-					</button>
-				</div>
-
-				<div class="kleri-scrollbar min-h-0 flex-1 overflow-y-auto px-5 py-4">
-					<!-- When -->
-					<section class="flex flex-col gap-2" aria-label={ctx.labels.date}>
-						<div class="grid grid-cols-2 gap-x-3 sm:grid-cols-[1.3fr_1fr_1fr_1.3fr]">
-							<DateField
-								value={form.startDate}
-								label={ctx.labels.start}
-								onValueChange={setStartDate}
+					<div class="flex flex-wrap items-center gap-x-5 gap-y-2">
+						<label class="flex items-center gap-2 text-sm">
+							<KleriSwitch
+								value={form.allDay}
+								ariaLabel={ctx.labels.allDay}
+								onValueChange={setAllDay}
 							/>
-							{#if !form.allDay}
-								<TimeField
-									value={form.startMinutes}
-									label="&nbsp;"
-									step={ctx.config.slotDuration}
-									onValueChange={setStartMinutes}
-								/>
-								<TimeField
-									bind:value={form.endMinutes}
-									label={ctx.labels.end}
-									step={ctx.config.slotDuration}
-									durationFrom={sameDay ? form.startMinutes : undefined}
-									errors={showErrors ? timeErrors : undefined}
-								/>
-							{/if}
-							<DateField
-								bind:value={form.endDate}
-								label={form.allDay ? ctx.labels.end : ctx.labels.endDate}
-								min={form.startDate}
-								errors={showErrors && form.allDay ? timeErrors : undefined}
-							/>
-						</div>
-						<div class="flex flex-wrap items-center gap-x-5 gap-y-2">
-							<label class="flex items-center gap-2 text-sm">
-								<KleriSwitch
-									value={form.allDay}
-									ariaLabel={ctx.labels.allDay}
-									onValueChange={setAllDay}
-								/>
-								{ctx.labels.allDay}
-							</label>
-							{#if !form.allDay}
-								<span
-									class="flex items-center gap-1.5 font-spacemono text-[11px] text-muted-foreground"
-								>
-									<Globe class="size-3.5" />{formatTimeZoneLabel(clock.timeZone, instantStart)}
-								</span>
-							{/if}
-						</div>
-						{#if conflicts.length}
-							<p
-								class="flex items-center gap-2 rounded-lg bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-300"
+							{ctx.labels.allDay}
+						</label>
+						{#if !form.allDay}
+							<span
+								class="flex items-center gap-1.5 font-spacemono text-[11px] text-muted-foreground"
 							>
-								<AlertTriangle class="size-4 shrink-0" />
-								<span class="truncate">
-									{ctx.labels.conflictWith(
-										conflicts[0].event.title || ctx.labels.noTitle
-									)}{conflicts.length > 1 ? ` ${ctx.labels.more(conflicts.length - 1)}` : ''}
-								</span>
-							</p>
+								<Globe class="size-3.5" />{formatTimeZoneLabel(clock.timeZone, instantStart)}
+							</span>
 						{/if}
-						<RecurrenceField
-							bind:value={form.recurrence}
-							start={wallStart}
-							errors={showErrors ? recurrenceErrors : undefined}
-						/>
-					</section>
+					</div>
+					{#if conflicts.length}
+						<p
+							class="flex items-center gap-2 rounded-lg bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-300"
+						>
+							<AlertTriangle class="size-4 shrink-0" />
+							<span class="truncate">
+								{ctx.labels.conflictWith(
+									conflicts[0].event.title || ctx.labels.noTitle
+								)}{conflicts.length > 1 ? ` ${ctx.labels.more(conflicts.length - 1)}` : ''}
+							</span>
+						</p>
+					{/if}
+					<RecurrenceField
+						bind:value={form.recurrence}
+						start={wallStart}
+						errors={showErrors ? recurrenceErrors : undefined}
+					/>
+				</section>
 
-					<div class="mt-5 grid gap-x-6 gap-y-5 md:grid-cols-2">
-						<!-- Who -->
-						<section class="flex flex-col gap-3" aria-label={ctx.labels.guestsField}>
-							<AttendeeField
-								bind:attendees={form.attendees}
-								bind:errors={guestErrors}
-								{contacts}
-								busy={busyByAttendee}
-								{loadingBusy}
+				<div class="mt-5 grid gap-x-6 gap-y-5 md:grid-cols-2">
+					<!-- Who -->
+					<section class="flex flex-col gap-3" aria-label={ctx.labels.guestsField}>
+						<AttendeeField
+							bind:attendees={form.attendees}
+							bind:errors={guestErrors}
+							{contacts}
+							busy={busyByAttendee}
+							{loadingBusy}
+							start={instantStart}
+							end={instantEnd}
+							{organizerEmail}
+						/>
+						{#if canCheckAvailability && !form.allDay}
+							<SuggestedTimes
+								busy={busyByAttendee ?? {}}
+								{names}
+								loading={loadingBusy || !busy}
 								start={instantStart}
 								end={instantEnd}
-								{organizerEmail}
+								onPick={applySlot}
 							/>
-							{#if canCheckAvailability && !form.allDay}
-								<SuggestedTimes
-									busy={busyByAttendee ?? {}}
-									{names}
-									loading={loadingBusy || !busy}
-									start={instantStart}
-									end={instantEnd}
-									onPick={applySlot}
-								/>
-							{/if}
-						</section>
+						{/if}
+					</section>
 
-						<!-- Where and how -->
-						<section class="flex flex-col gap-3" aria-label={ctx.labels.location}>
-							<KleriInput
-								bind:value={form.location}
-								label={ctx.labels.location}
-								placeholder={ctx.labels.addLocation}
-								InputIcon={MapPin}
-							/>
+					<!-- Where and how -->
+					<section class="flex flex-col gap-3" aria-label={ctx.labels.location}>
+						<KleriInput
+							bind:value={form.location}
+							label={ctx.labels.location}
+							placeholder={ctx.labels.addLocation}
+							InputIcon={MapPin}
+						/>
 
-							<div class="flex flex-col gap-1.5">
-								<span class="indent-2 text-sm font-medium">{ctx.labels.video}</span>
-								{#if form.conference}
-									<div
-										class="flex items-center gap-2 rounded-kleri border-2 border-border py-2 pr-2 pl-4"
+						<div class="flex flex-col gap-1.5">
+							<span class="indent-2 text-sm font-medium">{ctx.labels.video}</span>
+							{#if form.conference}
+								<div
+									class="flex items-center gap-2 rounded-kleri border-2 border-border py-2 pr-2 pl-4"
+								>
+									<Video class="size-5 shrink-0 text-kleri-1 dark:text-kleri-2" />
+									<a
+										href={safeUrl(form.conference.url)}
+										target="_blank"
+										rel="noopener noreferrer"
+										class="min-w-0 flex-1 truncate text-sm hover:underline"
 									>
-										<Video class="size-5 shrink-0 text-kleri-1 dark:text-kleri-2" />
-										<a
-											href={safeUrl(form.conference.url)}
-											target="_blank"
-											rel="noopener noreferrer"
-											class="min-w-0 flex-1 truncate text-sm hover:underline"
-										>
-											{form.conference.label ?? CONFERENCE_LABELS[form.conference.kind ?? 'other']}
-										</a>
-										<button
-											type="button"
-											class="rounded-md p-1 text-muted-foreground hover:bg-muted/60 hover:text-foreground"
-											aria-label={ctx.labels.removeVideo}
-											onclick={() => (form.conference = null)}
-										>
-											<X class="size-4" />
-										</button>
-									</div>
-								{:else if requested}
-									<div
-										class="flex items-center gap-2 rounded-kleri border-2 border-kleri-2/60 bg-kleri-2/10 py-2 pr-2 pl-4 text-sm"
+										{form.conference.label ?? CONFERENCE_LABELS[form.conference.kind ?? 'other']}
+									</a>
+									<button
+										type="button"
+										class="rounded-md p-1 text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+										aria-label={ctx.labels.removeVideo}
+										onclick={() => (form.conference = null)}
 									>
-										<Video class="size-5 shrink-0 text-kleri-1 dark:text-kleri-2" />
-										<span class="min-w-0 flex-1">{ctx.labels.videoOnSave(requested.label)}</span>
-										<button
-											type="button"
-											class="rounded-md p-1 text-muted-foreground hover:bg-muted/60 hover:text-foreground"
-											aria-label={ctx.labels.removeVideo}
-											onclick={() => (form.requestConference = null)}
-										>
-											<X class="size-4" />
-										</button>
-									</div>
-								{:else if conferenceOptions.length}
-									<div class="flex flex-wrap gap-2">
-										{#each conferenceOptions as option (option.id)}
-											<button
-												type="button"
-												class="flex items-center gap-2 rounded-kleri border-2 border-border px-3 py-1.5 text-sm transition-colors hover:border-kleri-2 hover:bg-kleri-2/10"
-												onclick={() => (form.requestConference = option.id)}
-											>
-												<Video class="size-4 text-kleri-1 dark:text-kleri-2" />
-												{ctx.labels.addVideo(option.label)}
-											</button>
-										{/each}
-									</div>
-								{:else}
-									<p class="indent-2 text-xs text-muted-foreground">—</p>
-								{/if}
-							</div>
-
-							<CalendarSelect
-								calendars={ctx.store.writableCalendars}
-								bind:value={form.calendarId}
-								label={ctx.labels.calendar}
-							/>
-
-							<div class="flex flex-wrap items-end gap-x-5 gap-y-3">
-								<div class="flex flex-col gap-1.5">
-									<span class="indent-2 text-sm font-medium">{ctx.labels.availability}</span>
-									<KleriToggleGroup
-										type="single"
-										size="sm"
-										variant="outline"
-										value={form.transparency}
-										onValueChange={(next: string) =>
-											next && (form.transparency = next as EventTransparency)}
-									>
-										<KleriToggleGroupItem value="busy">{ctx.labels.busy}</KleriToggleGroupItem>
-										<KleriToggleGroupItem value="free">{ctx.labels.free}</KleriToggleGroupItem>
-									</KleriToggleGroup>
+										<X class="size-4" />
+									</button>
 								</div>
-								<div class="flex flex-col gap-1.5">
-									<span class="indent-2 text-sm font-medium">{ctx.labels.color}</span>
-									<div
-										class="flex flex-wrap items-center gap-1.5 py-0.5"
-										role="radiogroup"
-										aria-label={ctx.labels.color}
+							{:else if requested}
+								<div
+									class="flex items-center gap-2 rounded-kleri border-2 border-kleri-2/60 bg-kleri-2/10 py-2 pr-2 pl-4 text-sm"
+								>
+									<Video class="size-5 shrink-0 text-kleri-1 dark:text-kleri-2" />
+									<span class="min-w-0 flex-1">{ctx.labels.videoOnSave(requested.label)}</span>
+									<button
+										type="button"
+										class="rounded-md p-1 text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+										aria-label={ctx.labels.removeVideo}
+										onclick={() => (form.requestConference = null)}
 									>
+										<X class="size-4" />
+									</button>
+								</div>
+							{:else if conferenceOptions.length}
+								<div class="flex flex-wrap gap-2">
+									{#each conferenceOptions as option (option.id)}
+										<button
+											type="button"
+											class="flex items-center gap-2 rounded-kleri border-2 border-border px-3 py-1.5 text-sm transition-colors hover:border-kleri-2 hover:bg-kleri-2/10"
+											onclick={() => (form.requestConference = option.id)}
+										>
+											<Video class="size-4 text-kleri-1 dark:text-kleri-2" />
+											{ctx.labels.addVideo(option.label)}
+										</button>
+									{/each}
+								</div>
+							{:else}
+								<p class="indent-2 text-xs text-muted-foreground">—</p>
+							{/if}
+						</div>
+
+						<CalendarSelect
+							calendars={ctx.store.writableCalendars}
+							bind:value={form.calendarId}
+							label={ctx.labels.calendar}
+						/>
+
+						<div class="flex flex-wrap items-end gap-x-5 gap-y-3">
+							<div class="flex flex-col gap-1.5">
+								<span class="indent-2 text-sm font-medium">{ctx.labels.availability}</span>
+								<KleriToggleGroup
+									type="single"
+									size="sm"
+									variant="outline"
+									value={form.transparency}
+									onValueChange={(next: string) =>
+										next && (form.transparency = next as EventTransparency)}
+								>
+									<KleriToggleGroupItem value="busy">{ctx.labels.busy}</KleriToggleGroupItem>
+									<KleriToggleGroupItem value="free">{ctx.labels.free}</KleriToggleGroupItem>
+								</KleriToggleGroup>
+							</div>
+							<div class="flex flex-col gap-1.5">
+								<span class="indent-2 text-sm font-medium">{ctx.labels.color}</span>
+								<div
+									class="flex flex-wrap items-center gap-1.5 py-0.5"
+									role="radiogroup"
+									aria-label={ctx.labels.color}
+								>
+									<button
+										type="button"
+										role="radio"
+										aria-checked={form.color === null}
+										aria-label={ctx.labels.defaultColor}
+										title={ctx.labels.defaultColor}
+										class={cn(
+											'size-6 rounded-full border-2 border-dashed border-(--kc-line-strong) ring-offset-2 ring-offset-background',
+											form.color === null && 'ring-2 ring-foreground/60'
+										)}
+										style:background-color={calendar?.color}
+										onclick={() => (form.color = null)}
+									></button>
+									{#each KLERI_CALENDAR_PALETTE.slice(0, 8) as color (color)}
 										<button
 											type="button"
 											role="radio"
-											aria-checked={form.color === null}
-											aria-label={ctx.labels.defaultColor}
-											title={ctx.labels.defaultColor}
+											aria-checked={form.color === color}
+											aria-label={color}
 											class={cn(
-												'size-6 rounded-full border-2 border-dashed border-(--kc-line-strong) ring-offset-2 ring-offset-background',
-												form.color === null && 'ring-2 ring-foreground/60'
+												'size-6 rounded-full ring-offset-2 ring-offset-background transition-transform hover:scale-110',
+												form.color === color && 'ring-2 ring-foreground/60'
 											)}
-											style:background-color={calendar?.color}
-											onclick={() => (form.color = null)}
+											style:background-color={color}
+											onclick={() => (form.color = color)}
 										></button>
-										{#each KLERI_CALENDAR_PALETTE.slice(0, 8) as color (color)}
-											<button
-												type="button"
-												role="radio"
-												aria-checked={form.color === color}
-												aria-label={color}
-												class={cn(
-													'size-6 rounded-full ring-offset-2 ring-offset-background transition-transform hover:scale-110',
-													form.color === color && 'ring-2 ring-foreground/60'
-												)}
-												style:background-color={color}
-												onclick={() => (form.color = color)}
-											></button>
-										{/each}
-									</div>
-								</div>
-							</div>
-
-							<div class="flex flex-col gap-1.5">
-								<span class="flex items-center gap-2 indent-2 text-sm font-medium"
-									><Bell class="size-4" />{ctx.labels.reminders}</span
-								>
-								<div class="flex flex-wrap items-center gap-1.5">
-									{#each form.reminders as minutes (minutes)}
-										<span
-											class="flex items-center gap-1 rounded-full border-2 border-border py-0.5 pr-1 pl-2.5 text-xs"
-										>
-											{minutes === 0
-												? 'At start time'
-												: ctx.labels.reminderBefore(ctx.formatters.duration(minutes))}
-											<button
-												type="button"
-												class="rounded-full p-0.5 text-muted-foreground hover:bg-muted/60 hover:text-foreground"
-												aria-label="{ctx.labels.delete} {minutes}"
-												onclick={() =>
-													(form.reminders = form.reminders.filter((m) => m !== minutes))}
-											>
-												<X class="size-3" />
-											</button>
-										</span>
 									{/each}
-									{#if form.reminders.length < 5 && reminderItems.length}
-										<KleriSelect
-											items={reminderItems}
-											value=""
-											placeholder={ctx.labels.addReminder}
-											persistentIcon={Plus}
-											ariaLabel={ctx.labels.addReminder}
-											class="w-auto [&>div]:my-0 [&>div]:py-1"
-											onValueChange={(next) => {
-												if (next)
-													form.reminders = [...form.reminders, Number(next)].sort((a, b) => a - b);
-											}}
-										/>
-									{/if}
 								</div>
-							</div>
-						</section>
-					</div>
-
-					<div class="mt-5">
-						<KleriTextarea
-							bind:value={form.description}
-							label={ctx.labels.description}
-							placeholder={ctx.labels.addDescription}
-							InputIcon={AlignLeft}
-							rows={4}
-							resize="y"
-						/>
-					</div>
-				</div>
-
-				<!-- Footer -->
-				<div class="relative border-t border-(--kc-line) px-5 py-3">
-					{#if confirmDiscard}
-						<div
-							class="flex flex-wrap items-center justify-between gap-3"
-							role="alertdialog"
-							aria-label={ctx.labels.discardChanges}
-						>
-							<span class="text-sm font-medium">{ctx.labels.discardChanges}</span>
-							<div class="flex gap-2">
-								<button
-									type="button"
-									class="rounded-kleri border-2 border-border px-4 py-1.5 text-sm hover:border-kleri-2"
-									onclick={() => (confirmDiscard = false)}
-								>
-									{ctx.labels.keepEditing}
-								</button>
-								<button
-									type="button"
-									class="rounded-kleri border-2 border-destructive bg-destructive/10 px-4 py-1.5 text-sm text-destructive hover:bg-destructive/20"
-									onclick={() => {
-										confirmDiscard = false;
-										open = false;
-									}}
-								>
-									{ctx.labels.discard}
-								</button>
 							</div>
 						</div>
-					{:else}
-						<div class="flex flex-wrap items-center gap-2">
-							{#if mode === 'edit' && onDelete}
-								<button
-									type="button"
-									class="flex items-center gap-1.5 rounded-kleri px-3 py-1.5 text-sm text-destructive transition-colors hover:bg-destructive/10"
-									onclick={onDelete}
-								>
-									<Trash2 class="size-4" />{ctx.labels.delete}
-								</button>
-							{/if}
-							{#if submitError}
-								<p
-									class="min-w-0 flex-1 truncate font-spacemono text-xs text-destructive"
-									role="alert"
-									title={submitError}
-								>
-									{submitError}
-								</p>
-							{:else}
-								<span class="flex-1"></span>
-							{/if}
-							<span class="hidden font-spacemono text-[10px] text-muted-foreground sm:inline"
-								>⌘/Ctrl + Enter</span
+
+						<div class="flex flex-col gap-1.5">
+							<span class="flex items-center gap-2 indent-2 text-sm font-medium"
+								><Bell class="size-4" />{ctx.labels.reminders}</span
 							>
+							<div class="flex flex-wrap items-center gap-1.5">
+								{#each form.reminders as minutes (minutes)}
+									<span
+										class="flex items-center gap-1 rounded-full border-2 border-border py-0.5 pr-1 pl-2.5 text-xs"
+									>
+										{minutes === 0
+											? 'At start time'
+											: ctx.labels.reminderBefore(ctx.formatters.duration(minutes))}
+										<button
+											type="button"
+											class="rounded-full p-0.5 text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+											aria-label="{ctx.labels.delete} {minutes}"
+											onclick={() => (form.reminders = form.reminders.filter((m) => m !== minutes))}
+										>
+											<X class="size-3" />
+										</button>
+									</span>
+								{/each}
+								{#if form.reminders.length < 5 && reminderItems.length}
+									<KleriSelect
+										items={reminderItems}
+										value=""
+										placeholder={ctx.labels.addReminder}
+										persistentIcon={Plus}
+										ariaLabel={ctx.labels.addReminder}
+										class="w-auto [&>div]:my-0 [&>div]:py-1"
+										onValueChange={(next) => {
+											if (next)
+												form.reminders = [...form.reminders, Number(next)].sort((a, b) => a - b);
+										}}
+									/>
+								{/if}
+							</div>
+						</div>
+					</section>
+				</div>
+
+				<div class="mt-5">
+					<KleriTextarea
+						bind:value={form.description}
+						label={ctx.labels.description}
+						placeholder={ctx.labels.addDescription}
+						InputIcon={AlignLeft}
+						rows={4}
+						resize="y"
+					/>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<div class="relative border-t border-(--kc-line) px-5 py-3">
+				{#if confirmDiscard}
+					<div
+						class="flex flex-wrap items-center justify-between gap-3"
+						role="alertdialog"
+						aria-label={ctx.labels.discardChanges}
+					>
+						<span class="text-sm font-medium">{ctx.labels.discardChanges}</span>
+						<div class="flex gap-2">
 							<button
 								type="button"
-								class="rounded-kleri border-2 border-border px-4 py-1.5 text-sm transition-colors hover:border-kleri-2"
-								onclick={requestClose}
+								class="rounded-kleri border-2 border-border px-4 py-1.5 text-sm hover:border-kleri-2"
+								onclick={() => (confirmDiscard = false)}
 							>
-								{ctx.labels.cancel}
+								{ctx.labels.keepEditing}
 							</button>
-							<KleriButton
-								type="submit"
-								class={cn('w-auto px-6 py-1.5 text-sm', showErrors && !isValid && 'kleri-shake')}
-								disabled={saving}
+							<button
+								type="button"
+								class="rounded-kleri border-2 border-destructive bg-destructive/10 px-4 py-1.5 text-sm text-destructive hover:bg-destructive/20"
+								onclick={() => {
+									confirmDiscard = false;
+									open = false;
+								}}
 							>
-								{saving ? ctx.labels.saving : ctx.labels.save}
-							</KleriButton>
+								{ctx.labels.discard}
+							</button>
 						</div>
-					{/if}
-				</div>
-			</form>
-		</DialogPrimitive.Content>
-	</DialogPrimitive.Portal>
-</DialogPrimitive.Root>
+					</div>
+				{:else}
+					<div class="flex flex-wrap items-center gap-2">
+						{#if mode === 'edit' && onDelete}
+							<button
+								type="button"
+								class="flex items-center gap-1.5 rounded-kleri px-3 py-1.5 text-sm text-destructive transition-colors hover:bg-destructive/10"
+								onclick={onDelete}
+							>
+								<Trash2 class="size-4" />{ctx.labels.delete}
+							</button>
+						{/if}
+						{#if submitError}
+							<p
+								class="min-w-0 flex-1 truncate font-spacemono text-xs text-destructive"
+								role="alert"
+								title={submitError}
+							>
+								{submitError}
+							</p>
+						{:else}
+							<span class="flex-1"></span>
+						{/if}
+						<span class="hidden font-spacemono text-[10px] text-muted-foreground sm:inline"
+							>⌘/Ctrl + Enter</span
+						>
+						<button
+							type="button"
+							class="rounded-kleri border-2 border-border px-4 py-1.5 text-sm transition-colors hover:border-kleri-2"
+							onclick={requestClose}
+						>
+							{ctx.labels.cancel}
+						</button>
+						<KleriButton
+							type="submit"
+							class={cn('w-auto px-6 py-1.5 text-sm', showErrors && !isValid && 'kleri-shake')}
+							disabled={saving}
+						>
+							{saving ? ctx.labels.saving : ctx.labels.save}
+						</KleriButton>
+					</div>
+				{/if}
+			</div>
+		</form>
+	{/snippet}
+</KleriMorphDialog>

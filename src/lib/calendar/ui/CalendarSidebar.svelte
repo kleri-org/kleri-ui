@@ -11,8 +11,9 @@
 	interface Props {
 		date: Date;
 		range: { start: Date; end: Date };
-		onCreate: () => void;
-		onConnect?: () => void;
+		/** Both receive the clicked button, which the opened dialog morphs from. */
+		onCreate: (origin?: HTMLElement) => void;
+		onConnect?: (origin?: HTMLElement) => void;
 		onReconnect?: (source: CalendarSource) => void;
 		onDisconnect?: (source: CalendarSource) => void;
 		canDisconnect?: (source: CalendarSource) => boolean;
@@ -54,7 +55,7 @@
 	{#if canCreate}
 		<KleriButton
 			class="flex h-11 items-center justify-center gap-2 font-medium shadow-md shadow-kleri-1/20"
-			onclick={onCreate}
+			onclick={(e) => onCreate(e.currentTarget)}
 		>
 			<Plus class="size-5" strokeWidth={2.5} />
 			{ctx.labels.create}
@@ -77,7 +78,7 @@
 					class="rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted/60 hover:text-kleri-1 focus-visible:ring-2 focus-visible:ring-kleri-2 focus-visible:outline-none dark:hover:text-kleri-2"
 					aria-label={ctx.labels.addCalendar}
 					title={ctx.labels.addCalendar}
-					onclick={onConnect}
+					onclick={(e) => onConnect(e.currentTarget)}
 				>
 					<Plus class="size-4" />
 				</button>
@@ -88,7 +89,7 @@
 			<button
 				type="button"
 				class="mx-2 flex items-center justify-center gap-2 rounded-kleri border-2 border-dashed border-(--kc-line-strong) py-2 text-sm text-muted-foreground transition-colors hover:border-kleri-2 hover:text-foreground"
-				onclick={onConnect}
+				onclick={(e) => onConnect(e.currentTarget)}
 			>
 				<Plus class="size-4" />
 				{ctx.labels.addCalendar}

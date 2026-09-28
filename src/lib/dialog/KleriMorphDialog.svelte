@@ -7,21 +7,45 @@
 	import { X, Eraser } from '@lucide/svelte';
 	import { DialogMorph } from './morph.js';
 
-	type Props = Dialog.RootProps & {
-		trigger?: Snippet;
-		buttonText?: string;
-		ButtonIcon?: Component;
-		title: Snippet;
-		description?: Snippet;
-		buttons?: Snippet;
-		children?: Snippet;
-		form?: string;
-		class?: ClassValue;
-		triggerClass?: ClassValue;
-		contentProps?: WithoutChild<Dialog.ContentProps>;
-		/** Fires once the dialog has fully closed (after the close animation). */
-		onClose?: () => void;
-	};
+	type Chrome =
+		| {
+				title: Snippet;
+				description?: Snippet;
+				buttons?: Snippet;
+				children?: Snippet;
+				form?: string;
+				panel?: never;
+		  }
+		| {
+				/**
+				 * Replaces the built-in header and body with custom markup. Render a
+				 * `Dialog.Title` inside it.
+				 */
+				panel: Snippet;
+				title?: never;
+				description?: never;
+				buttons?: never;
+				children?: never;
+				form?: never;
+		  };
+
+	type Props = Dialog.RootProps &
+		Chrome & {
+			trigger?: Snippet;
+			buttonText?: string;
+			ButtonIcon?: Component;
+			/**
+			 * Element to morph from and back to when the dialog is opened
+			 * programmatically. Setting it (`null` included) renders no trigger;
+			 * without an element the panel pops in place.
+			 */
+			origin?: HTMLElement | null;
+			class?: ClassValue;
+			triggerClass?: ClassValue;
+			contentProps?: WithoutChild<Dialog.ContentProps>;
+			/** Fires once the dialog has fully closed (after the close animation). */
+			onClose?: () => void;
+		};
 
 	let {
 		open = $bindable(false),
@@ -35,6 +59,8 @@
 		buttons,
 		children,
 		form,
+		panel,
+		origin,
 		contentProps,
 		onClose,
 		triggerClass,
@@ -54,11 +80,12 @@
 	// panel (and overlay) mounted until their animations finish, which lets the
 	// morph and the overlay fade run together.
 	$effect(() => {
-		const panel = panelElement;
-		if (!panel) return;
+		const element = panelElement;
+		if (!element) return;
 		const isOpen = open;
 		untrack(() => {
-			const targets = { panel, trigger: triggerElement };
+			const from = origin === undefined ? triggerElement : origin;
+			const targets = { panel: element, trigger: from };
 			if (isOpen) morph.enter(targets);
 			else morph.exit(targets);
 		});
@@ -80,7 +107,7 @@
 		<Dialog.Trigger bind:ref={triggerElement} class={cn(triggerClass)}>
 			{@render trigger()}
 		</Dialog.Trigger>
-	{:else}
+	{:else if origin === undefined}
 		<Dialog.Trigger
 			bind:ref={triggerElement}
 			class={cn(
@@ -115,59 +142,63 @@
 			)}
 		>
 			<div class="flex min-h-0 w-full flex-1 flex-col" data-kleri-morph-content>
-				<Dialog.Title
-					class="flex w-full shrink-0 flex-row flex-nowrap items-center justify-between border-b border-border/50 px-8 py-4"
-				>
-					<div class="w-full text-nowrap select-none">
-						{@render title()}
-					</div>
-					<div class="flex w-full flex-row flex-nowrap justify-end gap-x-3">
-						{#if buttons}
-							{@render buttons()}
-						{/if}
-
-						{#if form}
-							<KleriTooltip side="bottom">
-								{#snippet trigger()}
-									<button
-										type="reset"
-										{form}
-										class="cursor-pointer rounded-md p-2 transition-colors duration-150 hover:bg-yellow-100/20 hover:text-yellow-400"
-									>
-										<Eraser class="size-4" />
-									</button>
-								{/snippet}
-								Reset Form
-							</KleriTooltip>
-						{/if}
-
-						<Dialog.Close
-							class="z-20 cursor-pointer rounded-md focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
-						>
-							<div
-								class="group flex h-full flex-col items-center justify-center rounded-md p-2 align-middle transition-colors duration-150 hover:bg-red-100/20"
-							>
-								<X
-									class="size-5 text-foreground transition-colors duration-150 group-hover:text-red-400"
-								/>
-							</div>
-						</Dialog.Close>
-					</div>
-				</Dialog.Title>
-
-				{#if description}
-					<!-- w-0 min-w-full: the text wraps to the width the body sets instead of
-					     stretching the fit-content panel to one long line. -->
-					<Dialog.Description
-						class="w-0 min-w-full shrink-0 px-8 pt-3 text-sm text-muted-foreground"
+				{#if panel}
+					{@render panel()}
+				{:else}
+					<Dialog.Title
+						class="flex w-full shrink-0 flex-row flex-nowrap items-center justify-between border-b border-border/50 px-8 py-4"
 					>
-						{@render description()}
-					</Dialog.Description>
-				{/if}
+						<div class="w-full text-nowrap select-none">
+							{@render title?.()}
+						</div>
+						<div class="flex w-full flex-row flex-nowrap justify-end gap-x-3">
+							{#if buttons}
+								{@render buttons()}
+							{/if}
 
-				<div class="no-scrollbar min-h-0 flex-1 overflow-y-auto px-8 pt-4 pb-5">
-					{@render children?.()}
-				</div>
+							{#if form}
+								<KleriTooltip side="bottom">
+									{#snippet trigger()}
+										<button
+											type="reset"
+											{form}
+											class="cursor-pointer rounded-md p-2 transition-colors duration-150 hover:bg-yellow-100/20 hover:text-yellow-400"
+										>
+											<Eraser class="size-4" />
+										</button>
+									{/snippet}
+									Reset Form
+								</KleriTooltip>
+							{/if}
+
+							<Dialog.Close
+								class="z-20 cursor-pointer rounded-md focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
+							>
+								<div
+									class="group flex h-full flex-col items-center justify-center rounded-md p-2 align-middle transition-colors duration-150 hover:bg-red-100/20"
+								>
+									<X
+										class="size-5 text-foreground transition-colors duration-150 group-hover:text-red-400"
+									/>
+								</div>
+							</Dialog.Close>
+						</div>
+					</Dialog.Title>
+
+					{#if description}
+						<!-- w-0 min-w-full: the text wraps to the width the body sets instead of
+					     stretching the fit-content panel to one long line. -->
+						<Dialog.Description
+							class="w-0 min-w-full shrink-0 px-8 pt-3 text-sm text-muted-foreground"
+						>
+							{@render description()}
+						</Dialog.Description>
+					{/if}
+
+					<div class="no-scrollbar min-h-0 flex-1 overflow-y-auto px-8 pt-4 pb-5">
+						{@render children?.()}
+					</div>
+				{/if}
 			</div>
 		</Dialog.Content>
 	</Dialog.Portal>
