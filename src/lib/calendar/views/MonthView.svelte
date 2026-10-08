@@ -25,7 +25,9 @@
 	let { date, range, occurrences, viewId }: CalendarViewProps = $props();
 	const ctx = getCalendarContext();
 
-	const HEADER = 30;
+	// Day-number band: must clear the 24px number button (6px top inset) so the
+	// first event lane never crowds it.
+	const HEADER = 36;
 	const LANE = 22;
 
 	let gridEl = $state<HTMLElement | null>(null);
@@ -306,9 +308,9 @@
 							onfocus={() => (focusedKey = key)}
 						>
 							{#if highlight === 'create' && key === draftAnchorKey}
-								<span data-kc-draft class="pointer-events-none absolute inset-x-1 top-8 h-5"></span>
+								<span data-kc-draft class="pointer-events-none absolute inset-x-1 top-9 h-5"></span>
 							{/if}
-							<div class="flex h-[30px] items-center justify-between px-1.5 pt-1">
+							<div class="flex h-9 items-center justify-between px-2">
 								{#if ctx.config.showWeekNumbers && i === 0}
 									<span class="font-spacemono text-[10px] text-muted-foreground"
 										>W{isoWeekNumber(day)}</span

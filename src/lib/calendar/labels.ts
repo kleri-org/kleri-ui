@@ -129,6 +129,7 @@ export interface CalendarLabels {
 	importInto: string;
 	importDone: (count: number) => string;
 	connecting: string;
+	connectWaiting: string;
 	// Feedback
 	eventCreated: string;
 	eventUpdated: string;
@@ -269,6 +270,7 @@ export const DEFAULT_CALENDAR_LABELS: CalendarLabels = {
 	importInto: 'Import into',
 	importDone: (count) => `Imported ${count} ${count === 1 ? 'event' : 'events'}`,
 	connecting: 'Connecting…',
+	connectWaiting: 'Finish signing in in your browser. Stuck? Cancel and try again.',
 	eventCreated: 'Event created',
 	eventUpdated: 'Event updated',
 	eventMoved: 'Event moved',

@@ -44,6 +44,8 @@
 
 	let connecting = $state<string | null>(null);
 	let connectError = $state<string | null>(null);
+	/** Bumped by every connect and cancel; a stale attempt's outcome is dropped. */
+	let attempt = 0;
 	let url = $state('');
 	let urlErrors = $state<string[]>([]);
 	let subscribing = $state(false);
@@ -61,20 +63,38 @@
 	}
 
 	async function connect(integration: CalendarIntegration) {
+		const current = ++attempt;
 		connecting = integration.id;
 		connectError = null;
 		try {
 			const provider = await integration.connect();
-			if (provider) {
+			if (provider && current === attempt) {
 				onConnected(provider);
 				open = false;
 			}
 		} catch (error) {
-			connectError = message(error);
+			if (current === attempt) connectError = message(error);
 		} finally {
-			connecting = null;
+			if (current === attempt) connecting = null;
 		}
 	}
+
+	function cancelConnect() {
+		const integration = integrations.find((i) => i.id === connecting);
+		if (!integration?.cancel) return;
+		attempt++;
+		connecting = null;
+		integration.cancel();
+	}
+
+	// Closing the dialog abandons a sign-in still waiting on the browser.
+	$effect(() => {
+		if (!open && connecting !== null) cancelConnect();
+	});
+
+	let cancellable = $derived(
+		integrations.find((i) => i.id === connecting)?.cancel !== undefined
+	);
 
 	async function subscribe(e: SubmitEvent) {
 		e.preventDefault();
@@ -197,6 +217,20 @@
 					</li>
 				{/each}
 			</ul>
+			{#if connecting !== null && cancellable}
+				<div class="-mt-4 flex items-center justify-between gap-3">
+					<p class="indent-2 text-xs text-muted-foreground" role="status">
+						{ctx.labels.connectWaiting}
+					</p>
+					<button
+						type="button"
+						class="shrink-0 rounded-kleri border-2 border-border px-4 py-1.5 text-sm transition-colors hover:border-kleri-2"
+						onclick={cancelConnect}
+					>
+						{ctx.labels.cancel}
+					</button>
+				</div>
+			{/if}
 			{#if connectError}
 				<p class="-mt-4 font-spacemono text-xs text-destructive" role="alert">{connectError}</p>
 			{/if}

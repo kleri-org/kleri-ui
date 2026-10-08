@@ -435,6 +435,21 @@
 		};
 	});
 
+	// The time grid's scrollbar takes width from its columns only; the header and
+	// all-day strip reserve the same width so their columns stay aligned.
+	let scrollbarWidth = $state(0);
+	$effect(() => {
+		const el = scrollEl;
+		if (!el || !gridEl) return;
+		const measure = () => (scrollbarWidth = el.offsetWidth - el.clientWidth);
+		measure();
+		if (typeof ResizeObserver === 'undefined') return;
+		const observer = new ResizeObserver(measure);
+		observer.observe(el);
+		observer.observe(gridEl);
+		return () => observer.disconnect();
+	});
+
 	onMount(() => {
 		if (!scrollEl) return;
 		// Follow "now" during the day; at night, open on the usual start of the day instead.
@@ -457,7 +472,11 @@
 
 <div bind:this={rootEl} class="flex h-full min-h-0 flex-col" data-view={viewId}>
 	<!-- Day headers -->
-	<div class="grid shrink-0 border-b border-(--kc-line)" style:grid-template-columns={template}>
+	<div
+		class="grid shrink-0 border-b border-(--kc-line)"
+		style:grid-template-columns={template}
+		style:padding-right="{scrollbarWidth}px"
+	>
 		<div class="flex items-end justify-center pb-1.5">
 			<span
 				class="font-spacemono text-[10px] text-muted-foreground"
@@ -512,6 +531,7 @@
 	<div
 		class="grid shrink-0 border-b border-(--kc-line-strong)"
 		style:grid-template-columns={template}
+		style:padding-right="{scrollbarWidth}px"
 	>
 		<div class="flex flex-col items-center justify-start gap-0.5 pt-1.5">
 			<span class="font-spacemono text-[10px] text-muted-foreground">{ctx.labels.allDay}</span>
@@ -569,7 +589,7 @@
 						stripDrag.preview.occurrence.key === span.item.key}
 					<div
 						class="absolute px-0.5"
-						style:top="{4 + span.lane * LANE}px"
+						style:top="{5 + span.lane * LANE}px"
 						style:left="{(span.startIndex / days.length) * 100}%"
 						style:width="{((span.endIndex - span.startIndex + 1) / days.length) * 100}%"
 					>
@@ -592,7 +612,7 @@
 						{#if ghostSpan}
 							<div
 								class="pointer-events-none absolute z-30 px-0.5"
-								style:top="{4 + span.lane * LANE}px"
+								style:top="{5 + span.lane * LANE}px"
 								style:left="{(ghostSpan[0] / days.length) * 100}%"
 								style:width="{((ghostSpan[1] - ghostSpan[0] + 1) / days.length) * 100}%"
 							>
@@ -610,7 +630,7 @@
 							type="button"
 							data-no-drag
 							class="absolute rounded px-1.5 text-left font-spacemono text-[10px] text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-							style:top="{4 + visibleLanes * LANE}px"
+							style:top="{5 + visibleLanes * LANE}px"
 							style:left="{(i / days.length) * 100}%"
 							style:width="{100 / days.length}%"
 							onclick={() => (allDayExpanded = true)}

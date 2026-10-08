@@ -146,7 +146,8 @@
 						{@const dots = markers?.(day) ?? []}
 						<td
 							class={cn(
-								'p-0 text-center',
+								// pb-1 keeps the event dots clear of the next week's numbers.
+								'p-0 pb-1 text-center',
 								inRange && 'bg-kleri-2/12 first:rounded-l-full last:rounded-r-full'
 							)}
 						>

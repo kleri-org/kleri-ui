@@ -192,4 +192,11 @@ export interface CalendarIntegration {
 	description?: string;
 	icon?: Component;
 	connect(): Promise<import('./providers/types.js').CalendarProvider | undefined | void>;
+	/**
+	 * Abandon a `connect` in progress, e.g. a browser sign-in that failed on the
+	 * provider's side and will never come back. `connect` should then settle;
+	 * whatever it rejects with is not shown. Without it the dialog offers no
+	 * way out while connecting.
+	 */
+	cancel?(): void;
 }
