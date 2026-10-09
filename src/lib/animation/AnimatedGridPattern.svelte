@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { motion } from 'motion-sv';
+	import { prefersReducedMotion } from 'svelte/motion';
 	import { cn } from '$lib/utils';
 	import type { HTMLAttributes } from 'svelte/elements';
 
@@ -124,25 +125,39 @@
 	</defs>
 	<rect width="100%" height="100%" fill={`url(#${id})`} />
 	<svg {x} {y} class="overflow-visible">
-		{#each squares as { pos: [squareX, squareY], id: squareId, iteration }, index (squareId + '-' + iteration)}
-			<motion.rect
-				initial={{ opacity: 0 }}
-				animate={{ opacity: maxOpacity }}
-				transition={{
-					duration,
-					repeat: 1,
-					delay: index * 0.1,
-					repeatType: 'reverse',
-					repeatDelay
-				}}
-				onAnimationComplete={() => updateSquarePosition(squareId)}
-				width={width - 1}
-				height={height - 1}
-				x={squareX * width + 1}
-				y={squareY * height + 1}
-				fill={`url(#${gradientId})`}
-				stroke-width="0"
-			/>
-		{/each}
+		{#if prefersReducedMotion.current}
+			<!-- Reduced motion: the squares hold still at a resting opacity instead of cycling. -->
+			{#each squares as { pos: [squareX, squareY], id: squareId } (squareId)}
+				<rect
+					width={width - 1}
+					height={height - 1}
+					x={squareX * width + 1}
+					y={squareY * height + 1}
+					fill={`url(#${gradientId})`}
+					fill-opacity={maxOpacity / 2}
+				/>
+			{/each}
+		{:else}
+			{#each squares as { pos: [squareX, squareY], id: squareId, iteration }, index (squareId + '-' + iteration)}
+				<motion.rect
+					initial={{ opacity: 0 }}
+					animate={{ opacity: maxOpacity }}
+					transition={{
+						duration,
+						repeat: 1,
+						delay: index * 0.1,
+						repeatType: 'reverse',
+						repeatDelay
+					}}
+					onAnimationComplete={() => updateSquarePosition(squareId)}
+					width={width - 1}
+					height={height - 1}
+					x={squareX * width + 1}
+					y={squareY * height + 1}
+					fill={`url(#${gradientId})`}
+					stroke-width="0"
+				/>
+			{/each}
+		{/if}
 	</svg>
 </svg>

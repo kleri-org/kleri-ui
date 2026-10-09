@@ -59,7 +59,7 @@
 					name="scope"
 					{value}
 					bind:group={scope}
-					class="size-4 border-2 border-border text-kleri-3 focus:ring-kleri-2"
+					class="size-4 border border-border text-kleri-3 focus:ring-kleri-2"
 				/>
 				{label}
 			</label>
@@ -68,7 +68,7 @@
 	<div class="mt-5 flex justify-end gap-2">
 		<button
 			type="button"
-			class="rounded-kleri border-2 border-border px-4 py-1.5 text-sm hover:border-kleri-2"
+			class="rounded-kleri border border-border px-4 py-1.5 text-sm hover:border-kleri-2"
 			onclick={() => finish(null)}
 		>
 			{ctx.labels.cancel}

@@ -10,6 +10,8 @@
 		FIELD_ICON_SIZE,
 		FIELD_ICON_STROKE,
 		FIELD_ROOT,
+		describedBy,
+		fieldErrorId,
 		fieldShell,
 		type FieldIcon
 	} from './field.js';
@@ -19,7 +21,7 @@
 		value?: string | null;
 		/** Text shown above the field. */
 		label?: string;
-		/** Validation errors. Shown next to the label and shake the field. */
+		/** Validation errors. Shown under the label, announced, and shake the field. */
 		errors?: string[];
 		/** Leading icon component, e.g. a `@lucide/svelte` icon. */
 		InputIcon?: FieldIcon;
@@ -56,12 +58,14 @@
 		onValueChange,
 		oninput,
 		id,
+		'aria-describedby': ariaDescribedBy,
 		ref = $bindable<HTMLTextAreaElement | null>(null),
 		...restProps
 	}: Props = $props();
 
 	const uid = $props.id();
 	let controlId = $derived(id ?? uid);
+	let errorId = $derived(fieldErrorId(controlId));
 
 	let hasErrors = $derived((errors?.length ?? 0) > 0);
 
@@ -81,10 +85,11 @@
 </script>
 
 <div class={cn(FIELD_ROOT, className)}>
-	<KleriFieldLabel {label} {errors} for={controlId} />
+	<KleriFieldLabel {label} {errors} {errorId} for={controlId} />
 
 	<!-- Main Textarea -->
 	<div
+		data-slot="field-shell"
 		class={fieldShell({ withBorder, hasErrors, disabled, align: 'start' })}
 		class:kleri-shake={hasErrors || shake}
 	>
@@ -104,6 +109,7 @@
 			{rows}
 			{placeholder}
 			aria-invalid={hasErrors || undefined}
+			aria-describedby={describedBy(hasErrors && errorId, ariaDescribedBy)}
 			class={cn(FIELD_CONTROL, 'kleri-scrollbar', resizeClass)}
 			bind:value
 			{...restProps}

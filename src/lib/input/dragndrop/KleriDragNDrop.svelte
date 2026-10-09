@@ -42,7 +42,7 @@
 		label,
 		errors,
 		disabled = false,
-		mainText = 'Drag and Drop Your file here',
+		mainText = 'Drop files here or click to browse',
 		subText: consumerSubText,
 		errorDuration = 3000,
 		class: className,

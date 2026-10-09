@@ -1,47 +1,104 @@
+/*
+ * Brand fill for surfaces that carry text: Lagoon → Sea Glass, so
+ * `text-kleri-ink` clears 4.5:1 across the whole gradient (5.2:1 at worst).
+ * Deep Harbour stays out of text-bearing fills; ink on it is only 2.8:1.
+ */
 @utility kleri-bg {
-	background: linear-gradient(90deg, var(--color-kleri-1), var(--color-kleri-2));
+	background: linear-gradient(90deg, var(--color-kleri-3), var(--color-kleri-2));
 }
 
+/*
+ * Gradient text. Stops are per theme so every point of the glyphs clears 3:1
+ * for large text: Deep Harbour ↔ Lagoon on light, Lagoon ↔ Sea Glass on dark.
+ */
 @utility kleri-text {
-	background: linear-gradient(
-		to right,
-		var(--color-kleri-1),
-		var(--color-kleri-2),
-		var(--color-kleri-3)
-	);
+	--kleri-text-from: var(--color-kleri-1);
+	--kleri-text-to: var(--color-kleri-3);
+	&:is(.dark *) {
+		--kleri-text-from: var(--color-kleri-3);
+		--kleri-text-to: var(--color-kleri-2);
+	}
+	background: linear-gradient(to right, var(--kleri-text-from), var(--kleri-text-to));
 	-webkit-background-clip: text;
 	background-clip: text;
 	color: transparent;
 }
 
+/*
+ * Animated gradient focus border. The ring is painted on a masked ::before,
+ * so the element's own background stays untouched: transparent fields stay
+ * transparent on cards, tinted panels and transparent Tauri windows. The host
+ * becomes a positioning context and should carry its own 1px border, which
+ * the 2px ring covers. Every stop clears 3:1 against its theme's surface (WCAG
+ * 1.4.11): Deep Harbour ↔ Lagoon on light (`kleri-border`), Lagoon ↔ Sea
+ * Glass on dark (`kleri-border-dark`, usable alone or as
+ * `dark:kleri-border-dark` next to `kleri-border`).
+ */
 @utility kleri-border {
-	--bg-size: 200%;
-	border: 2px solid transparent;
-	background:
-		linear-gradient(rgba(255, 255, 255), rgb(255, 255, 255)) padding-box,
-		linear-gradient(90deg, var(--color-kleri-1), var(--color-kleri-2), var(--color-kleri-1)) 0% /
-			100% 100% border-box;
-	background-size: 200% 200%;
-	animation: move-bg 5s linear infinite;
+	--kleri-border-from: var(--color-kleri-1);
+	--kleri-border-to: var(--color-kleri-3);
+	position: relative;
+	border-color: transparent;
+
+	&::before {
+		@apply kleri-border-ring;
+	}
 }
 
 @utility kleri-border-dark {
+	--kleri-border-from: var(--color-kleri-3);
+	--kleri-border-to: var(--color-kleri-2);
+	position: relative;
+	border-color: transparent;
+
+	&::before {
+		@apply kleri-border-ring;
+	}
+}
+
+/* The ring itself; internal to `kleri-border` and `kleri-border-dark`. */
+@utility kleri-border-ring {
 	--bg-size: 200%;
-	background:
-		linear-gradient(rgba(0, 0, 0, 0.95), rgb(0, 0, 0, 0.95)) padding-box,
-		linear-gradient(90deg, var(--color-kleri-1), var(--color-kleri-2), var(--color-kleri-1)) 0% /
-			100% 100% border-box;
+	content: '';
+	position: absolute;
+	inset: -1px;
+	border: 2px solid transparent;
+	border-radius: inherit;
+	background: linear-gradient(
+			90deg,
+			var(--kleri-border-from),
+			var(--kleri-border-to),
+			var(--kleri-border-from)
+		)
+		border-box;
 	background-size: 200% 200%;
+	/* Prefixed first: where -webkit-mask aliases mask, the standard
+	   declaration below must win. */
+	-webkit-mask:
+		linear-gradient(#000 0 0) padding-box,
+		linear-gradient(#000 0 0) border-box;
+	-webkit-mask-composite: xor;
+	mask:
+		linear-gradient(#000 0 0) padding-box exclude,
+		linear-gradient(#000 0 0) border-box;
+	pointer-events: none;
 	animation: move-bg 5s linear infinite;
 }
 
+/* Animated `kleri-text`, with the same per-theme stops. */
 @utility kleri-text-animation {
 	--bg-size: 500%;
+	--kleri-text-from: var(--color-kleri-1);
+	--kleri-text-to: var(--color-kleri-3);
+	&:is(.dark *) {
+		--kleri-text-from: var(--color-kleri-3);
+		--kleri-text-to: var(--color-kleri-2);
+	}
 	background: linear-gradient(
 			90deg,
-			var(--color-kleri-1),
-			var(--color-kleri-2),
-			var(--color-kleri-1)
+			var(--kleri-text-from),
+			var(--kleri-text-to),
+			var(--kleri-text-from)
 		)
 		0 0 / var(--bg-size) 200%;
 	color: transparent;
@@ -55,6 +112,46 @@
 @utility bg-kleri_blur {
 	@apply bg-background/30;
 	backdrop-filter: blur(40px);
+}
+
+/*
+ * Frosted surface for every floating layer: menus, select and combobox lists,
+ * popovers, date pickers, toasts. The page stays legible underneath as context
+ * while the panel keeps enough fill (80%) that its text holds AA over any
+ * content. Saturation lifts the blurred colour so it reads as glass, not fog.
+ * Falls back to the solid popover fill when blur is unsupported or the user
+ * asks for less transparency.
+ */
+@utility kleri-glass {
+	background-color: color-mix(in oklab, var(--color-popover) 80%, transparent);
+	-webkit-backdrop-filter: blur(20px) saturate(1.6);
+	backdrop-filter: blur(20px) saturate(1.6);
+
+	@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+		background-color: var(--color-popover);
+	}
+	@media (prefers-reduced-transparency: reduce) {
+		background-color: var(--color-popover);
+		-webkit-backdrop-filter: none;
+		backdrop-filter: none;
+	}
+}
+
+/*
+ * Scrim behind modal layers (dialogs, the calendar's overlay sidebar). A light
+ * blur pushes the page back so the focused surface owns attention without the
+ * page going fully black.
+ */
+@utility kleri-scrim {
+	background-color: rgb(0 0 0 / 0.45);
+	-webkit-backdrop-filter: blur(6px);
+	backdrop-filter: blur(6px);
+
+	@media (prefers-reduced-transparency: reduce) {
+		background-color: rgb(0 0 0 / 0.6);
+		-webkit-backdrop-filter: none;
+		backdrop-filter: none;
+	}
 }
 
 @layer utilities {
@@ -219,7 +316,7 @@
 /*
  * Calendar surface tokens, applied on the KleriCalendar root. Grid lines mix
  * the foreground into transparency so they read in both themes (the global
- * `--border` is tuned for 2px field outlines and is far too strong here).
+ * `--border` is tuned for control outlines and is too strong here).
  */
 @utility kleri-calendar {
 	--kc-line: color-mix(in oklab, var(--color-foreground) 9%, transparent);
@@ -286,6 +383,28 @@
 	@keyframes kleri-event-pending {
 		50% {
 			opacity: 0.55;
+		}
+	}
+}
+
+/*
+ * Grows a compact control's hit area to 44px on touch screens without
+ * changing its visual size. Uses ::after, so don't combine it with another
+ * ::after on the same element. Set `--kleri-hit-width: 0px` for controls that
+ * sit flush in a row, so only the height grows and neighbours don't overlap.
+ */
+@utility kleri-hit {
+	position: relative;
+
+	@media (pointer: coarse) {
+		&::after {
+			content: '';
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			width: max(100%, var(--kleri-hit-width, 44px));
+			height: max(100%, 44px);
+			transform: translate(-50%, -50%);
 		}
 	}
 }

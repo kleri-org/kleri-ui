@@ -37,8 +37,27 @@ describe('KleriInput', () => {
 			props: { label: 'Name', InputIcon: Mail, errors: ['Required', 'Too short'] }
 		});
 
-		expect(screen.getByText('(Required)')).toBeInTheDocument();
-		expect(screen.getByText('(Too short)')).toBeInTheDocument();
+		expect(screen.getByText('Required')).toBeInTheDocument();
+		expect(screen.getByText('Too short')).toBeInTheDocument();
+	});
+
+	it('describes the input with its errors in a polite live region', () => {
+		render(KleriInput, {
+			props: { label: 'Name', errors: ['Required'], 'aria-describedby': 'name-hint' }
+		});
+
+		const input = screen.getByLabelText('Name');
+		const errorList = screen.getByText('Required').parentElement!;
+		expect(errorList).toHaveAttribute('aria-live', 'polite');
+		expect(input).toHaveAttribute('aria-describedby', `${errorList.id} name-hint`);
+		expect(input).toHaveAccessibleDescription('Required');
+	});
+
+	it('keeps the live region mounted and undescribed while valid', () => {
+		const { container } = render(KleriInput, { props: { label: 'Name' } });
+
+		expect(container.querySelector('[aria-live="polite"]')).not.toBeNull();
+		expect(screen.getByLabelText('Name')).not.toHaveAttribute('aria-describedby');
 	});
 
 	it('toggles password visibility', async () => {
@@ -125,7 +144,7 @@ describe('KleriCombobox', () => {
 			props: { label: 'Framework', items, errors: ['Choose one'], disabled: true }
 		});
 
-		expect(screen.getByText('(Choose one)')).toBeInTheDocument();
+		expect(screen.getByText('Choose one')).toBeInTheDocument();
 		expect(screen.getByRole('combobox', { name: 'Framework' })).toBeDisabled();
 	});
 });
@@ -140,7 +159,7 @@ describe('KleriSelect', () => {
 	];
 
 	async function choose(name: string) {
-		await fireEvent.pointerDown(screen.getByRole('button', { name: 'Theme' }), {
+		await fireEvent.pointerDown(screen.getByRole('button', { name: /^Theme/ }), {
 			button: 0,
 			pointerType: 'mouse'
 		});
@@ -158,7 +177,7 @@ describe('KleriSelect', () => {
 		expect(screen.getByText('Theme')).toBeInTheDocument();
 
 		await choose('Dark');
-		expect(screen.getByRole('button', { name: 'Theme' })).toHaveTextContent('Dark');
+		expect(screen.getByRole('button', { name: /^Theme/ })).toHaveTextContent('Dark');
 	});
 
 	it('reports the new value and runs the picked option action', async () => {
@@ -205,7 +224,7 @@ describe('KleriSelect', () => {
 
 		await choose('Light');
 
-		const trigger = screen.getByRole('button', { name: 'Theme' });
+		const trigger = screen.getByRole('button', { name: /^Theme/ });
 		expect(trigger.querySelector('svg')).toHaveClass('lucide-star');
 	});
 
@@ -219,9 +238,17 @@ describe('KleriSelect', () => {
 			}
 		});
 
-		const trigger = screen.getByRole('button', { name: 'Theme' });
+		const trigger = screen.getByRole('button', { name: /^Theme/ });
 		expect(trigger).toHaveAttribute('data-fs-control', 'true');
 		expect(trigger).toHaveAttribute('aria-describedby', 'theme-desc');
+	});
+
+	it('names the trigger by its label and current value', async () => {
+		render(KleriSelect, { props: { label: 'Theme', placeholder: 'Pick a theme', items } });
+
+		expect(screen.getByRole('button', { name: 'Theme Pick a theme' })).toBeInTheDocument();
+		await choose('Dark');
+		expect(screen.getByRole('button', { name: 'Theme Dark' })).toBeInTheDocument();
 	});
 
 	it('shows errors and blocks the trigger when disabled', () => {
@@ -229,8 +256,8 @@ describe('KleriSelect', () => {
 			props: { label: 'Theme', items, errors: ['Pick one'], disabled: true }
 		});
 
-		expect(screen.getByText('(Pick one)')).toBeInTheDocument();
-		expect(screen.getByRole('button', { name: 'Theme' })).toBeDisabled();
+		expect(screen.getByText('Pick one')).toBeInTheDocument();
+		expect(screen.getByRole('button', { name: /^Theme/ })).toBeDisabled();
 	});
 });
 
@@ -264,8 +291,8 @@ describe('KleriTextarea', () => {
 			props: { label: 'About', InputIcon: Mail, errors: ['Required', 'Too short'] }
 		});
 
-		expect(screen.getByText('(Required)')).toBeInTheDocument();
-		expect(screen.getByText('(Too short)')).toBeInTheDocument();
+		expect(screen.getByText('Required')).toBeInTheDocument();
+		expect(screen.getByText('Too short')).toBeInTheDocument();
 	});
 
 	it('calls onValueChange on input', async () => {
@@ -315,13 +342,26 @@ describe('KleriSlider', () => {
 		expect(screen.getByText('75%')).toBeInTheDocument();
 	});
 
+	it('announces the formatted value as aria-valuetext', () => {
+		render(KleriSlider, {
+			props: {
+				label: 'Progress',
+				value: 75,
+				type: 'single',
+				valueFormatter: (v: number) => `${v}%`
+			}
+		});
+
+		expect(screen.getByRole('slider')).toHaveAttribute('aria-valuetext', '75%');
+	});
+
 	it('shows validation errors', () => {
 		render(KleriSlider, {
 			props: { label: 'Amount', value: 5, type: 'single', errors: ['Too low', 'Minimum is 10'] }
 		});
 
-		expect(screen.getByText('(Too low)')).toBeInTheDocument();
-		expect(screen.getByText('(Minimum is 10)')).toBeInTheDocument();
+		expect(screen.getByText('Too low')).toBeInTheDocument();
+		expect(screen.getByText('Minimum is 10')).toBeInTheDocument();
 	});
 
 	it('supports the disabled state', () => {
@@ -390,7 +430,7 @@ describe('KleriSwitch', () => {
 		});
 
 		expect(screen.getByText('Notifications')).toBeInTheDocument();
-		expect(screen.getByText('(Required)')).toBeInTheDocument();
+		expect(screen.getByText('Required')).toBeInTheDocument();
 		expect(screen.getByRole('switch', { name: 'Notifications' })).toBeInTheDocument();
 		expect(container.querySelector('.kleri-shake')).not.toBeNull();
 	});

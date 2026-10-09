@@ -92,9 +92,7 @@
 		if (!open && connecting !== null) cancelConnect();
 	});
 
-	let cancellable = $derived(
-		integrations.find((i) => i.id === connecting)?.cancel !== undefined
-	);
+	let cancellable = $derived(integrations.find((i) => i.id === connecting)?.cancel !== undefined);
 
 	async function subscribe(e: SubmitEvent) {
 		e.preventDefault();
@@ -185,7 +183,7 @@
 						<button
 							type="button"
 							disabled={connecting !== null}
-							class="group flex w-full items-center gap-3 rounded-kleri border-2 border-border p-3 text-left transition-colors hover:border-kleri-2 hover:bg-kleri-2/5 disabled:cursor-wait disabled:opacity-70"
+							class="group flex w-full items-center gap-3 rounded-kleri border border-border p-3 text-left transition-colors hover:border-kleri-2 hover:bg-kleri-2/5 disabled:cursor-wait disabled:opacity-70"
 							onclick={() => connect(integration)}
 						>
 							<span
@@ -205,7 +203,7 @@
 							</span>
 							{#if connecting === integration.id}
 								<Loader2
-									class="size-5 animate-spin text-kleri-1 dark:text-kleri-2"
+									class="size-5 animate-spin text-brand"
 									aria-label={ctx.labels.connecting}
 								/>
 							{:else}
@@ -224,7 +222,7 @@
 					</p>
 					<button
 						type="button"
-						class="shrink-0 rounded-kleri border-2 border-border px-4 py-1.5 text-sm transition-colors hover:border-kleri-2"
+						class="shrink-0 rounded-kleri border border-border px-4 py-1.5 text-sm transition-colors hover:border-kleri-2"
 						onclick={cancelConnect}
 					>
 						{ctx.labels.cancel}
@@ -251,7 +249,7 @@
 					<button
 						type="submit"
 						disabled={subscribing || !url.trim()}
-						class="flex shrink-0 items-center gap-2 rounded-kleri border-2 border-border px-4 py-1.5 text-sm transition-colors hover:border-kleri-2 disabled:opacity-50"
+						class="flex shrink-0 items-center gap-2 rounded-kleri border border-border px-4 py-1.5 text-sm transition-colors hover:border-kleri-2 disabled:opacity-50"
 					>
 						{#if subscribing}<Loader2 class="size-4 animate-spin" />{/if}
 						{ctx.labels.subscribe}

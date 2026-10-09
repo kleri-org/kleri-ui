@@ -18,7 +18,7 @@
 			orientation?: 'horizontal' | 'vertical';
 			/**
 			 * Tailwind classes applied to items while they are active, e.g.
-			 * `activeClass="bg-primary text-white"`. Plain utilities only —
+			 * `activeClass="bg-primary text-primary-foreground"`. Plain utilities only —
 			 * the active state is applied for you, no prefix needed.
 			 */
 			activeClass?: string;

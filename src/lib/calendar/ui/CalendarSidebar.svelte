@@ -75,7 +75,7 @@
 			{#if onConnect}
 				<button
 					type="button"
-					class="rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted/60 hover:text-kleri-1 focus-visible:ring-2 focus-visible:ring-kleri-2 focus-visible:outline-none dark:hover:text-kleri-2"
+					class="rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted/60 hover:text-brand focus-visible:ring-2 focus-visible:ring-kleri-2 focus-visible:outline-none"
 					aria-label={ctx.labels.addCalendar}
 					title={ctx.labels.addCalendar}
 					onclick={(e) => onConnect(e.currentTarget)}
@@ -88,7 +88,7 @@
 		{#if onConnect}
 			<button
 				type="button"
-				class="mx-2 flex items-center justify-center gap-2 rounded-kleri border-2 border-dashed border-(--kc-line-strong) py-2 text-sm text-muted-foreground transition-colors hover:border-kleri-2 hover:text-foreground"
+				class="mx-2 flex items-center justify-center gap-2 rounded-kleri border border-dashed border-(--kc-line-strong) py-2 text-sm text-muted-foreground transition-colors hover:border-kleri-2 hover:text-foreground"
 				onclick={(e) => onConnect(e.currentTarget)}
 			>
 				<Plus class="size-4" />

@@ -200,7 +200,7 @@
 </script>
 
 {#snippet codeBlock(key: string, code: string, label: string)}
-	<div class="overflow-hidden rounded-lg border-2 border-border bg-card">
+	<div class="overflow-hidden rounded-lg border border-border/50 bg-card">
 		<div class="flex items-center justify-between border-b border-border/50 bg-muted/30 px-4 py-2">
 			<span class="font-spacemono text-xs text-foreground">{label}</span>
 			<KleriButton
@@ -228,9 +228,9 @@
 <div class="space-y-16">
 	<div class="space-y-2">
 		<div class="mb-2 flex items-center gap-2 font-spacemono text-sm text-muted-foreground">
-			<a href="/" class="transition-colors hover:text-kleri-2">Kleri UI</a>
+			<a href="/" class="transition-colors hover:text-brand">Kleri UI</a>
 			<span>/</span>
-			<a href="/components" class="transition-colors hover:text-kleri-2">Components</a>
+			<a href="/components" class="transition-colors hover:text-brand">Components</a>
 			<span>/</span>
 			<span class="text-foreground">Calendar</span>
 		</div>
@@ -276,7 +276,7 @@
 			<div class="lg:col-span-2">
 				{@render codeBlock('usage', usageCode, 'Usage')}
 			</div>
-			<div class="h-fit rounded-xl border-2 border-border/50 bg-card/30 p-6">
+			<div class="h-fit rounded-xl border border-border/50 bg-card/30 p-6">
 				<h2
 					class="mb-4 font-spacemono text-sm font-semibold tracking-wider text-foreground uppercase"
 				>

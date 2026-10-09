@@ -54,7 +54,7 @@
 		>
 			<a
 				href="/components"
-				class="group inline-flex items-center gap-2 rounded-full border-2 border-kleri-2/40 bg-kleri-3/10 px-6 py-3 text-sm font-medium text-kleri-2 transition-all hover:border-kleri-2 hover:bg-kleri-3/20"
+				class="group inline-flex items-center gap-2 rounded-full border border-kleri-2/40 bg-kleri-3/10 px-6 py-3 text-sm font-medium text-brand transition-all hover:border-kleri-2 hover:bg-kleri-3/20"
 			>
 				Explore Components
 				<svg

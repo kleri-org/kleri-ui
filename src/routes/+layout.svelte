@@ -65,13 +65,13 @@
 			route: '/components/input',
 			icon: TextCursorInput,
 			items: [
-				{ name: 'KleriSwitch', id: 'kleri-switch', icon: ToggleLeft },
 				{ name: 'KleriInput', id: 'kleri-input', icon: TextCursorInput },
-				{ name: 'KleriCombobox', id: 'kleri-combobox', icon: TextCursorInput },
-				{ name: 'KleriSelect', id: 'kleri-select', icon: ChevronsUpDown },
 				{ name: 'KleriTextarea', id: 'kleri-textarea', icon: TextCursor },
-				{ name: 'KleriSlider', id: 'kleri-slider', icon: SlidersHorizontal },
+				{ name: 'KleriSelect', id: 'kleri-select', icon: ChevronsUpDown },
+				{ name: 'KleriCombobox', id: 'kleri-combobox', icon: TextCursorInput },
+				{ name: 'KleriSwitch', id: 'kleri-switch', icon: ToggleLeft },
 				{ name: 'KleriToggleGroup', id: 'kleri-toggle-group', icon: ToggleRight },
+				{ name: 'KleriSlider', id: 'kleri-slider', icon: SlidersHorizontal },
 				{ name: 'KleriDragNDrop', id: 'kleri-drag-n-drop', icon: Upload }
 			]
 		},
@@ -362,7 +362,7 @@
 								class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors {isActivePath(
 									category.route
 								)
-									? 'bg-kleri-3/20 text-kleri-2'
+									? 'bg-kleri-3/20 text-brand'
 									: 'text-foreground hover:bg-muted/30'}"
 							>
 								<category.icon class="h-4 w-4" />
@@ -378,7 +378,7 @@
 												class="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors {isActiveHash(
 													item.id
 												)
-													? 'bg-kleri-3/20 font-medium text-kleri-2'
+													? 'bg-kleri-3/20 font-medium text-brand'
 													: 'text-muted-foreground hover:bg-muted/30 hover:text-foreground'}"
 											>
 												<item.icon class="h-3.5 w-3.5" />

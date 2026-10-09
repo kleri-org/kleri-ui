@@ -1,82 +1,85 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { KleriButton } from '$lib';
+	import { Check, Copy } from '@lucide/svelte';
+	import KleriUtilityButton from '$lib/button/KleriUtilityButton/KleriUtilityButton.svelte';
 	import { getHighlighter } from '$lib/utils/highlighter';
+	import { formatSnippet } from './snippet.js';
 
 	interface Props {
+		/** Component name, used in the tag and the import line. */
 		component: string;
+		/** Prop values to print. `children` (a string) becomes the tag's content. */
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		props: Record<string, any>;
-
+		/** Values printed as bare identifiers (icons, components), e.g. `Sun` → `Sun`. */
 		symbols?: Map<unknown, string>;
+		/** The component's defaults. Props equal to their default are left out. */
+		defaults?: Record<string, unknown>;
+		/** Props written as `bind:name`, backed by a `$state` declaration. */
+		bindings?: string[];
+		/** Module the component is imported from. @default '@kleri/ui' */
+		from?: string;
+		/** Other names imported from `from`, e.g. a group's item component. */
+		importNames?: string[];
+		/** Extra import lines, e.g. for the icons named in `symbols`. */
+		imports?: string[];
+		/** Replaces the generated snippet, for usage the generator can't express. */
+		code?: string;
 	}
 
-	let { component, props, symbols }: Props = $props();
+	let {
+		component,
+		props,
+		symbols,
+		defaults,
+		bindings,
+		from = '@kleri/ui',
+		importNames,
+		imports,
+		code: codeOverride
+	}: Props = $props();
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	function formatValue(value: any, indent = 2): string {
-		if (symbols?.has(value)) return `{${symbols.get(value)}}`;
-		if (typeof value === 'boolean') return `{${value}}`;
-		if (typeof value === 'number') return `{${value}}`;
-		if (typeof value === 'string') return `"${value}"`;
-		if (typeof value === 'function') return `{() => {}}`;
-		if (Array.isArray(value)) {
-			if (value.length === 0) return `{[]}`;
-			const innerIndent = ' '.repeat(indent + 2);
-			const items = value.map((v) => `${innerIndent}${formatValue(v, indent + 2)}`).join(',\n');
-			return `{[\n${items}\n${' '.repeat(indent)}]}`;
-		}
-		if (typeof value === 'object' && value !== null) {
-			const entries = Object.entries(value);
-			if (entries.length === 0) return `{{}}`;
-			const innerIndent = ' '.repeat(indent + 2);
-			const props = entries
-				.map(([k, v]) => `${innerIndent}${k}: ${formatValue(v, indent + 2)}`)
-				.join(',\n');
-			return `{{\n${props}\n${' '.repeat(indent)}}}`;
-		}
-		return String(value);
-	}
-
-	let code = $derived.by(() => {
-		const entries = Object.entries(props).filter(([key]) => key !== 'children');
-		const propLines = entries.map(([key, value]) => `  ${key}=${formatValue(value)}`);
-
-		if (props.children) {
-			return `<${component}${propLines.length > 0 ? '\n' + propLines.join('\n') + '\n' : ''}>
-  ${props.children}
-</${component}>`;
-		}
-
-		return `<${component}${propLines.length > 0 ? '\n' + propLines.join('\n') + '\n' : ''}/>`;
-	});
+	let code = $derived(
+		codeOverride ??
+			formatSnippet({
+				component,
+				props,
+				symbols,
+				defaults,
+				bindings,
+				from,
+				importNames,
+				imports
+			})
+	);
 
 	let copied = $state(false);
+	let copyTimer: ReturnType<typeof setTimeout> | undefined;
 	let highlighter = $state<Awaited<ReturnType<typeof getHighlighter>> | null>(null);
-	let highlightedHtml = $state('');
 
-	onMount(async () => {
-		try {
-			highlighter = await getHighlighter();
-		} catch (error) {
-			// The plain <pre> fallback below stays on screen.
-			console.error('Failed to load the syntax highlighter:', error);
-		}
+	onMount(() => {
+		getHighlighter()
+			.then((loaded) => (highlighter = loaded))
+			.catch((error) => {
+				// The plain <pre> fallback below stays on screen.
+				console.error('Failed to load the syntax highlighter:', error);
+			});
+		return () => clearTimeout(copyTimer);
 	});
 
-	// Runs for the first highlight too, as soon as `highlighter` resolves.
-	$effect(() => {
-		if (!highlighter) return;
-		highlightedHtml = highlighter.codeToHtml(code, {
-			lang: 'tsx',
+	let highlightedHtml = $derived(
+		highlighter?.codeToHtml(code, {
+			lang: 'svelte',
 			themes: { light: 'kleri-light', dark: 'kleri-dark' }
-		});
-	});
+		}) ?? ''
+	);
 
 	async function copyCode() {
 		try {
 			await navigator.clipboard.writeText(code);
 			copied = true;
+			clearTimeout(copyTimer);
+			copyTimer = setTimeout(() => (copied = false), 2000);
 		} catch (error) {
 			// Clipboard access is denied outside a secure context; don't claim success.
 			console.error('Failed to copy to the clipboard:', error);
@@ -84,18 +87,26 @@
 	}
 </script>
 
-<div class="overflow-hidden rounded-lg border-2 border-border bg-card">
-	<div class="flex items-center justify-between border-b border-border/50 bg-muted/30 px-4 py-2">
+<div class="overflow-hidden rounded-kleri border border-border/50 bg-card">
+	<div
+		class="flex items-center justify-between border-b border-border/30 bg-muted/30 py-1.5 ps-4 pe-2"
+	>
 		<span class="font-spacemono text-xs text-foreground">Usage</span>
-		<KleriButton
-			class="w-auto px-3 py-1 text-xs"
-			showSuccess={copied}
-			successMessage="Copied!"
-			onSuccessComplete={() => (copied = false)}
+		<KleriUtilityButton
+			size="xs"
+			variant="ghost"
+			class="inline-flex flex-row flex-nowrap items-center gap-1.5"
 			onclick={copyCode}
 		>
-			Copy
-		</KleriButton>
+			{#if copied}
+				<Check class="size-3.5 text-brand" aria-hidden="true" />
+				Copied
+			{:else}
+				<Copy class="size-3.5" aria-hidden="true" />
+				Copy
+			{/if}
+		</KleriUtilityButton>
+		<span class="sr-only" aria-live="polite">{copied ? 'Code copied to the clipboard' : ''}</span>
 	</div>
 
 	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->

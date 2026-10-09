@@ -35,8 +35,8 @@
 		<Tooltip.Portal>
 			<Tooltip.Content
 				role="tooltip"
-				class="pointer-events-none z-50 rounded-kleri border-2
-		    border-border bg-background/60 p-2 font-spacemono
+				class="pointer-events-none z-50 rounded-kleri border
+		    border-border/50 bg-background/60 p-2 font-spacemono
 			  text-sm font-normal text-foreground backdrop-blur-lg transition-transform"
 				{side}
 				{sideOffset}

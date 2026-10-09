@@ -31,20 +31,20 @@
 			role={toast.tone === 'error' ? 'alert' : 'status'}
 			class={cn(
 				// CSS enter animation, like the library's other overlays (no JS transitions).
-				'pointer-events-auto flex max-w-md animate-in items-center gap-3 rounded-kleri border-2 bg-popover py-2 pr-2 pl-3 text-sm text-popover-foreground shadow-xl shadow-black/30 duration-200 fade-in-0 slide-in-from-bottom-4 motion-reduce:animate-none',
-				toast.tone === 'error' ? 'border-destructive/60' : 'border-border'
+				'pointer-events-auto flex max-w-md animate-in items-center gap-3 rounded-kleri border kleri-glass py-2 pr-2 pl-3 text-sm text-popover-foreground shadow-xl shadow-black/30 duration-200 fade-in-0 slide-in-from-bottom-4 motion-reduce:animate-none',
+				toast.tone === 'error' ? 'border-destructive/60' : 'border-border/50'
 			)}
 		>
 			{#if toast.tone === 'error'}
 				<AlertCircle class="size-4 shrink-0 text-destructive" />
 			{:else}
-				<CheckCircle2 class="size-4 shrink-0 text-kleri-1 dark:text-kleri-2" />
+				<CheckCircle2 class="size-4 shrink-0 text-brand" />
 			{/if}
 			<span class="min-w-0 flex-1">{toast.message}</span>
 			{#if toast.action}
 				<button
 					type="button"
-					class="shrink-0 rounded-lg px-2 py-1 font-medium text-kleri-1 transition-colors hover:bg-kleri-2/15 dark:text-kleri-2"
+					class="shrink-0 rounded-lg px-2 py-1 font-medium text-brand transition-colors hover:bg-kleri-2/15"
 					onclick={() => {
 						toast.action?.run();
 						onDismiss(toast.id);

@@ -891,7 +891,7 @@
 	bind:this={rootEl}
 	bind:clientWidth={width}
 	class={cn(
-		'relative flex h-full min-h-[34rem] w-full overflow-hidden rounded-kleri border-2 border-border/50 bg-background font-Poppins text-foreground kleri-calendar',
+		'relative flex h-full min-h-[34rem] w-full overflow-hidden rounded-kleri border border-border/50 bg-background font-Poppins text-foreground kleri-calendar',
 		className
 	)}
 	data-kleri-calendar
@@ -915,7 +915,7 @@
 				<!-- Pointer-only dismissal; keyboard users press Escape or the toolbar toggle. -->
 				<div
 					role="presentation"
-					class="absolute inset-0 z-30 bg-black/40 backdrop-blur-[1px]"
+					class="absolute inset-0 z-30 kleri-scrim"
 					onclick={() => (showSidebar = false)}
 				></div>
 			{/if}
@@ -1004,7 +1004,7 @@
 					sideOffset={8}
 					collisionPadding={12}
 					class={cn(
-						'kleri-dropdown z-50 overflow-hidden rounded-kleri border-2 border-border bg-popover text-popover-foreground shadow-2xl shadow-black/40 outline-hidden',
+						'kleri-dropdown z-50 overflow-hidden rounded-kleri border border-border/50 kleri-glass text-popover-foreground shadow-2xl shadow-black/40 outline-hidden',
 						popover?.kind === 'create' ? 'w-80' : 'w-[23rem] max-w-[calc(100vw-1.5rem)]'
 					)}
 					onCloseAutoFocus={(e) => {

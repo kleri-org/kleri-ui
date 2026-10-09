@@ -31,20 +31,22 @@
 	const variant = $derived(variantProp ?? groupCtx?.variant ?? 'default');
 
 	const BASE =
-		'btn w-fit align-center rounded-kleri border-2 ring-0 font-normal hover:shadow-black/50 hover:ring-0 disabled:cursor-not-allowed disabled:bg-muted disabled:ring-0 disabled:shadow-none';
+		'btn w-fit align-center rounded-kleri border ring-0 font-normal hover:shadow-black/50 hover:ring-0 disabled:cursor-not-allowed disabled:bg-muted disabled:ring-0 disabled:shadow-none';
 
 	const sizeClasses = {
-		xs: 'text-xs px-2 h-8 rounded-md',
+		xs: 'kleri-hit text-xs px-2 h-8 rounded-md',
 		sm: 'text-sm px-3 py-1',
 		lg: 'text-base px-4 py-2'
 	};
 
 	const variantClasses = {
-		default: 'bg-none text-white hover:bg-accent hover:text-black border-muted-foreground',
-		outline: 'bg-transparent border-border text-foreground hover:bg-accent hover:text-black',
-		ghost: 'bg-none border-transparent text-foreground hover:bg-accent hover:text-black',
+		default: 'bg-none text-foreground hover:bg-accent hover:text-accent-foreground border-border',
+		outline:
+			'bg-transparent border-border text-foreground hover:bg-accent hover:text-accent-foreground',
+		ghost:
+			'bg-none border-transparent text-foreground hover:bg-accent hover:text-accent-foreground',
 		secondary:
-			'bg-secondary text-secondary-foreground hover:bg-accent hover:text-black border-muted-foreground'
+			'bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground border-border'
 	};
 
 	// `sm` first so the smaller sizes inherit its vertical padding; `size` then

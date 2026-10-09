@@ -15,18 +15,19 @@
 	--background: oklch(1 0 0);
 	--foreground: oklch(0.145 0 0);
 
-	/* Code syntax highlighting theme (light) */
+	/* Code syntax highlighting theme (light). Teal hues are darkened from the
+	   brand stops so every token clears 4.5:1 on the code background. */
 	--color-kleri-code-bg: oklch(0.97 0 0);
 	--color-kleri-code-foreground: oklch(0.205 0 0);
-	--color-kleri-code-comment: oklch(0.55 0.05 260);
+	--color-kleri-code-comment: oklch(0.53 0.05 260);
 	--color-kleri-code-string: var(--color-kleri-1);
-	--color-kleri-code-keyword: var(--color-kleri-3);
+	--color-kleri-code-keyword: oklch(0.5 0.09 195);
 	--color-kleri-code-number: oklch(0.55 0.2 30);
-	--color-kleri-code-boolean: var(--color-kleri-3);
-	--color-kleri-code-tag: var(--color-kleri-3);
+	--color-kleri-code-boolean: oklch(0.5 0.09 195);
+	--color-kleri-code-tag: oklch(0.5 0.09 195);
 	--color-kleri-code-function: oklch(0.55 0.2 260);
-	--color-kleri-code-variable: var(--color-kleri-2);
-	--color-kleri-code-attribute: var(--color-kleri-2);
+	--color-kleri-code-variable: oklch(0.48 0.07 215);
+	--color-kleri-code-attribute: oklch(0.5 0.1 165);
 	--color-kleri-code-punctuation: oklch(0.4 0 0);
 	--color-kleri-code-error: oklch(0.6 0.2 25);
 
@@ -49,13 +50,21 @@
 	--accent: var(--color-kleri-2);
 	--accent-foreground: oklch(0.205 0 0);
 
+	/* Brand-coloured text and icons on the page surface: links, today, success.
+	   Deep Harbour reads at 7.1:1 on Paper; Sea Glass only reaches 1.9:1. */
+	--brand: var(--color-kleri-1);
+
 	--destructive: oklch(0.577 0.245 27.325);
 
-	--border: oklch(0.422 0 0);
+	/* Resting 1px control outlines: deliberately quiet (1.9:1 on Paper). Focus,
+	   hover and error states carry the 3:1 signal instead; floating and passive
+	   edges use it at reduced alpha. */
+	--border: oklch(0.8 0 0);
 
 	--input: oklch(0.922 0 0);
 
-	--ring: oklch(0.708 0 0);
+	/* Solid focus ring: Lagoon clears 3:1 on Paper (WCAG 1.4.11). */
+	--ring: var(--color-kleri-3);
 
 	--chart-1: oklch(0.646 0.222 41.116);
 	--chart-2: oklch(0.6 0.118 184.704);
@@ -69,8 +78,8 @@
 	--sidebar-primary-foreground: oklch(0.985 0 0);
 	--sidebar-accent: transparent;
 	--sidebar-accent-foreground: oklch(0.205 0 0);
-	--sidebar-border: oklch(0.522 0 0);
-	--sidebar-ring: oklch(0.708 0 0);
+	--sidebar-border: oklch(0.8 0 0);
+	--sidebar-ring: var(--color-kleri-3);
 }
 
 .dark {
@@ -105,18 +114,24 @@
 	--secondary-foreground: oklch(0.985 0 0);
 
 	--muted: oklch(0.269 0 0);
-	--muted-foreground: oklch(0.608 0 0);
+	/* Clears 4.5:1 on Night Raised with headroom for tints (5.8:1). */
+	--muted-foreground: oklch(0.66 0 0);
 
 	--accent: var(--color-kleri-3);
-	--accent-foreground: oklch(0.985 0 0);
+	--brand: var(--color-kleri-2);
+	/* Ink, not white: Lagoon only reaches 3.8:1 against white. */
+	--accent-foreground: oklch(0.145 0 0);
 
 	--destructive: oklch(0.704 0.191 22.216);
 
-	--border: oklch(1 0 0 / 10%);
+	/* Resting 1px control outlines: deliberately quiet (2.15:1 on Night).
+	   Focus, hover and error states carry the 3:1 signal instead; floating and
+	   passive edges use it at reduced alpha. */
+	--border: oklch(0.4 0 0);
 
 	--input: oklch(1 0 0 / 15%);
 
-	--ring: oklch(0.556 0 0);
+	--ring: var(--color-kleri-2);
 
 	--chart-1: oklch(0.488 0.243 264.376);
 	--chart-2: oklch(0.696 0.17 162.48);
@@ -131,13 +146,16 @@
 	--sidebar-accent: transparent;
 	--sidebar-accent-foreground: oklch(0.985 0 0);
 	--sidebar-border: transparent;
-	--sidebar-ring: oklch(0.556 0 0);
+	--sidebar-ring: var(--color-kleri-2);
 }
 
 @theme inline {
 	--color-kleri-1: rgb(25, 96, 114);
 	--color-kleri-2: rgb(132, 204, 184);
 	--color-kleri-3: rgb(35, 145, 144);
+	/* Theme-invariant ink for text and edges on brand fills, which keep the
+	   same colour in both themes. */
+	--color-kleri-ink: oklch(0.145 0 0);
 
 	--font-Poppins: Poppins, sans-serif;
 	--font-spacemono: Space Mono, monospace;
@@ -166,6 +184,7 @@
 	--color-muted-foreground: var(--muted-foreground);
 	--color-accent: var(--accent);
 	--color-accent-foreground: var(--accent-foreground);
+	--color-brand: var(--brand);
 	--color-destructive: var(--destructive);
 	--color-border: var(--border);
 	--color-input: var(--input);
@@ -252,7 +271,12 @@ html.dark .shiki span {
 @layer base {
 	* {
 		border-color: var(--border);
-		outline-color: color-mix(in oklch, var(--ring) 50%, transparent);
+		outline-color: var(--ring);
+	}
+	/* Controls that don't draw their own focus state get a solid teal ring. */
+	:focus-visible {
+		outline: 2px solid var(--ring);
+		outline-offset: 2px;
 	}
 }
 /* Hide scrollbar while keeping scroll functionality */

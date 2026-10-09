@@ -11,6 +11,7 @@
 	import type { ClassValue } from 'clsx';
 	import { cn } from '$lib/utils.js';
 	import KleriFieldLabel from '$lib/input/KleriFieldLabel.svelte';
+	import { describedBy, fieldErrorId } from '$lib/input/field.js';
 
 	import type { DropzoneStatus } from './dragndrop-utils.js';
 
@@ -23,11 +24,12 @@
 		mainText: string;
 		subText?: string;
 		label?: string;
-		/** Validation errors. Shown next to the label. */
+		/** Validation errors. Shown under the label and announced. */
 		errors?: string[];
 		/** Blocks interaction and dims the dropzone. */
 		disabled?: boolean;
 		class?: ClassValue;
+		/** Accessible name. Defaults to the visible `label`, or "Upload files" without one. */
 		ariaLabel?: string;
 		onclick?: MouseEventHandler<HTMLDivElement> | undefined | null;
 		onkeydown?: KeyboardEventHandler<HTMLDivElement> | undefined | null;
@@ -52,7 +54,7 @@
 		errors,
 		disabled = false,
 		class: className,
-		ariaLabel = 'File Upload Dropzone',
+		ariaLabel,
 		onclick,
 		onkeydown,
 		ondragover,
@@ -69,6 +71,11 @@
 	// Derived
 	// -----------------------------------------------------------------------
 
+	const uid = $props.id();
+	let labelId = $derived(`${uid}-label`);
+	let errorId = $derived(fieldErrorId(uid));
+	let hasErrors = $derived((errors?.length ?? 0) > 0);
+
 	let isHovering = $derived(status.state === 'hover');
 	let isError = $derived(status.state === 'error');
 	let isAccepted = $derived(status.state === 'accepted');
@@ -80,13 +87,19 @@
 </script>
 
 <!-- Label -->
-<KleriFieldLabel {label} {errors} class="mb-1 text-sm font-medium select-none" />
+<KleriFieldLabel
+	id={labelId}
+	{label}
+	{errors}
+	{errorId}
+	class="mb-1 text-sm font-medium select-none"
+/>
 
 <!-- Dropzone -->
 <div
 	bind:this={ref}
 	class={cn(
-		'relative flex min-h-40 min-w-20 cursor-pointer flex-col items-center justify-center rounded-kleri border-2 border-dashed p-2 transition-all duration-300 ease-in-out',
+		'relative flex min-h-40 min-w-20 cursor-pointer flex-col items-center justify-center rounded-kleri border border-dashed p-2 transition-all duration-300 ease-in-out',
 		isHovering
 			? 'scale-105 border-solid border-primary bg-muted/50'
 			: isError
@@ -94,13 +107,16 @@
 				: isAccepted
 					? 'border-solid border-primary/50 bg-muted/30'
 					: 'border-border/60 hover:border-border hover:bg-muted/80',
+		hasErrors && !isHovering && 'border-destructive hover:border-destructive',
 		disabled && 'pointer-events-none cursor-not-allowed opacity-60',
 		className
 	)}
 	role="button"
 	tabindex={disabled ? -1 : 0}
 	aria-disabled={disabled || undefined}
-	aria-label={ariaLabel}
+	aria-label={ariaLabel ?? (label ? undefined : 'Upload files')}
+	aria-labelledby={ariaLabel || !label ? undefined : labelId}
+	aria-describedby={describedBy(hasErrors && errorId)}
 	{onclick}
 	{onkeydown}
 	{ondragover}
@@ -149,7 +165,7 @@
 			<div class="space-y-1">
 				<h3 class="text-sm font-semibold tracking-tight text-foreground">
 					{#if isHovering}
-						Drop file(s) to upload
+						Release to add files
 					{:else if isAccepted}
 						{acceptedCount} file{acceptedCount !== 1 ? 's' : ''} selected
 					{:else}

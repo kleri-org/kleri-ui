@@ -45,7 +45,7 @@
 		label,
 		errors,
 		disabled = false,
-		mainText = 'Drag and Drop Your file here',
+		mainText = 'Drop files here or click to browse',
 		subText: consumerSubText,
 		errorDuration = 3000,
 		class: className,
@@ -328,7 +328,7 @@
 			size="xs"
 			align="start"
 			contentClass="w-full max-w-80"
-			buttonClass="border-muted-foreground/50"
+			buttonClass="border-border"
 			onRemove={removePath}
 			onRemoveAll={removeAllPaths}
 		/>

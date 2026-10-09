@@ -74,7 +74,7 @@
 	{#if isEmpty}
 		<div class="flex h-full min-h-64 flex-col items-center justify-center gap-3 p-8 text-center">
 			<div
-				class="flex size-14 items-center justify-center rounded-2xl text-black shadow-lg shadow-kleri-1/30 kleri-bg"
+				class="flex size-14 items-center justify-center rounded-2xl text-kleri-ink shadow-lg shadow-kleri-1/30 kleri-bg"
 			>
 				<CalendarPlus class="size-7" strokeWidth={2.2} />
 			</div>
@@ -83,7 +83,7 @@
 			{#if canCreate}
 				<button
 					type="button"
-					class="mt-1 rounded-kleri border-2 border-border px-4 py-1.5 text-sm transition-colors hover:border-kleri-2 hover:bg-kleri-2/10"
+					class="mt-1 rounded-kleri border border-border px-4 py-1.5 text-sm transition-colors hover:border-kleri-2 hover:bg-kleri-2/10"
 					onclick={createToday}
 				>
 					{ctx.labels.newEvent}
@@ -106,7 +106,7 @@
 						<span
 							class={cn(
 								'flex size-9 shrink-0 items-center justify-center rounded-full text-lg font-semibold',
-								isToday && 'text-black kleri-bg'
+								isToday && 'text-kleri-ink kleri-bg'
 							)}
 						>
 							{ctx.formatters.dayOfMonth(group.day)}
@@ -114,7 +114,7 @@
 						<span
 							class="flex flex-col font-spacemono text-[10px] leading-tight tracking-wider text-muted-foreground uppercase"
 						>
-							<span class={isToday ? 'text-kleri-1 dark:text-kleri-2' : undefined}>
+							<span class={isToday ? 'text-brand' : undefined}>
 								{ctx.formatters.weekdayShort(group.day)}
 							</span>
 							<span>{ctx.formatters.monthShort(group.day)}</span>
@@ -182,7 +182,7 @@
 										href={safeUrl(o.event.conference.url)}
 										target="_blank"
 										rel="noopener noreferrer"
-										class="flex shrink-0 items-center gap-1.5 rounded-kleri border-2 border-black px-3 py-1 text-xs font-medium text-black kleri-bg"
+										class="flex shrink-0 items-center gap-1.5 rounded-kleri border border-kleri-ink px-3 py-1 text-xs font-medium text-kleri-ink kleri-bg"
 									>
 										<Video class="size-3.5" />
 										{ctx.labels.join(

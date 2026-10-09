@@ -138,7 +138,7 @@
 	}
 
 	const inputClass =
-		'w-16 rounded-lg border-2 border-border bg-transparent px-2 py-1 text-center font-spacemono text-sm outline-none focus:border-kleri-2 focus:ring-0';
+		'w-16 rounded-lg border border-border bg-transparent px-2 py-1 text-center font-spacemono text-sm outline-none focus:border-kleri-2 focus:ring-0';
 </script>
 
 <div class="flex flex-col gap-2">
@@ -153,7 +153,7 @@
 
 	{#if showCustom && value}
 		<div
-			class="flex flex-col gap-3 rounded-kleri border-2 border-dashed border-(--kc-line-strong) p-3 text-sm"
+			class="flex flex-col gap-3 rounded-kleri border border-dashed border-(--kc-line-strong) p-3 text-sm"
 		>
 			<div class="flex flex-wrap items-center gap-2">
 				<span class="text-muted-foreground">{ctx.labels.every}</span>
@@ -258,7 +258,7 @@
 				{/if}
 			</div>
 
-			<p class={cn('font-spacemono text-xs text-kleri-1 dark:text-kleri-2')}>
+			<p class={cn('font-spacemono text-xs text-brand')}>
 				{describeRecurrence(value, { locale, start })}
 			</p>
 		</div>

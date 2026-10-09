@@ -41,7 +41,7 @@
 			variant: ctx?.variant ?? variant,
 			size: ctx?.size ?? size
 		}),
-		isActive && 'border-black text-black',
+		isActive && 'border-kleri-ink text-kleri-ink',
 		isActive && (ctx?.activeClass ?? activeClass),
 		className
 	)}

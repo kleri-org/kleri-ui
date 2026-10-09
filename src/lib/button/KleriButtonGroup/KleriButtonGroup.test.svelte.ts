@@ -279,7 +279,8 @@ describe('KleriButtonGroup', () => {
 			const buttons = screen.getAllByRole('button');
 			buttons.forEach((btn) => {
 				expect(btn).toHaveClass('bg-none');
-				expect(btn).toHaveClass('text-white');
+				expect(btn).toHaveClass('border-border');
+				expect(btn).toHaveClass('text-foreground');
 			});
 		});
 
@@ -317,7 +318,8 @@ describe('KleriButtonGroup', () => {
 			const buttons = screen.getAllByRole('button');
 			buttons.forEach((btn) => {
 				expect(btn).toHaveClass('bg-none');
-				expect(btn).toHaveClass('text-white');
+				expect(btn).toHaveClass('border-border');
+				expect(btn).toHaveClass('text-foreground');
 			});
 		});
 	});

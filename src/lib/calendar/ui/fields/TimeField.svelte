@@ -3,7 +3,7 @@
 	import { Check, Clock } from '@lucide/svelte';
 	import { cn } from '$lib/utils.js';
 	import KleriFieldLabel from '$lib/input/KleriFieldLabel.svelte';
-	import { FIELD_ROOT, fieldShell } from '$lib/input/field.js';
+	import { FIELD_ROOT, describedBy, fieldErrorId, fieldShell } from '$lib/input/field.js';
 	import { getCalendarContext } from '../../context.js';
 	import { atMinutes } from '../../core/date.js';
 
@@ -34,6 +34,7 @@
 	}: Props = $props();
 	const ctx = getCalendarContext();
 	const uid = $props.id();
+	const errorId = fieldErrorId(uid);
 
 	let options = $derived.by(() => {
 		const minutes = new Set<number>();
@@ -59,7 +60,7 @@
 </script>
 
 <div class={cn(FIELD_ROOT, className)}>
-	<KleriFieldLabel {label} {errors} for={uid} />
+	<KleriFieldLabel {label} {errors} {errorId} for={uid} />
 	<Select.Root
 		type="single"
 		items={options}
@@ -73,6 +74,7 @@
 			id={uid}
 			aria-label={label ? `${label}: ${selected?.time ?? ''}` : selected?.time}
 			aria-invalid={hasErrors || undefined}
+			aria-describedby={describedBy(hasErrors && errorId)}
 			class={cn(fieldShell({ hasErrors }), 'text-left', hasErrors && 'kleri-shake')}
 		>
 			<Clock class="size-5 shrink-0" strokeWidth={2.2} aria-hidden="true" />
@@ -81,14 +83,14 @@
 		<Select.Portal>
 			<Select.Content
 				sideOffset={6}
-				class="kleri-dropdown z-[60] w-[var(--bits-select-anchor-width)] min-w-44 overflow-hidden rounded-kleri border-2 border-border bg-popover p-1 text-popover-foreground shadow-xl outline-hidden"
+				class="kleri-dropdown z-[60] w-[var(--bits-select-anchor-width)] min-w-44 overflow-hidden rounded-kleri border border-border/50 kleri-glass p-1 text-popover-foreground shadow-xl outline-hidden"
 			>
 				<Select.Viewport class="kleri-scrollbar max-h-60 overflow-y-auto p-1">
 					{#each options as option (option.value)}
 						<Select.Item
 							value={option.value}
 							label={option.label}
-							class="flex w-full cursor-pointer items-center justify-between gap-2 rounded-lg px-3 py-1.5 font-spacemono text-xs outline-hidden data-highlighted:bg-kleri-2/20 data-selected:text-kleri-1 dark:data-selected:text-kleri-2"
+							class="flex w-full cursor-pointer items-center justify-between gap-2 rounded-lg px-3 py-1.5 font-spacemono text-xs outline-hidden data-highlighted:bg-kleri-2/20 data-selected:text-brand"
 						>
 							{#snippet children({ selected: isSelected })}
 								<span>{option.label}</span>

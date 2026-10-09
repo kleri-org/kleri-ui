@@ -53,7 +53,7 @@
 	}
 </script>
 
-<div class="flex flex-col gap-2 rounded-kleri border-2 border-(--kc-line-strong) p-3">
+<div class="flex flex-col gap-2 rounded-kleri border border-(--kc-line-strong) p-3">
 	<div class="flex items-center gap-2 text-sm">
 		{#if loading}
 			<Loader2 class="size-4 animate-spin text-muted-foreground" />
@@ -72,7 +72,7 @@
 			<p
 				class="mb-1.5 flex items-center gap-1.5 font-spacemono text-[11px] tracking-wider text-muted-foreground uppercase"
 			>
-				<Sparkles class="size-3 text-kleri-1 dark:text-kleri-2" />{ctx.labels.suggestedTimes}
+				<Sparkles class="size-3 text-brand" />{ctx.labels.suggestedTimes}
 			</p>
 			{#if slots.length}
 				<ul class="flex flex-wrap gap-1.5">
@@ -84,9 +84,9 @@
 								type="button"
 								aria-pressed={current}
 								class={cn(
-									'flex items-center gap-1.5 rounded-full border-2 px-2.5 py-1 text-xs transition-colors focus-visible:ring-2 focus-visible:ring-kleri-2 focus-visible:outline-none',
+									'flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs transition-colors focus-visible:ring-2 focus-visible:ring-kleri-2 focus-visible:outline-none',
 									current
-										? 'border-black text-black kleri-bg'
+										? 'border-kleri-ink text-kleri-ink kleri-bg'
 										: 'border-border hover:border-kleri-2 hover:bg-kleri-2/10'
 								)}
 								onclick={() => onPick(slot)}

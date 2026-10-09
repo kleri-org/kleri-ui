@@ -11,23 +11,20 @@
 	background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-	background: rgba(255, 255, 255, 0.12);
+	background: color-mix(in oklab, var(--color-foreground) 12%, transparent);
 	border-radius: 2px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-	background: rgba(255, 255, 255, 0.25);
+	background: color-mix(in oklab, var(--color-foreground) 25%, transparent);
 }
 .custom-scrollbar {
 	scrollbar-width: thin;
-	scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+	scrollbar-color: color-mix(in oklab, var(--color-foreground) 12%, transparent) transparent;
 }
 
+/* The docs site uses the library's own theme tokens, so its previews match
+   what consumers ship. */
 @layer base {
-	html.dark {
-		--background: #0b1218;
-		--foreground: #e8f0f0;
-	}
-
 	body {
 		background-color: var(--background);
 		color: var(--foreground);

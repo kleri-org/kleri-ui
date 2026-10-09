@@ -19,7 +19,7 @@ The info and warning banners are siblings of the heading, not children of it:
 `<h1>` only accepts phrasing content, so nesting the `<div>`/`<hr>` inside it
 produced invalid markup that browsers silently reparented.
 -->
-<h1 class={cn('mb-1 font-Poppins text-2xl font-bold text-accent', className)}>
+<h1 class={cn('mb-1 font-Poppins text-2xl font-bold text-brand', className)}>
 	{@render children()}
 </h1>
 
@@ -33,7 +33,7 @@ produced invalid markup that browsers silently reparented.
 
 {#if warning}
 	<div
-		class="mt-1 flex flex-row items-center gap-x-2 py-1 font-spacemono text-sm text-yellow-600 dark:text-yellow-500"
+		class="mt-1 flex flex-row items-center gap-x-2 py-1 font-spacemono text-sm text-amber-700 dark:text-yellow-500"
 	>
 		<TriangleAlert size={14} />
 		{warning}

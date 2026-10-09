@@ -325,7 +325,7 @@
 									aria-hidden="true"
 									class={cn(
 										'flex h-6 min-w-6 items-center justify-center rounded-full px-1.5 text-xs font-medium transition-colors',
-										isToday ? 'font-semibold text-black kleri-bg' : 'hover:bg-muted/60',
+										isToday ? 'font-semibold text-kleri-ink kleri-bg' : 'hover:bg-muted/60',
 										!isToday && outside && 'text-muted-foreground'
 									)}
 									onclick={() => ctx.actions.navigate(day, 'day')}

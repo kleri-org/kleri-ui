@@ -36,7 +36,7 @@
 	} from '../core/ics.js';
 	import { safeUrl } from '../core/safe.js';
 	import { selfResponse, occurrenceTitle } from '../views/utils.js';
-	import { initials, avatarColor } from './people.js';
+	import { initials, avatarColor, avatarInk } from './people.js';
 
 	interface Props {
 		occurrence: DisplayOccurrence;
@@ -163,9 +163,13 @@
 	}
 
 	function responseIcon(r: CalendarAttendee['response']) {
-		if (r === 'accepted') return { icon: Check, className: 'bg-emerald-500 text-white' };
-		if (r === 'declined') return { icon: X, className: 'bg-destructive text-white' };
-		if (r === 'tentative') return { icon: CircleHelp, className: 'bg-amber-400 text-black' };
+		if (r === 'accepted')
+			return {
+				icon: Check,
+				className: 'bg-emerald-700 text-white dark:bg-emerald-400 dark:text-kleri-ink'
+			};
+		if (r === 'declined') return { icon: X, className: 'bg-destructive text-background' };
+		if (r === 'tentative') return { icon: CircleHelp, className: 'bg-amber-400 text-kleri-ink' };
 		return null;
 	}
 
@@ -219,7 +223,7 @@
 				<DropdownMenu.Content
 					align="end"
 					sideOffset={4}
-					class="kleri-dropdown z-[60] min-w-48 rounded-kleri border-2 border-border bg-popover p-1 text-sm shadow-xl outline-hidden"
+					class="kleri-dropdown z-[60] min-w-48 rounded-kleri border border-border/50 kleri-glass p-1 text-sm shadow-xl outline-hidden"
 				>
 					<DropdownMenu.Item
 						class="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 outline-hidden data-highlighted:bg-kleri-2/20"
@@ -296,7 +300,7 @@
 				{/if}
 				{#if startsSoon}
 					<span
-						class="mt-1.5 inline-flex items-center gap-1 rounded-full bg-kleri-2/15 px-2 py-0.5 font-spacemono text-[11px] text-kleri-1 dark:text-kleri-2"
+						class="mt-1.5 inline-flex items-center gap-1 rounded-full bg-kleri-2/15 px-2 py-0.5 font-spacemono text-[11px] text-brand"
 					>
 						<span class="size-1.5 animate-pulse rounded-full bg-kleri-2"></span>{startsSoon}
 					</span>
@@ -312,7 +316,7 @@
 						href={conferenceUrl}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="flex w-fit items-center gap-2 rounded-kleri border-2 border-black px-4 py-1.5 text-sm font-medium text-black shadow-md shadow-kleri-1/25 transition-transform kleri-bg hover:scale-[1.02] active:scale-[0.98]"
+						class="flex w-fit items-center gap-2 rounded-kleri border border-kleri-ink px-4 py-1.5 text-sm font-medium text-kleri-ink shadow-md shadow-kleri-1/25 transition-transform kleri-bg hover:scale-[1.02] active:scale-[0.98]"
 					>
 						<Video class="size-4" />
 						{ctx.labels.join(conferenceLabel)}
@@ -328,9 +332,7 @@
 							title={copied ? ctx.labels.linkCopied : ctx.labels.copyLink}
 							onclick={copyLink}
 						>
-							{#if copied}<Check class="size-3.5 text-kleri-1 dark:text-kleri-2" />{:else}<Copy
-									class="size-3.5"
-								/>{/if}
+							{#if copied}<Check class="size-3.5 text-brand" />{:else}<Copy class="size-3.5" />{/if}
 						</button>
 					</div>
 				</div>
@@ -345,8 +347,7 @@
 						href={event.location}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="truncate text-sm text-kleri-1 hover:underline dark:text-kleri-2"
-						>{event.location}</a
+						class="truncate text-sm text-brand hover:underline">{event.location}</a
 					>
 				{:else}
 					<a
@@ -355,7 +356,7 @@
 						)}"
 						target="_blank"
 						rel="noopener noreferrer"
-						class="text-sm break-words hover:text-kleri-1 hover:underline dark:hover:text-kleri-2"
+						class="text-sm break-words hover:text-brand hover:underline"
 					>
 						{event.location}
 					</a>
@@ -382,8 +383,9 @@
 							<li class="flex items-center gap-2.5">
 								<span class="relative shrink-0">
 									<span
-										class="flex size-7 items-center justify-center rounded-full text-[11px] font-semibold text-white"
+										class="flex size-7 items-center justify-center rounded-full text-[11px] font-semibold"
 										style:background-color={avatarColor(guest.email)}
+										style:color={avatarInk(guest.email)}
 									>
 										{initials(guest)}
 									</span>
@@ -413,7 +415,7 @@
 					{#if guests.length > 6 && !showAllGuests}
 						<button
 							type="button"
-							class="mt-1.5 text-xs text-kleri-1 hover:underline dark:text-kleri-2"
+							class="mt-1.5 text-xs text-brand hover:underline"
 							onclick={() => (showAllGuests = true)}
 						>
 							{ctx.labels.more(guests.length - 6)}
@@ -433,7 +435,7 @@
 								href={part.href}
 								target="_blank"
 								rel="noopener noreferrer"
-								class="text-kleri-1 hover:underline dark:text-kleri-2">{part.text}</a
+								class="text-brand hover:underline">{part.text}</a
 							>
 						{:else}{part.text}{/if}
 					{/each}
@@ -470,9 +472,9 @@
 					type="button"
 					aria-pressed={response === value}
 					class={cn(
-						'rounded-kleri border-2 px-3 py-1 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-kleri-2 focus-visible:outline-none',
+						'rounded-kleri border px-3 py-1 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-kleri-2 focus-visible:outline-none',
 						response === value
-							? 'border-black font-medium text-black kleri-bg'
+							? 'border-kleri-ink font-medium text-kleri-ink kleri-bg'
 							: 'border-border hover:border-kleri-2'
 					)}
 					onclick={() => onRespond(value as AttendeeResponse)}

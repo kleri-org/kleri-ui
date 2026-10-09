@@ -40,7 +40,7 @@
 			align="start"
 			sideOffset={4}
 			collisionPadding={12}
-			class="kleri-dropdown z-50 w-64 rounded-kleri border-2 border-border bg-popover p-2 text-popover-foreground shadow-xl outline-hidden"
+			class="kleri-dropdown z-50 w-64 rounded-kleri border border-border/50 kleri-glass p-2 text-popover-foreground shadow-xl outline-hidden"
 		>
 			<div class="mb-2 flex items-center justify-between gap-2 px-1">
 				<div class="flex items-baseline gap-2">
@@ -49,7 +49,7 @@
 					</span>
 					<button
 						type="button"
-						class="text-xl font-semibold hover:text-kleri-1 dark:hover:text-kleri-2"
+						class="text-xl font-semibold hover:text-brand"
 						onclick={() => {
 							open = false;
 							ctx.actions.navigate(day, 'day');

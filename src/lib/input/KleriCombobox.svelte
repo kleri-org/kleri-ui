@@ -8,7 +8,10 @@
 		FIELD_CONTROL,
 		FIELD_ICON_SIZE,
 		FIELD_ICON_STROKE,
+		FIELD_OPTION,
 		FIELD_ROOT,
+		describedBy,
+		fieldErrorId,
 		fieldShell,
 		type FieldIcon
 	} from './field.js';
@@ -35,7 +38,7 @@
 		disabled?: boolean;
 		/** Allow clearing the selection by picking the selected item again. */
 		allowDeselect?: boolean;
-		/** Validation errors. Shown next to the label and shake the field. */
+		/** Validation errors. Shown under the label, announced, and shake the field. */
 		errors?: string[];
 		/** Message shown when no item matches the search. */
 		emptyText?: string;
@@ -80,6 +83,7 @@
 
 	const uid = $props.id();
 	let controlId = $derived(id ?? uid);
+	let errorId = $derived(fieldErrorId(controlId));
 
 	let searchValue = $state('');
 	/** The whole field, so the options list lines up with its full width. */
@@ -113,7 +117,7 @@
 </script>
 
 <div class={cn(FIELD_ROOT, className)}>
-	<KleriFieldLabel {label} {errors} for={controlId} />
+	<KleriFieldLabel {label} {errors} {errorId} for={controlId} />
 
 	<Combobox.Root
 		type="single"
@@ -129,6 +133,7 @@
 	>
 		<div
 			bind:this={shellEl}
+			data-slot="field-shell"
 			class={fieldShell({ withBorder, hasErrors, disabled })}
 			class:kleri-shake={hasErrors || shake}
 		>
@@ -143,13 +148,14 @@
 				{placeholder}
 				aria-label={ariaLabel ?? label ?? placeholder}
 				aria-invalid={hasErrors || undefined}
+				aria-describedby={describedBy(hasErrors && errorId)}
 				oninput={handleInput}
 				onclick={handleInputClick}
 				class={FIELD_CONTROL}
 			/>
 			<Combobox.Trigger
 				aria-label={`Open ${label ?? 'options'}`}
-				class="flex size-6 shrink-0 cursor-pointer items-center justify-center text-foreground transition-colors hover:text-kleri-2 focus-visible:text-kleri-2 focus-visible:outline-hidden disabled:cursor-not-allowed"
+				class="flex size-6 shrink-0 cursor-pointer items-center justify-center text-foreground transition-colors hover:text-brand focus-visible:text-brand disabled:cursor-not-allowed"
 			>
 				<ChevronsUpDown size={19} strokeWidth={FIELD_ICON_STROKE} aria-hidden="true" />
 			</Combobox.Trigger>
@@ -159,7 +165,7 @@
 			<Combobox.Content
 				customAnchor={shellEl}
 				sideOffset={8}
-				class="kleri-dropdown z-50 w-[var(--bits-combobox-anchor-width)] min-w-[var(--bits-combobox-anchor-width)] overflow-hidden rounded-kleri border-2 border-border bg-popover p-1 text-popover-foreground shadow-xl outline-hidden"
+				class="kleri-dropdown z-50 w-[var(--bits-combobox-anchor-width)] min-w-[var(--bits-combobox-anchor-width)] overflow-hidden rounded-kleri border border-border/50 kleri-glass p-1 text-popover-foreground shadow-xl outline-hidden"
 			>
 				<Combobox.Viewport class="kleri-scrollbar max-h-64 overflow-y-auto p-1">
 					{#each filteredItems as item (item.value)}
@@ -167,7 +173,7 @@
 							value={item.value}
 							label={item.label}
 							disabled={item.disabled}
-							class="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm outline-hidden transition-colors data-disabled:cursor-not-allowed data-disabled:opacity-50 data-highlighted:bg-kleri-2/20 data-highlighted:text-foreground"
+							class={FIELD_OPTION}
 						>
 							{#snippet children({ selected })}
 								<div class="min-w-0 flex-1">
@@ -182,7 +188,7 @@
 									<Check
 										size={18}
 										strokeWidth={2.75}
-										class="shrink-0 text-kleri-2"
+										class="shrink-0 text-brand"
 										aria-hidden="true"
 									/>
 								{/if}

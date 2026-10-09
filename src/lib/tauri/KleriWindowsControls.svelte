@@ -42,7 +42,9 @@
 		<button
 			class="inline-flex {btnHeight} {floating
 				? 'w-11 rounded-kleri'
-				: 'w-12.5'} items-center justify-center text-foreground select-none hover:bg-muted-foreground"
+				: 'w-12.5'} items-center justify-center text-foreground select-none hover:bg-muted"
+			type="button"
+			aria-label="Minimize"
 			onclick={() => appWindow?.minimize()}
 		>
 			<Minus size={20} strokeWidth={2} aria-hidden="true" />
@@ -52,7 +54,9 @@
 			<button
 				class="inline-flex {btnHeight} {floating
 					? 'w-11 rounded-kleri'
-					: 'w-12.5'} items-center justify-center text-foreground select-none hover:bg-muted-foreground"
+					: 'w-12.5'} items-center justify-center text-foreground select-none hover:bg-muted"
+				type="button"
+				aria-label="Maximize"
 				onclick={() => appWindow?.toggleMaximize()}
 			>
 				<Square size={15} strokeWidth={2.5} aria-hidden="true" />
@@ -62,7 +66,9 @@
 		<button
 			class="inline-flex {btnHeight} {floating
 				? 'w-11 rounded-kleri'
-				: 'w-12.5'} items-center justify-center text-foreground select-none hover:bg-red-500 hover:text-black"
+				: 'w-12.5'} items-center justify-center text-foreground select-none hover:bg-[#c42b1c] hover:text-white"
+			type="button"
+			aria-label="Close"
 			onclick={() => appWindow?.close()}
 		>
 			<X size={20} strokeWidth={2} aria-hidden="true" />

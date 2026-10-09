@@ -41,10 +41,11 @@
 	});
 </script>
 
+<!-- Pure decoration with no static form worth keeping: hidden under reduced motion. -->
 {#snippet meteor(style: MeteorStyle)}
 	<span
 		data-slot="meteor"
-		class="pointer-events-none absolute top-1/2 left-1/2 size-[2.4px] rotate-180 animate-meteor rounded-full bg-slate-500 shadow-[0_0_0_1px_#ffffff10]"
+		class="pointer-events-none absolute top-1/2 left-1/2 size-[2.4px] rotate-180 animate-meteor rounded-full bg-slate-500 shadow-[0_0_0_1px_#ffffff10] motion-reduce:hidden"
 		style="top: {style.top}px; left: {style.left}; animation-delay: {style.animationDelay}; animation-duration: {style.animationDuration};"
 	>
 		<!-- Meteor Tail -->

@@ -11,6 +11,8 @@
 		FIELD_ICON_SIZE,
 		FIELD_ICON_STROKE,
 		FIELD_ROOT,
+		describedBy,
+		fieldErrorId,
 		fieldShell,
 		type FieldIcon
 	} from './field.js';
@@ -20,7 +22,7 @@
 		value?: string | number | null;
 		/** Text shown above the field. */
 		label?: string;
-		/** Validation errors. Shown next to the label and shake the field. */
+		/** Validation errors. Shown under the label, announced, and shake the field. */
 		errors?: string[];
 		/** Leading icon component, e.g. a `@lucide/svelte` icon. */
 		InputIcon?: FieldIcon;
@@ -55,12 +57,14 @@
 		onValueChange,
 		oninput,
 		id,
+		'aria-describedby': ariaDescribedBy,
 		ref = $bindable<HTMLInputElement | null>(null),
 		...restProps
 	}: Props = $props();
 
 	const uid = $props.id();
 	let controlId = $derived(id ?? uid);
+	let errorId = $derived(fieldErrorId(controlId));
 
 	let isPasswordVisible = $state(false);
 	let currentInputType = $derived(
@@ -76,10 +80,11 @@
 </script>
 
 <div class={cn(FIELD_ROOT, className)}>
-	<KleriFieldLabel {label} {errors} for={controlId} />
+	<KleriFieldLabel {label} {errors} {errorId} for={controlId} />
 
 	<!-- Main Input -->
 	<div
+		data-slot="field-shell"
 		class={fieldShell({ withBorder, hasErrors, disabled })}
 		class:kleri-shake={hasErrors || shake}
 	>
@@ -99,6 +104,7 @@
 			{disabled}
 			{placeholder}
 			aria-invalid={hasErrors || undefined}
+			aria-describedby={describedBy(hasErrors && errorId, ariaDescribedBy)}
 			class={FIELD_CONTROL}
 			bind:value
 			{...restProps}
@@ -111,7 +117,7 @@
 				{disabled}
 				aria-label={isPasswordVisible ? 'Hide password' : 'Show password'}
 				aria-pressed={isPasswordVisible}
-				class="flex shrink-0 cursor-pointer items-center justify-center text-foreground transition-colors hover:text-kleri-2 focus-visible:text-kleri-2 focus-visible:outline-hidden disabled:cursor-not-allowed"
+				class="flex shrink-0 cursor-pointer items-center justify-center text-foreground transition-colors hover:text-brand focus-visible:text-brand disabled:cursor-not-allowed"
 				onclick={(e) => {
 					e.preventDefault();
 					isPasswordVisible = !isPasswordVisible;

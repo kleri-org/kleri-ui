@@ -131,7 +131,7 @@
 			{#each categories as category, i (category.name)}
 				{#if category.comingSoon}
 					<div
-						class="card-enter group relative rounded-xl border-2 border-border/50 bg-card/50 p-6 opacity-60"
+						class="card-enter group relative rounded-xl border border-border/50 bg-card/50 p-6 opacity-60"
 						class:visible={cardsVisible}
 						style="transition-delay: {i * 80}ms;"
 					>
@@ -151,24 +151,20 @@
 				{:else}
 					<a
 						href={category.route}
-						class="card-enter group relative rounded-xl border-2 border-border/50 bg-card/50 p-6 transition-all hover:border-kleri-2/50 hover:bg-card"
+						class="card-enter group relative rounded-xl border border-border/50 bg-card/50 p-6 transition-all hover:border-kleri-2/50 hover:bg-card"
 						class:visible={cardsVisible}
 						style="transition-delay: {i * 80}ms;"
 					>
 						<div class="mb-3 flex items-center justify-between">
 							<div class="flex items-center gap-2">
 								<category.icon
-									class="h-5 w-5 text-muted-foreground transition-colors group-hover:text-kleri-2"
+									class="h-5 w-5 text-muted-foreground transition-colors group-hover:text-brand"
 								/>
-								<h3
-									class="font-semibold text-foreground transition-colors group-hover:text-kleri-2"
-								>
+								<h3 class="font-semibold text-foreground transition-colors group-hover:text-brand">
 									{category.name}
 								</h3>
 							</div>
-							<span
-								class="rounded-full bg-kleri-3/20 px-2 py-1 font-spacemono text-xs text-kleri-2"
-							>
+							<span class="rounded-full bg-kleri-3/20 px-2 py-1 font-spacemono text-xs text-brand">
 								{category.count} component{category.count !== 1 ? 's' : ''}
 							</span>
 						</div>

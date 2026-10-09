@@ -12,6 +12,7 @@
 	} from '@lucide/svelte';
 	import { cn } from '$lib/utils.js';
 	import { getCalendarContext } from '../context.js';
+	import { readableInk } from '../core/color.js';
 	import { KLERI_CALENDAR_PALETTE, type CalendarSource } from '../store/calendar-store.svelte.js';
 	import type { CalendarInfo } from '../types.js';
 	import ProviderIcon from './ProviderIcon.svelte';
@@ -59,7 +60,11 @@
 				style:background-color={visible ? calendar.color : 'transparent'}
 				aria-hidden="true"
 			>
-				{#if visible}<Check class="size-3 text-white" strokeWidth={3.5} />{/if}
+				{#if visible}<Check
+						class="size-3"
+						color={readableInk(calendar.color)}
+						strokeWidth={3.5}
+					/>{/if}
 			</span>
 			<span class="min-w-0 flex-1 truncate" class:text-muted-foreground={!visible}
 				>{calendar.name}</span
@@ -70,7 +75,7 @@
 		</button>
 		<!-- Overlaid on hover/focus so names keep their full width at rest. -->
 		<div
-			class="pointer-events-none absolute inset-y-0 right-0 flex items-center rounded-r-lg bg-linear-to-l from-background from-60% pr-1 pl-6 opacity-0 transition-opacity group-focus-within/cal:pointer-events-auto group-focus-within/cal:opacity-100 group-hover/cal:pointer-events-auto group-hover/cal:opacity-100"
+			class="pointer-events-none absolute inset-y-0 right-0 flex items-center rounded-r-lg bg-linear-to-l from-background from-60% pr-1 pl-6 opacity-0 transition-opacity group-focus-within/cal:pointer-events-auto group-focus-within/cal:opacity-100 group-hover/cal:pointer-events-auto group-hover/cal:opacity-100 pointer-coarse:pointer-events-auto pointer-coarse:opacity-100"
 		>
 			<button
 				type="button"
@@ -94,7 +99,7 @@
 						side="right"
 						align="start"
 						sideOffset={6}
-						class="kleri-dropdown z-50 grid w-44 grid-cols-5 gap-2 rounded-kleri border-2 border-border bg-popover p-3 shadow-xl outline-hidden"
+						class="kleri-dropdown z-50 grid w-44 grid-cols-5 gap-2 rounded-kleri border border-border/50 kleri-glass p-3 shadow-xl outline-hidden"
 					>
 						{#each KLERI_CALENDAR_PALETTE as color (color)}
 							<Popover.Close
@@ -107,7 +112,8 @@
 								onclick={() => ctx.store.setColor(calendar.id, color)}
 							>
 								{#if calendar.color === color}<Check
-										class="size-3.5 text-white"
+										class="size-3.5"
+										color={readableInk(color)}
 										strokeWidth={3}
 									/>{/if}
 							</Popover.Close>
@@ -143,7 +149,7 @@
 				</div>
 				{#if source.status === 'loading'}
 					<RefreshCw
-						class="size-3.5 shrink-0 animate-spin text-kleri-1 dark:text-kleri-2"
+						class="size-3.5 shrink-0 animate-spin text-brand"
 						aria-label={ctx.labels.syncing}
 					/>
 				{:else if source.status === 'error'}

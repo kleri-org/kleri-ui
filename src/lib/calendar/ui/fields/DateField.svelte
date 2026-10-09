@@ -3,7 +3,7 @@
 	import { CalendarDays } from '@lucide/svelte';
 	import { cn } from '$lib/utils.js';
 	import KleriFieldLabel from '$lib/input/KleriFieldLabel.svelte';
-	import { FIELD_ROOT, fieldShell } from '$lib/input/field.js';
+	import { FIELD_ROOT, describedBy, fieldErrorId, fieldShell } from '$lib/input/field.js';
 	import { getCalendarContext } from '../../context.js';
 	import MiniCalendar from '../MiniCalendar.svelte';
 
@@ -27,12 +27,13 @@
 	}: Props = $props();
 	const ctx = getCalendarContext();
 	const uid = $props.id();
+	const errorId = fieldErrorId(uid);
 	let open = $state(false);
 	let hasErrors = $derived((errors?.length ?? 0) > 0);
 </script>
 
 <div class={cn(FIELD_ROOT, className)}>
-	<KleriFieldLabel {label} {errors} for={uid} />
+	<KleriFieldLabel {label} {errors} {errorId} for={uid} />
 	<Popover.Root bind:open>
 		<Popover.Trigger
 			id={uid}
@@ -40,6 +41,7 @@
 				? `${label}: ${ctx.formatters.fullDate(value)}`
 				: ctx.formatters.fullDate(value)}
 			aria-invalid={hasErrors || undefined}
+			aria-describedby={describedBy(hasErrors && errorId)}
 			class={cn(fieldShell({ hasErrors }), 'text-left')}
 		>
 			<CalendarDays class="size-5 shrink-0" strokeWidth={2.2} aria-hidden="true" />
@@ -54,7 +56,7 @@
 				side="bottom"
 				align="start"
 				sideOffset={6}
-				class="kleri-dropdown z-[60] w-64 rounded-kleri border-2 border-border bg-popover p-3 text-popover-foreground shadow-xl outline-hidden"
+				class="kleri-dropdown z-[60] w-64 rounded-kleri border border-border/50 kleri-glass p-3 text-popover-foreground shadow-xl outline-hidden"
 			>
 				<MiniCalendar
 					{value}

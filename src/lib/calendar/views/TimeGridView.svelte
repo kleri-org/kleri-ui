@@ -508,7 +508,7 @@
 					<span
 						class={cn(
 							'font-spacemono text-[11px] tracking-wider uppercase',
-							isToday ? 'text-kleri-1 dark:text-kleri-2' : 'text-muted-foreground'
+							isToday ? 'text-brand' : 'text-muted-foreground'
 						)}
 					>
 						{ctx.formatters.weekdayShort(day)}
@@ -516,7 +516,7 @@
 					<span
 						class={cn(
 							'flex size-8 items-center justify-center rounded-full text-lg leading-none font-semibold',
-							isToday && 'text-black shadow-sm shadow-kleri-1/40 kleri-bg',
+							isToday && 'text-kleri-ink shadow-sm shadow-kleri-1/40 kleri-bg',
 							!isToday && isPast && 'text-muted-foreground'
 						)}
 					>

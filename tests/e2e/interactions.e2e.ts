@@ -88,8 +88,9 @@ test.describe('KleriSwitch', () => {
 	test('toggles on click', async ({ page }) => {
 		const switchSection = page.locator('#kleri-switch');
 
-		// The preview KleriSwitch has aria-label="Toggle switch" (default prop)
-		const switchEl = switchSection.getByRole('switch', { name: 'Toggle switch' });
+		const switchEl = switchSection.getByRole('switch', {
+			name: 'Email me the cause list each morning'
+		});
 		await expect(switchEl).toBeVisible();
 
 		// Initial state: not checked
@@ -112,31 +113,32 @@ test.describe('KleriInput', () => {
 	});
 
 	test('accepts typed input', async ({ page }) => {
-		const input = page.locator('#kleri-input').getByLabel('Email');
+		const input = page.locator('#kleri-input').getByLabel('Client name');
 		await expect(input).toBeVisible();
 
-		await input.fill('test@example.com');
-		await expect(input).toHaveValue('test@example.com');
+		await input.fill('Meera Iyer');
+		await expect(input).toHaveValue('Meera Iyer');
 	});
 
 	test('supports password type toggle', async ({ page }) => {
-		// Change type to password via PropControls string input
-		const typeInput = page.locator('#kleri-input').getByLabel('Type');
-		await typeInput.fill('password');
+		// Pick "password" in the Type toggle group of PropControls
+		await page
+			.locator('#kleri-input')
+			.getByRole('group', { name: 'Type' })
+			.getByRole('radio', { name: 'password' })
+			.click();
 
-		const input = page.locator('#kleri-input').getByLabel('Email');
+		const input = page.locator('#kleri-input').getByLabel('Client name', { exact: true });
 		await expect(input).toHaveAttribute('type', 'password');
 	});
 
-	test('shake animation triggers on error', async ({ page }) => {
-		// Toggle "Shake" in PropControls boolean switch
-		const shakeToggle = page.locator('#kleri-input').getByRole('switch', { name: 'Shake' });
-		await shakeToggle.click();
+	test('shows and announces an error message', async ({ page }) => {
+		const section = page.locator('#kleri-input');
+		await section.getByLabel('Error message').fill('Enter at least two characters.');
 
-		// Error state is visible in the live preview
-		await expect(page.locator('#kleri-input').getByText('(Invalid input)')).toBeVisible({
-			timeout: 3000
-		});
+		const field = section.getByLabel('Client name', { exact: true });
+		await expect(field).toHaveAttribute('aria-invalid', 'true');
+		await expect(field).toHaveAccessibleDescription('Enter at least two characters.');
 	});
 });
 test.describe('KleriTextarea', () => {
@@ -146,22 +148,20 @@ test.describe('KleriTextarea', () => {
 	});
 
 	test('accepts typed input', async ({ page }) => {
-		const textarea = page.locator('#kleri-textarea').getByLabel('Bio');
+		const textarea = page.locator('#kleri-textarea').getByLabel('Matter notes', { exact: true });
 		await expect(textarea).toBeVisible();
 
-		await textarea.fill('Hello from kleri');
-		await expect(textarea).toHaveValue('Hello from kleri');
+		await textarea.fill('Adjourned to 14 November.');
+		await expect(textarea).toHaveValue('Adjourned to 14 November.');
 	});
 
-	test('shake animation triggers on error', async ({ page }) => {
-		// Toggle "Shake" in PropControls boolean switch
-		const shakeToggle = page.locator('#kleri-textarea').getByRole('switch', { name: 'Shake' });
-		await shakeToggle.click();
+	test('shows and announces an error message', async ({ page }) => {
+		const section = page.locator('#kleri-textarea');
+		await section.getByLabel('Error message').fill('Enter at least two characters.');
 
-		// Error state is visible in the live preview
-		await expect(page.locator('#kleri-textarea').getByText('(Invalid input)')).toBeVisible({
-			timeout: 3000
-		});
+		const field = section.getByLabel('Matter notes', { exact: true });
+		await expect(field).toHaveAttribute('aria-invalid', 'true');
+		await expect(field).toHaveAccessibleDescription('Enter at least two characters.');
 	});
 });
 

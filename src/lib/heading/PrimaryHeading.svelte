@@ -12,7 +12,7 @@
 
 <h1
 	class={cn(
-		'pointer-events-none kleri-text-animation cursor-default text-left font-Poppins text-5xl leading-normal font-bold whitespace-nowrap shadow-foreground drop-shadow-2xl select-none',
+		'pointer-events-none kleri-text-animation cursor-default text-left font-Poppins text-[length:clamp(2rem,1rem+5vw,3rem)] leading-normal font-bold text-balance wrap-break-word shadow-foreground drop-shadow-2xl select-none',
 		className
 	)}
 >

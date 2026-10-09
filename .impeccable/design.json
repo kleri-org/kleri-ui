@@ -1,0 +1,345 @@
+{
+	"schemaVersion": 2,
+	"generatedAt": "2026-10-08T00:00:00Z",
+	"title": "Design System: Kleri UI",
+	"extensions": {
+		"colorMeta": {
+			"deep-harbour": {
+				"role": "secondary",
+				"displayName": "Deep Harbour Teal",
+				"canonical": "rgb(25, 96, 114)",
+				"tonalRamp": [
+					"oklch(15% 0.04 215)",
+					"oklch(25% 0.06 215)",
+					"oklch(35% 0.07 215)",
+					"oklch(45% 0.07 215)",
+					"oklch(57% 0.07 215)",
+					"oklch(70% 0.06 215)",
+					"oklch(83% 0.04 215)",
+					"oklch(95% 0.015 215)"
+				]
+			},
+			"sea-glass": {
+				"role": "primary",
+				"displayName": "Sea Glass Mint",
+				"canonical": "rgb(132, 204, 184)",
+				"tonalRamp": [
+					"oklch(15% 0.03 175)",
+					"oklch(27% 0.05 175)",
+					"oklch(40% 0.07 175)",
+					"oklch(53% 0.08 175)",
+					"oklch(66% 0.08 175)",
+					"oklch(80% 0.08 175)",
+					"oklch(88% 0.05 175)",
+					"oklch(95% 0.02 175)"
+				]
+			},
+			"lagoon": {
+				"role": "primary",
+				"displayName": "Lagoon Teal",
+				"canonical": "rgb(35, 145, 144)",
+				"tonalRamp": [
+					"oklch(15% 0.04 192)",
+					"oklch(26% 0.06 192)",
+					"oklch(37% 0.08 192)",
+					"oklch(48% 0.09 192)",
+					"oklch(59% 0.10 192)",
+					"oklch(71% 0.09 192)",
+					"oklch(84% 0.06 192)",
+					"oklch(95% 0.02 192)"
+				]
+			},
+			"paper": {
+				"role": "neutral",
+				"displayName": "Paper",
+				"canonical": "oklch(1 0 0)",
+				"tonalRamp": [
+					"oklch(15% 0 0)",
+					"oklch(27% 0 0)",
+					"oklch(39% 0 0)",
+					"oklch(51% 0 0)",
+					"oklch(63% 0 0)",
+					"oklch(75% 0 0)",
+					"oklch(87% 0 0)",
+					"oklch(97% 0 0)"
+				]
+			},
+			"ink": {
+				"role": "neutral",
+				"displayName": "Ink",
+				"canonical": "oklch(0.145 0 0)"
+			},
+			"night": {
+				"role": "neutral",
+				"displayName": "Night",
+				"canonical": "oklch(0.145 0 0)"
+			},
+			"night-raised": {
+				"role": "neutral",
+				"displayName": "Night Raised",
+				"canonical": "oklch(0.205 0 0)"
+			},
+			"night-ink": {
+				"role": "neutral",
+				"displayName": "Night Ink",
+				"canonical": "oklch(0.985 0 0)"
+			},
+			"mist": {
+				"role": "neutral",
+				"displayName": "Mist",
+				"canonical": "oklch(0.9 0 0)"
+			},
+			"slate-text": {
+				"role": "neutral",
+				"displayName": "Slate Text",
+				"canonical": "oklch(0.356 0 0)"
+			},
+			"graphite-line": {
+				"role": "neutral",
+				"displayName": "Graphite Line",
+				"canonical": "oklch(0.422 0 0)"
+			},
+			"ember": {
+				"role": "error",
+				"displayName": "Ember",
+				"canonical": "oklch(0.577 0.245 27.325)"
+			},
+			"ember-night": {
+				"role": "error",
+				"displayName": "Ember (dark)",
+				"canonical": "oklch(0.704 0.191 22.216)"
+			}
+		},
+		"typographyMeta": {
+			"display": {
+				"displayName": "Display",
+				"purpose": "PrimaryHeading only; animated brand gradient, one per screen."
+			},
+			"headline": {
+				"displayName": "Headline",
+				"purpose": "SecondaryHeading section titles in Space Mono."
+			},
+			"title": {
+				"displayName": "Title",
+				"purpose": "SubHeading in the accent colour."
+			},
+			"body": {
+				"displayName": "Body",
+				"purpose": "The working size for fields, popovers and component text."
+			},
+			"label": {
+				"displayName": "Label",
+				"purpose": "Hints, errors, tooltips and section labels in Space Mono."
+			},
+			"micro": {
+				"displayName": "Micro",
+				"purpose": "Calendar-only dense metadata (10-11px)."
+			}
+		},
+		"shadows": [
+			{
+				"name": "float",
+				"value": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 1px var(--color-border)",
+				"purpose": "Popovers and dropdown panels."
+			},
+			{
+				"name": "modal",
+				"value": "0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4)",
+				"purpose": "Dialogs, over a 60% black overlay."
+			},
+			{
+				"name": "event-selected",
+				"value": "0 0 0 2px var(--color-background), 0 0 0 4px var(--event-color)",
+				"purpose": "Selected calendar event ring."
+			}
+		],
+		"motion": [
+			{
+				"name": "dropdown-in",
+				"value": "220ms cubic-bezier(0.16, 1, 0.3, 1)",
+				"purpose": "Floating panels growing out of their trigger."
+			},
+			{
+				"name": "dropdown-out",
+				"value": "140ms cubic-bezier(0.4, 0, 1, 1)",
+				"purpose": "Floating panel exit."
+			},
+			{
+				"name": "success-spring",
+				"value": "500ms cubic-bezier(0.34, 1.56, 0.64, 1)",
+				"purpose": "KleriButton success zoom-in."
+			},
+			{
+				"name": "shake",
+				"value": "500ms ease-in-out",
+				"purpose": "Decaying horizontal shake on field error (motion-safe only)."
+			},
+			{
+				"name": "gradient-border",
+				"value": "5s linear infinite",
+				"purpose": "Focus gradient border travel."
+			},
+			{
+				"name": "gradient-text",
+				"value": "15s linear infinite",
+				"purpose": "PrimaryHeading gradient travel (motion-safe only)."
+			},
+			{
+				"name": "press",
+				"value": "150ms ease-out, scale(0.97)",
+				"purpose": "Toggle item press."
+			}
+		],
+		"breakpoints": [
+			{
+				"name": "sm",
+				"value": "640px"
+			},
+			{
+				"name": "md",
+				"value": "768px"
+			},
+			{
+				"name": "lg",
+				"value": "1024px"
+			},
+			{
+				"name": "xl",
+				"value": "1280px"
+			}
+		]
+	},
+	"components": [
+		{
+			"name": "Primary Button",
+			"kind": "button",
+			"refersTo": "button-primary",
+			"description": "KleriButton: the full-width primary action; gradient fill on hover.",
+			"html": "<button class=\"ds-btn-primary\">Save changes</button>",
+			"css": ".ds-btn-primary { width: 100%; padding: 8px; border: 2px solid oklch(0.145 0 0); border-radius: 14px; background: rgb(35, 145, 144); color: oklch(0.145 0 0); font-family: Poppins, sans-serif; font-size: 1rem; font-weight: 400; cursor: pointer; } .ds-btn-primary:hover { background: linear-gradient(90deg, rgb(35, 145, 144), rgb(132, 204, 184)); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.5); } .ds-btn-primary:focus-visible { outline: 2px solid rgb(35, 145, 144); outline-offset: 2px; } .ds-btn-primary:disabled { background: rgb(35 145 144 / 0.5); border-color: transparent; cursor: not-allowed; }"
+		},
+		{
+			"name": "Utility Button (outline)",
+			"kind": "button",
+			"refersTo": "button-utility",
+			"description": "KleriUtilityButton outline variant: compact secondary action that fills with Sea Glass on hover.",
+			"html": "<button class=\"ds-btn-utility\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z\"/><path d=\"M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7\"/><path d=\"M7 3v4a1 1 0 0 0 1 1h7\"/></svg>Save</button>",
+			"css": ".ds-btn-utility { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border: 2px solid var(--color-border, oklch(0.422 0 0)); border-radius: 14px; background: transparent; color: var(--color-foreground, oklch(0.145 0 0)); font-family: Poppins, sans-serif; font-size: 0.875rem; cursor: pointer; } .ds-btn-utility:hover { background: rgb(132, 204, 184); color: oklch(0.145 0 0); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.5); } .ds-btn-utility:focus-visible { outline: 2px solid rgb(35, 145, 144); outline-offset: 2px; }"
+		},
+		{
+			"name": "Field",
+			"kind": "input",
+			"refersTo": "field",
+			"description": "fieldShell(): 2px outlined shell whose border becomes the travelling teal gradient on focus.",
+			"html": "<label class=\"ds-field\"><span class=\"ds-field-label\">Email <span class=\"ds-field-hint\">work address</span></span><span class=\"ds-field-shell\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"2\" y=\"4\" width=\"20\" height=\"16\" rx=\"2\"/><path d=\"m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7\"/></svg><input class=\"ds-field-control\" placeholder=\"you@example.com\"></span></label>",
+			"css": ".ds-field { display: block; width: 100%; font-family: Poppins, sans-serif; font-size: 0.875rem; font-weight: 500; } .ds-field-label { display: inline-flex; gap: 8px; align-items: baseline; text-indent: 8px; } .ds-field-hint { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--color-muted-foreground, oklch(0.356 0 0)); } .ds-field-shell { margin: 4px 0; display: flex; align-items: center; gap: 8px; padding: 8px 12px 8px 16px; border: 2px solid var(--color-border, oklch(0.422 0 0)); border-radius: 14px; transition: border-color 150ms; } .ds-field-shell:focus-within { border-color: transparent; background: linear-gradient(var(--color-background, #fff), var(--color-background, #fff)) padding-box, linear-gradient(90deg, rgb(25, 96, 114), rgb(35, 145, 144), rgb(25, 96, 114)) border-box; background-size: 200% 200%; } .ds-field-control { flex: 1; min-width: 0; border: 0; background: transparent; padding: 0 4px; font: inherit; color: inherit; outline: none; }"
+		},
+		{
+			"name": "Toggle Group",
+			"kind": "chip",
+			"refersTo": "toggle-item",
+			"description": "KleriToggleGroup: segmented choice; the active item fills with the brand gradient.",
+			"html": "<div class=\"ds-toggle-group\" role=\"group\"><button class=\"ds-toggle\" aria-pressed=\"false\">Day</button><button class=\"ds-toggle ds-toggle-on\" aria-pressed=\"true\">Week</button><button class=\"ds-toggle\" aria-pressed=\"false\">Month</button></div>",
+			"css": ".ds-toggle-group { display: inline-flex; gap: 4px; } .ds-toggle { height: 36px; min-width: 36px; padding: 0 12px; border: 2px solid transparent; border-radius: 14px; background: oklch(0.9 0 0 / 0.3); color: var(--color-foreground, oklch(0.145 0 0)); font-family: Poppins, sans-serif; font-size: 0.875rem; cursor: pointer; transition: background-color 150ms ease-out, transform 150ms ease-out; } .ds-toggle:hover:not(.ds-toggle-on) { background: oklch(0.9 0 0); } .ds-toggle:active { transform: scale(0.97); } .ds-toggle:focus-visible { outline: 2px solid rgb(35, 145, 144); outline-offset: 2px; } .ds-toggle-on { background: linear-gradient(90deg, rgb(35, 145, 144), rgb(132, 204, 184)); }"
+		},
+		{
+			"name": "Switch",
+			"kind": "custom",
+			"refersTo": "switch-track",
+			"description": "KleriSwitch: pill switch that fills with Sea Glass when on.",
+			"html": "<button class=\"ds-switch\" role=\"switch\" aria-checked=\"true\"><span class=\"ds-switch-thumb\"></span></button>",
+			"css": ".ds-switch { position: relative; width: 44px; height: 24px; border-radius: 9999px; background: oklch(0.9 0 0); border: 1.5px solid color-mix(in srgb, oklch(0.356 0 0) 40%, transparent); cursor: pointer; transition: background-color 0.2s ease; } .ds-switch[aria-checked='true'] { background: rgb(132, 204, 184); } .ds-switch-thumb { position: absolute; top: 50%; left: 2px; width: 18px; height: 18px; border-radius: 9999px; background: #fff; transform: translateY(-50%); transition: transform 0.2s ease; } .ds-switch[aria-checked='true'] .ds-switch-thumb { transform: translate(20px, -50%); } .ds-switch:focus-visible { outline: 2px solid rgb(35, 145, 144); outline-offset: 2px; }"
+		},
+		{
+			"name": "Tooltip",
+			"kind": "custom",
+			"refersTo": "tooltip",
+			"description": "KleriTooltip: glass panel, 2px outline, Space Mono text.",
+			"html": "<div class=\"ds-tooltip\" role=\"tooltip\">Save changes</div>",
+			"css": ".ds-tooltip { display: inline-block; padding: 8px; border: 2px solid var(--color-border, oklch(0.422 0 0)); border-radius: 14px; background: color-mix(in srgb, var(--color-background, #fff) 60%, transparent); backdrop-filter: blur(16px); font-family: 'Space Mono', monospace; font-size: 0.875rem; color: var(--color-foreground, oklch(0.145 0 0)); }"
+		},
+		{
+			"name": "Popover",
+			"kind": "card",
+			"refersTo": "popover",
+			"description": "Floating panel with the Float shadow and 1px ring.",
+			"html": "<div class=\"ds-popover\"><strong>Event details</strong><p>Weekly sync · 10:00–10:30</p></div>",
+			"css": ".ds-popover { width: 288px; display: flex; flex-direction: column; gap: 10px; padding: 10px; border-radius: 14px; background: var(--color-background, #fff); color: var(--color-foreground, oklch(0.145 0 0)); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 1px var(--color-border, oklch(0.422 0 0)); font-family: Poppins, sans-serif; font-size: 0.875rem; } .ds-popover p { margin: 0; }"
+		},
+		{
+			"name": "Calendar Event",
+			"kind": "custom",
+			"refersTo": "kleri-event",
+			"description": "Signature event block tinted by its calendar colour, with a 3px leading stripe.",
+			"html": "<div class=\"ds-event\" style=\"--event-color: rgb(35, 145, 144)\"><span class=\"ds-event-time\">10:00</span> Weekly sync</div>",
+			"css": ".ds-event { --event-bg: color-mix(in oklab, var(--event-color) 22%, var(--color-background, #fff)); padding: 4px 8px; border-left: 3px solid var(--event-color); border-radius: 6px; background: var(--event-bg); color: color-mix(in oklab, var(--event-color) 30%, var(--color-foreground, oklch(0.145 0 0))); font-family: Poppins, sans-serif; font-size: 0.75rem; font-weight: 500; transition: background-color 120ms ease; cursor: pointer; } .ds-event:hover { background: color-mix(in oklab, var(--event-color) 32%, var(--color-background, #fff)); } .ds-event:focus-visible { box-shadow: 0 0 0 2px var(--color-background, #fff), 0 0 0 4px var(--event-color); outline: none; } .ds-event-time { font-size: 11px; opacity: 0.85; }"
+		}
+	],
+	"narrative": {
+		"northStar": "The Tidewater Desk",
+		"overview": "Kleri UI is a calm working surface for people who use it all day: a monochrome desk of outlined tools, with a teal current running underneath. Most of the time that current stays out of sight. It shows when a hand arrives: a field takes focus and its outline turns into a moving teal gradient, a button is hovered and fills with the brand gradient, a toggle is switched on and glows sea-glass. At rest the interface is neutral and quiet. When you interact with it, it answers in teal.\n\nThe form language is outlined and tactile. Fields, buttons and tooltips have solid 2px outlines and generous 14px corners, so the controls read as distinct objects you can pick up, not flat text sitting on a page. The density is that of a desktop app, not a marketing site: labels are small, text sits around 14px, and the calendar goes down to 10–11px for event metadata. Space Mono gives labels, hints, errors and tooltips an instrument-panel precision next to Poppins' rounded geometry.\n\nThis is a branded system and it must not read as a generic, unbranded shadcn/zinc kit. The bits-ui and shadcn scaffolding underneath is plumbing. Teal interaction states, the 2px outline and the Poppins/Space Mono pairing are what make it Kleri.",
+		"keyCharacteristics": [
+			"Neutral surfaces at rest; teal shows up through interaction and on brand moments.",
+			"Heavy 2px outlines and 14px (`rounded-kleri`) corners on every interactive shell.",
+			"Poppins for content, Space Mono for labels, hints, errors and tooltips.",
+			"Flat page surfaces; shadows and blur appear only on floating layers.",
+			"Light and dark themes kept equal, switched with a `.dark` ancestor.",
+			"Every looping or decorative motion is gated behind `prefers-reduced-motion`."
+		],
+		"rules": [
+			{
+				"name": "The Current Rule",
+				"body": "Teal is reserved for focus, hover, the selected state and brand marks. A resting control is drawn in neutrals; if a screen is teal before anyone touches it, something is wrong.",
+				"section": "colors"
+			},
+			{
+				"name": "The Role Swap Rule",
+				"body": "Lagoon and Sea Glass swap the `--primary` and `--accent` roles between themes, so the lighter teal always carries interaction against the darker surface. Use the semantic tokens (`primary`, `accent`, `brand`, `ring`), never a hard-coded `kleri-1/2`, wherever theme parity matters.",
+				"section": "colors"
+			},
+			{
+				"name": "The Mixed Tint Rule",
+				"body": "Low-contrast surfaces (grid lines, event fills, today/selection washes) are built with `color-mix(in oklab, …)` from foreground or brand colours, not from new grey tokens. That keeps them correct in both themes automatically.",
+				"section": "colors"
+			},
+			{
+				"name": "The Annotation Rule",
+				"body": "If text explains, warns, hints or labels something, set it in Space Mono. If it is the content itself, set it in Poppins.",
+				"section": "typography"
+			},
+			{
+				"name": "The Float Rule",
+				"body": "A shadow means \"this is above the page.\" If a surface doesn't overlay anything, it gets an outline, not a shadow.",
+				"section": "elevation"
+			},
+			{
+				"name": "The Ink Rule",
+				"body": "Every fill names its ink. Brand fills take `text-kleri-ink`, semantic fills take their `*-foreground`, and user-chosen colours (calendar swatches, avatars) take `readableInk()` from `calendar/core/color.ts`. Never hard-code `text-black` or `text-white` on a coloured surface.",
+				"section": "colors"
+			},
+			{
+				"name": "The Focus Rule",
+				"body": "Focus is a solid teal ring (`--ring`: Lagoon on light, Sea Glass on dark), drawn as a 2px outline 2px off the element by the base layer. Fields replace it with the animated gradient border. Never remove an outline without drawing a replacement.",
+				"section": "colors"
+			}
+		],
+		"dos": [
+			"**Do** build every new field on `fieldShell()`, `FIELD_CONTROL` and `KleriFieldLabel` so it gets the 2px outline, the gradient focus border and the shake on error for free.",
+			"**Do** use `rounded-kleri` (14px) for any new interactive shell, and save smaller radii for nested rows and compact parts.",
+			"**Do** use semantic tokens (`primary`, `accent`, `muted`, `border`, `destructive`) so the Lagoon/Sea Glass role swap keeps both themes equal.",
+			"**Do** build new low-contrast surfaces with `color-mix(in oklab, …)` from foreground or brand colours, as the calendar tokens do.",
+			"**Do** set hints, errors, tooltips and other annotation text in Space Mono.",
+			"**Do** gate every looping or decorative animation behind `prefers-reduced-motion: no-preference`, and give each one a fade or still fallback. In Svelte, read `prefersReducedMotion` from `svelte/motion` for motion-sv loops.",
+			"**Do** put `kleri-hit` on any control under 44px so touch users get a full-size target, and show hover-revealed controls on `pointer-coarse`.",
+			"**Do** use `kleri-dropdown` for any new menu or floating panel instead of writing new entrance motion."
+		],
+		"donts": [
+			"**Don't** let the system read as a generic shadcn/zinc kit: no unstyled shadcn defaults, no 1px-grey-everything, no neutral `--primary`. The teal interaction states and the 2px outline must survive.",
+			"**Don't** put shadows on surfaces that don't float (see the Float Rule).",
+			"**Don't** fade past or inactive content with opacity when it carries text; lower its saturation instead, as past calendar events do.",
+			"**Don't** hard-code `kleri-1/2/3`, `text-black` or `text-white` where a semantic token exists, or light and dark themes drift apart (see the Ink Rule).",
+			"**Don't** add new grey tokens for grid lines or washes; mix them from `--color-foreground`.",
+			"**Don't** add daisyUI themes or solid body backgrounds inside components; consumers run in transparent Tauri windows."
+		]
+	}
+}

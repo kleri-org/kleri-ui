@@ -1,7 +1,7 @@
 import { type VariantProps, tv } from 'tailwind-variants';
 
 export const kleriToggleVariants = tv({
-	base: 'inline-flex cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap border-2 font-normal transition-colors transition-transform duration-150 ease-out select-none active:scale-[0.97] focus-visible:z-10 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0',
+	base: 'inline-flex cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap border font-normal transition-colors transition-transform duration-150 ease-out select-none active:scale-[0.97] focus-visible:z-10 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0',
 	variants: {
 		variant: {
 			default: 'border-transparent bg-muted/30 text-foreground data-[state=off]:hover:bg-muted',
@@ -9,7 +9,7 @@ export const kleriToggleVariants = tv({
 			ghost: 'border-transparent bg-transparent text-foreground data-[state=off]:hover:bg-muted/50'
 		},
 		size: {
-			sm: 'h-7 min-w-7 rounded-lg px-2.5 text-xs [&_svg]:size-3.5',
+			sm: 'kleri-hit [--kleri-hit-width:0px] h-7 min-w-7 rounded-lg px-2.5 text-xs [&_svg]:size-3.5',
 			default: 'h-9 min-w-9 rounded-kleri px-3 text-sm [&_svg]:size-4',
 			lg: 'h-10 min-w-10 rounded-kleri px-4 text-base [&_svg]:size-5'
 		}

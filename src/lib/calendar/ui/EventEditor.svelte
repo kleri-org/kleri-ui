@@ -599,9 +599,9 @@
 							<span class="indent-2 text-sm font-medium">{ctx.labels.video}</span>
 							{#if form.conference}
 								<div
-									class="flex items-center gap-2 rounded-kleri border-2 border-border py-2 pr-2 pl-4"
+									class="flex items-center gap-2 rounded-kleri border border-border py-2 pr-2 pl-4"
 								>
-									<Video class="size-5 shrink-0 text-kleri-1 dark:text-kleri-2" />
+									<Video class="size-5 shrink-0 text-brand" />
 									<a
 										href={safeUrl(form.conference.url)}
 										target="_blank"
@@ -621,9 +621,9 @@
 								</div>
 							{:else if requested}
 								<div
-									class="flex items-center gap-2 rounded-kleri border-2 border-kleri-2/60 bg-kleri-2/10 py-2 pr-2 pl-4 text-sm"
+									class="flex items-center gap-2 rounded-kleri border border-kleri-2/60 bg-kleri-2/10 py-2 pr-2 pl-4 text-sm"
 								>
-									<Video class="size-5 shrink-0 text-kleri-1 dark:text-kleri-2" />
+									<Video class="size-5 shrink-0 text-brand" />
 									<span class="min-w-0 flex-1">{ctx.labels.videoOnSave(requested.label)}</span>
 									<button
 										type="button"
@@ -639,10 +639,10 @@
 									{#each conferenceOptions as option (option.id)}
 										<button
 											type="button"
-											class="flex items-center gap-2 rounded-kleri border-2 border-border px-3 py-1.5 text-sm transition-colors hover:border-kleri-2 hover:bg-kleri-2/10"
+											class="flex items-center gap-2 rounded-kleri border border-border px-3 py-1.5 text-sm transition-colors hover:border-kleri-2 hover:bg-kleri-2/10"
 											onclick={() => (form.requestConference = option.id)}
 										>
-											<Video class="size-4 text-kleri-1 dark:text-kleri-2" />
+											<Video class="size-4 text-brand" />
 											{ctx.labels.addVideo(option.label)}
 										</button>
 									{/each}
@@ -687,7 +687,7 @@
 										aria-label={ctx.labels.defaultColor}
 										title={ctx.labels.defaultColor}
 										class={cn(
-											'size-6 rounded-full border-2 border-dashed border-(--kc-line-strong) ring-offset-2 ring-offset-background',
+											'size-6 rounded-full border border-dashed border-(--kc-line-strong) ring-offset-2 ring-offset-background',
 											form.color === null && 'ring-2 ring-foreground/60'
 										)}
 										style:background-color={calendar?.color}
@@ -718,14 +718,14 @@
 							<div class="flex flex-wrap items-center gap-1.5">
 								{#each form.reminders as minutes (minutes)}
 									<span
-										class="flex items-center gap-1 rounded-full border-2 border-border py-0.5 pr-1 pl-2.5 text-xs"
+										class="flex items-center gap-1 rounded-full border border-border py-0.5 pr-1 pl-2.5 text-xs"
 									>
 										{minutes === 0
 											? 'At start time'
 											: ctx.labels.reminderBefore(ctx.formatters.duration(minutes))}
 										<button
 											type="button"
-											class="rounded-full p-0.5 text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+											class="kleri-hit rounded-full p-0.5 text-muted-foreground hover:bg-muted/60 hover:text-foreground"
 											aria-label="{ctx.labels.delete} {minutes}"
 											onclick={() => (form.reminders = form.reminders.filter((m) => m !== minutes))}
 										>
@@ -776,14 +776,14 @@
 						<div class="flex gap-2">
 							<button
 								type="button"
-								class="rounded-kleri border-2 border-border px-4 py-1.5 text-sm hover:border-kleri-2"
+								class="rounded-kleri border border-border px-4 py-1.5 text-sm hover:border-kleri-2"
 								onclick={() => (confirmDiscard = false)}
 							>
 								{ctx.labels.keepEditing}
 							</button>
 							<button
 								type="button"
-								class="rounded-kleri border-2 border-destructive bg-destructive/10 px-4 py-1.5 text-sm text-destructive hover:bg-destructive/20"
+								class="rounded-kleri border border-destructive bg-destructive/10 px-4 py-1.5 text-sm text-destructive hover:bg-destructive/20"
 								onclick={() => {
 									confirmDiscard = false;
 									open = false;
@@ -820,7 +820,7 @@
 						>
 						<button
 							type="button"
-							class="rounded-kleri border-2 border-border px-4 py-1.5 text-sm transition-colors hover:border-kleri-2"
+							class="rounded-kleri border border-border px-4 py-1.5 text-sm transition-colors hover:border-kleri-2"
 							onclick={requestClose}
 						>
 							{ctx.labels.cancel}

@@ -8,7 +8,10 @@
 	import {
 		FIELD_ICON_SIZE,
 		FIELD_ICON_STROKE,
+		FIELD_OPTION,
 		FIELD_ROOT,
+		describedBy,
+		fieldErrorId,
 		fieldShell,
 		type FieldIcon
 	} from './field.js';
@@ -49,7 +52,7 @@
 		placeholder?: string;
 		/** Icon always shown in the trigger, ahead of an item's own icon. */
 		persistentIcon?: FieldIcon;
-		/** Validation errors. Shown next to the label and shake the field. */
+		/** Validation errors. Shown under the label, announced, and shake the field. */
 		errors?: string[];
 		/** Name of the hidden input, for native form submission. */
 		name?: string;
@@ -63,7 +66,10 @@
 		onValueChange?: (value: string) => void;
 		/** Called with the new state whenever the options list opens or closes. */
 		onOpenChange?: (open: boolean) => void;
-		/** Accessible name for the trigger. Falls back to `label`, then `placeholder`. */
+		/**
+		 * Accessible name for the trigger. Without it a labelled select is named by
+		 * its label plus the selected option, and an unlabelled one by `placeholder`.
+		 */
 		ariaLabel?: string;
 		/** Id of the control. Auto-generated when omitted, and used to link the label. */
 		id?: string;
@@ -87,6 +93,7 @@
 		onOpenChange,
 		ariaLabel,
 		id,
+		'aria-describedby': ariaDescribedBy,
 		class: className,
 		...restProps
 	}: Props = $props();
@@ -96,6 +103,9 @@
 
 	const uid = $props.id();
 	let controlId = $derived(id ?? uid);
+	let labelId = $derived(`${controlId}-label`);
+	let valueId = $derived(`${controlId}-value`);
+	let errorId = $derived(fieldErrorId(controlId));
 
 	let hasErrors = $derived((errors?.length ?? 0) > 0);
 	/** formsnap marks the control invalid before Kleri gets any `errors` of its own. */
@@ -134,7 +144,7 @@ item has an image (falling back to its icon), a bare icon otherwise, or nothing.
 {/snippet}
 
 <div class={cn(FIELD_ROOT, className)}>
-	<KleriFieldLabel {label} {errors} for={controlId} />
+	<KleriFieldLabel id={labelId} {label} {errors} {errorId} for={controlId} />
 
 	<Select.Root
 		type="single"
@@ -150,8 +160,11 @@ item has an image (falling back to its icon), a bare icon otherwise, or nothing.
 		<Select.Trigger
 			{...restProps}
 			id={controlId}
-			aria-label={ariaLabel ?? label ?? placeholder}
+			data-slot="field-shell"
+			aria-label={ariaLabel ?? (label ? undefined : placeholder)}
+			aria-labelledby={ariaLabel || !label ? undefined : `${labelId} ${valueId}`}
 			aria-invalid={isInvalid}
+			aria-describedby={describedBy(hasErrors && errorId, ariaDescribedBy)}
 			class={cn(
 				fieldShell({ withBorder, hasErrors, disabled }),
 				'justify-between text-left',
@@ -161,9 +174,9 @@ item has an image (falling back to its icon), a bare icon otherwise, or nothing.
 			<div class="flex min-w-0 flex-1 flex-row items-center gap-3 text-foreground">
 				{@render visual(selectedItem?.avatarUrl, triggerIcon, selectedItem?.label ?? '')}
 				{#if selectedItem}
-					<span class="truncate">{selectedItem.label}</span>
+					<span id={valueId} class="truncate">{selectedItem.label}</span>
 				{:else}
-					<span class="truncate text-muted-foreground">{placeholder}</span>
+					<span id={valueId} class="truncate text-muted-foreground">{placeholder}</span>
 				{/if}
 			</div>
 
@@ -178,7 +191,7 @@ item has an image (falling back to its icon), a bare icon otherwise, or nothing.
 		<Select.Portal>
 			<Select.Content
 				sideOffset={8}
-				class="kleri-dropdown z-50 w-[var(--bits-select-anchor-width)] min-w-[var(--bits-select-anchor-width)] overflow-hidden rounded-kleri border-2 border-border bg-popover p-1 text-popover-foreground shadow-xl outline-hidden"
+				class="kleri-dropdown z-50 w-[var(--bits-select-anchor-width)] min-w-[var(--bits-select-anchor-width)] overflow-hidden rounded-kleri border border-border/50 kleri-glass p-1 text-popover-foreground shadow-xl outline-hidden"
 			>
 				<Select.Viewport class="kleri-scrollbar max-h-64 overflow-y-auto p-1">
 					{#each items as item (item.value)}
@@ -186,7 +199,7 @@ item has an image (falling back to its icon), a bare icon otherwise, or nothing.
 							value={item.value}
 							label={item.label}
 							disabled={item.disabled}
-							class="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm outline-hidden transition-colors data-disabled:cursor-not-allowed data-disabled:opacity-50 data-highlighted:bg-kleri-2/20 data-highlighted:text-foreground"
+							class={FIELD_OPTION}
 						>
 							{#snippet children({ selected })}
 								{@render visual(item.avatarUrl, item.icon, item.label)}
@@ -195,7 +208,7 @@ item has an image (falling back to its icon), a bare icon otherwise, or nothing.
 									<Check
 										size={18}
 										strokeWidth={2.75}
-										class="shrink-0 text-kleri-2"
+										class="shrink-0 text-brand"
 										aria-hidden="true"
 									/>
 								{/if}

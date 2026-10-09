@@ -1,4 +1,5 @@
 import type { CalendarPerson } from '../types.js';
+import { readableInk } from '../core/color.js';
 
 /** One or two initials for an avatar. */
 export function initials(person: CalendarPerson): string {
@@ -24,6 +25,11 @@ export function avatarColor(email: string): string {
 	let hash = 0;
 	for (let i = 0; i < email.length; i++) hash = (hash * 31 + email.charCodeAt(i)) | 0;
 	return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+}
+
+/** Initials colour that stays legible on `avatarColor(email)`. */
+export function avatarInk(email: string): string {
+	return readableInk(avatarColor(email));
 }
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

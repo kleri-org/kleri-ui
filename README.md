@@ -32,7 +32,7 @@ bun add tailwindcss @tailwindcss/vite bits-ui @lucide/svelte daisyui
 
 | Package             | Version   | Why                                         |
 | ------------------- | --------- | ------------------------------------------- |
-| `svelte`            | `^5.0.0`  | The component runtime                       |
+| `svelte`            | `^5.20.0` | The component runtime                       |
 | `tailwindcss`       | `^4.2.0`  | Styling engine                              |
 | `@tailwindcss/vite` | `^4.2.0`  | Vite integration for Tailwind CSS 4         |
 | `bits-ui`           | `^2.18.0` | Accessible UI primitives (tooltips, etc.)   |
@@ -179,6 +179,8 @@ Button with animated gradient border spotlight that follows the cursor.
 
 ### Inputs
 
+Every field shares one label and error treatment. Errors sit on their own lines under the label, in a polite live region, and the control points at them with `aria-describedby` (merged with any ids you pass). An errored field keeps a solid focus ring outside its Ember border. `KleriSlider` reads each thumb's value through `valueFormatter` as `aria-valuetext`, and `KleriDragNDrop` is named by its visible `label` (or "Upload files" without one); its default `mainText` is "Drop files here or click to browse".
+
 #### KleriInput
 
 Text input with label, error display, icon, and password toggle.
@@ -203,18 +205,18 @@ Text input with label, error display, icon, and password toggle.
 />
 ```
 
-| Prop          | Type                  | Default  | Description                               |
-| ------------- | --------------------- | -------- | ----------------------------------------- |
-| `value`       | `any` (bindable)      | —        | Input value                               |
-| `label`       | `string`              | —        | Label text                                |
-| `errors`      | `string[]` (bindable) | `[]`     | Error messages (shakes input)             |
-| `placeholder` | `string`              | `""`     | Placeholder text                          |
-| `type`        | `string`              | `"text"` | Input type (`"password"` enables toggle)  |
-| `InputIcon`   | `Component`           | —        | Icon component (lucide-svelte compatible) |
-| `withBorder`  | `boolean`             | `true`   | Show border                               |
-| `required`    | `boolean`             | —        | HTML required attribute                   |
-| `shake`       | `boolean`             | `false`  | Trigger shake animation                   |
-| `class`       | `ClassValue`          | —        | Additional CSS classes                    |
+| Prop          | Type                  | Default  | Description                                                        |
+| ------------- | --------------------- | -------- | ------------------------------------------------------------------ |
+| `value`       | `any` (bindable)      | —        | Input value                                                        |
+| `label`       | `string`              | —        | Label text                                                         |
+| `errors`      | `string[]` (bindable) | `[]`     | Error messages, shown under the label and announced (shakes input) |
+| `placeholder` | `string`              | `""`     | Placeholder text                                                   |
+| `type`        | `string`              | `"text"` | Input type (`"password"` enables toggle)                           |
+| `InputIcon`   | `Component`           | —        | Icon component (lucide-svelte compatible)                          |
+| `withBorder`  | `boolean`             | `true`   | Show border                                                        |
+| `required`    | `boolean`             | —        | HTML required attribute                                            |
+| `shake`       | `boolean`             | `false`  | Trigger shake animation                                            |
+| `class`       | `ClassValue`          | —        | Additional CSS classes                                             |
 
 #### KleriTextarea
 
@@ -241,19 +243,19 @@ Multi-line text box with label, error display, optional icon, and shake animatio
 />
 ```
 
-| Prop          | Type                             | Default  | Description                               |
-| ------------- | -------------------------------- | -------- | ----------------------------------------- |
-| `value`       | `string` (bindable)              | `""`     | Textarea value                            |
-| `label`       | `string`                         | —        | Label text                                |
-| `errors`      | `string[]` (bindable)            | `[]`     | Error messages (shakes textarea)          |
-| `placeholder` | `string`                         | `""`     | Placeholder text                          |
-| `InputIcon`   | `Component`                      | —        | Icon component (lucide-svelte compatible) |
-| `rows`        | `number`                         | `4`      | Visible rows                              |
-| `resize`      | `'none' \| 'y' \| 'x' \| 'both'` | `'none'` | CSS resize behavior                       |
-| `withBorder`  | `boolean`                        | `true`   | Show border                               |
-| `required`    | `boolean`                        | —        | HTML required attribute                   |
-| `shake`       | `boolean`                        | `false`  | Trigger shake animation                   |
-| `class`       | `ClassValue`                     | —        | Additional CSS classes                    |
+| Prop          | Type                             | Default  | Description                                                           |
+| ------------- | -------------------------------- | -------- | --------------------------------------------------------------------- |
+| `value`       | `string` (bindable)              | `""`     | Textarea value                                                        |
+| `label`       | `string`                         | —        | Label text                                                            |
+| `errors`      | `string[]` (bindable)            | `[]`     | Error messages, shown under the label and announced (shakes textarea) |
+| `placeholder` | `string`                         | `""`     | Placeholder text                                                      |
+| `InputIcon`   | `Component`                      | —        | Icon component (lucide-svelte compatible)                             |
+| `rows`        | `number`                         | `4`      | Visible rows                                                          |
+| `resize`      | `'none' \| 'y' \| 'x' \| 'both'` | `'none'` | CSS resize behavior                                                   |
+| `withBorder`  | `boolean`                        | `true`   | Show border                                                           |
+| `required`    | `boolean`                        | —        | HTML required attribute                                               |
+| `shake`       | `boolean`                        | `false`  | Trigger shake animation                                               |
+| `class`       | `ClassValue`                     | —        | Additional CSS classes                                                |
 
 ---
 
@@ -270,19 +272,20 @@ Toggle switch with brand checked state.
 <KleriSwitch bind:value={checked} />
 ```
 
-| Prop            | Type                       | Default           | Description                           |
-| --------------- | -------------------------- | ----------------- | ------------------------------------- |
-| `value`         | `boolean` (bindable)       | `false`           | Checked state                         |
-| `label`         | `string`                   | —                 | Text shown above the switch           |
-| `errors`        | `string[]`                 | —                 | Error messages (shakes the switch)    |
-| `onValueChange` | `(value: boolean) => void` | —                 | Called whenever the switch toggles    |
-| `disabled`      | `boolean`                  | `false`           | Disabled state                        |
-| `required`      | `boolean`                  | `false`           | HTML required attribute               |
-| `name`          | `string`                   | —                 | Name for native form submission       |
-| `shake`         | `boolean`                  | `false`           | Trigger shake animation               |
-| `ariaLabel`     | `string`                   | `"Toggle switch"` | Accessible name (unlabelled switches) |
-| `id`            | `string`                   | auto              | Control id, also used by the label    |
-| `class`         | `ClassValue`               | —                 | Additional CSS classes                |
+| Prop               | Type                       | Default           | Description                                                             |
+| ------------------ | -------------------------- | ----------------- | ----------------------------------------------------------------------- |
+| `value`            | `boolean` (bindable)       | `false`           | Checked state                                                           |
+| `label`            | `string`                   | —                 | Text shown above the switch                                             |
+| `errors`           | `string[]`                 | —                 | Error messages, shown under the label and announced (shakes the switch) |
+| `onValueChange`    | `(value: boolean) => void` | —                 | Called whenever the switch toggles                                      |
+| `disabled`         | `boolean`                  | `false`           | Disabled state                                                          |
+| `required`         | `boolean`                  | `false`           | HTML required attribute                                                 |
+| `name`             | `string`                   | —                 | Name for native form submission                                         |
+| `shake`            | `boolean`                  | `false`           | Trigger shake animation                                                 |
+| `ariaLabel`        | `string`                   | `"Toggle switch"` | Accessible name (unlabelled switches)                                   |
+| `aria-describedby` | `string`                   | —                 | Extra description ids, merged with the switch's own error id            |
+| `id`               | `string`                   | auto              | Control id, also used by the label                                      |
+| `class`            | `ClassValue`               | —                 | Additional CSS classes                                                  |
 
 ---
 
@@ -306,25 +309,25 @@ Keyboard-navigable option picker for short lists, sharing the Kleri field shell.
 
 `KleriSelectItem` is generic over the value type (`KleriSelectItem<Theme>`), and each item may carry a `label`, an `icon`, an `avatarUrl`, a per-option `action`, and `disabled`.
 
-| Prop             | Type                      | Default              | Description                                                   |
-| ---------------- | ------------------------- | -------------------- | ------------------------------------------------------------- |
-| `items`          | `KleriSelectItem[]`       | —                    | Options to pick from                                          |
-| `value`          | `string` (bindable)       | `""`                 | Selected value                                                |
-| `open`           | `boolean` (bindable)      | `false`              | Whether the options list is open                              |
-| `label`          | `string`                  | —                    | Label text                                                    |
-| `placeholder`    | `string`                  | `"Select an option"` | Text shown while nothing is selected                          |
-| `persistentIcon` | `Component`               | —                    | Icon always shown in the trigger, ahead of an item's own icon |
-| `errors`         | `string[]`                | `[]`                 | Error messages (shakes the field)                             |
-| `name`           | `string`                  | —                    | Hidden input name, for native form submission                 |
-| `required`       | `boolean`                 | `false`              | HTML required attribute                                       |
-| `disabled`       | `boolean`                 | `false`              | Disabled state                                                |
-| `withBorder`     | `boolean`                 | `true`               | Show border                                                   |
-| `shake`          | `boolean`                 | `false`              | Trigger shake animation                                       |
-| `onValueChange`  | `(value: string) => void` | —                    | Called when the selection changes                             |
-| `onOpenChange`   | `(open: boolean) => void` | —                    | Called when the options list opens or closes                  |
-| `ariaLabel`      | `string`                  | —                    | Accessible name; falls back to `label`, then `placeholder`    |
-| `id`             | `string`                  | auto                 | Control id, also used to link the label                       |
-| `class`          | `ClassValue`              | —                    | Additional CSS classes                                        |
+| Prop             | Type                      | Default              | Description                                                                                                                      |
+| ---------------- | ------------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `items`          | `KleriSelectItem[]`       | —                    | Options to pick from                                                                                                             |
+| `value`          | `string` (bindable)       | `""`                 | Selected value                                                                                                                   |
+| `open`           | `boolean` (bindable)      | `false`              | Whether the options list is open                                                                                                 |
+| `label`          | `string`                  | —                    | Label text                                                                                                                       |
+| `placeholder`    | `string`                  | `"Select an option"` | Text shown while nothing is selected                                                                                             |
+| `persistentIcon` | `Component`               | —                    | Icon always shown in the trigger, ahead of an item's own icon                                                                    |
+| `errors`         | `string[]`                | `[]`                 | Error messages, shown under the label and announced (shakes the field)                                                           |
+| `name`           | `string`                  | —                    | Hidden input name, for native form submission                                                                                    |
+| `required`       | `boolean`                 | `false`              | HTML required attribute                                                                                                          |
+| `disabled`       | `boolean`                 | `false`              | Disabled state                                                                                                                   |
+| `withBorder`     | `boolean`                 | `true`               | Show border                                                                                                                      |
+| `shake`          | `boolean`                 | `false`              | Trigger shake animation                                                                                                          |
+| `onValueChange`  | `(value: string) => void` | —                    | Called when the selection changes                                                                                                |
+| `onOpenChange`   | `(open: boolean) => void` | —                    | Called when the options list opens or closes                                                                                     |
+| `ariaLabel`      | `string`                  | —                    | Accessible name. Without it a labelled select is named by its label plus the selected option, an unlabelled one by `placeholder` |
+| `id`             | `string`                  | auto                 | Control id, also used to link the label                                                                                          |
+| `class`          | `ClassValue`              | —                    | Additional CSS classes                                                                                                           |
 
 ---
 
@@ -518,20 +521,32 @@ Exported from `@kleri/ui/preview` for documentation and playground use.
 
 #### CodePreview
 
-Shows formatted usage code with a copy button.
+Shows a copyable usage snippet: an import line, a `$state` declaration for each bound prop, then the component tag. Nested values print as valid JS.
 
 ```svelte
 <script>
 	import { CodePreview } from '@kleri/ui/preview';
 </script>
 
-<CodePreview component="KleriButton" props={{ showSuccess: false, children: 'Click' }} />
+<CodePreview
+	component="KleriInput"
+	props={{ value, label: 'Client name', withBorder: true }}
+	bindings={['value']}
+	defaults={{ withBorder: true }}
+/>
 ```
 
-| Prop        | Type                  | Description             |
-| ----------- | --------------------- | ----------------------- |
-| `component` | `string`              | Component name          |
-| `props`     | `Record<string, any>` | Props to render in code |
+| Prop          | Type                      | Default       | Description                                                     |
+| ------------- | ------------------------- | ------------- | --------------------------------------------------------------- |
+| `component`   | `string`                  | —             | Component name, used in the tag and the import line             |
+| `props`       | `Record<string, any>`     | —             | Props to print. A string `children` becomes the tag's content   |
+| `symbols`     | `Map<unknown, string>`    | —             | Values printed as bare identifiers or expressions, e.g. icons   |
+| `defaults`    | `Record<string, unknown>` | —             | Props equal to their default here are left out                  |
+| `bindings`    | `string[]`                | —             | Props written as `bind:name`, backed by a `$state` declaration  |
+| `from`        | `string`                  | `'@kleri/ui'` | Module the component is imported from                           |
+| `importNames` | `string[]`                | —             | Other names imported from `from`, e.g. a group's item component |
+| `imports`     | `string[]`                | —             | Extra import lines, e.g. for the icons named in `symbols`       |
+| `code`        | `string`                  | —             | Replaces the generated snippet entirely                         |
 
 ---
 
@@ -547,13 +562,16 @@ Dynamic form controls generated from a schema.
 	const schema = $derived({
 		label: { type: 'string', label: 'Label' },
 		enabled: { type: 'boolean', label: 'Enabled' },
-		count: { type: 'number', label: 'Count' }
+		count: { type: 'number', label: 'Count' },
+		size: { type: 'choice', label: 'Size', options: ['sm', 'default', 'lg'] }
 	} as PropSchema);
-	let values = $state({ label: '', enabled: false, count: 0 });
+	let values = $state({ label: '', enabled: false, count: 0, size: 'default' });
 </script>
 
 <PropControls {schema} bind:values />
 ```
+
+Each schema entry takes a `type` (`boolean`, `string`, `number` or `choice`), a `label`, an optional `description` shown under the control, and `options` for a `choice`. Up to four options render as a toggle group, more as a `KleriSelect`.
 
 ---
 
@@ -718,20 +736,34 @@ Exported as constants and CSS variables:
 
 ### CSS Utilities
 
-| Utility                | Description                                   |
-| ---------------------- | --------------------------------------------- |
-| `kleri-bg`             | Linear gradient background (1 → 2)            |
-| `kleri-text`           | Gradient text (1 → 2 → 3)                     |
-| `kleri-text-animation` | Animated gradient text (500% background size) |
-| `kleri-border`         | Animated gradient border (light mode)         |
-| `kleri-border-dark`    | Animated gradient border (dark mode)          |
-| `bg-kleri_blur`        | 30% background with 40px blur                 |
-| `kleri-calendar`       | Calendar surface tokens (grid lines, today…)  |
-| `kleri-event`          | Event tinted by `--event-color`, RSVP states  |
+| Utility                | Description                                                                        |
+| ---------------------- | ---------------------------------------------------------------------------------- |
+| `kleri-bg`             | Brand fill, Lagoon → Sea Glass. Pair with `text-kleri-ink` (≥ 5.2:1 throughout)    |
+| `kleri-text`           | Gradient text; stops chosen per theme so every point clears 3:1 for large text     |
+| `kleri-text-animation` | Animated `kleri-text` (500% background size; still under reduced motion)           |
+| `kleri-border`         | Animated gradient border on a masked `::before`; leaves the background transparent |
+| `kleri-border-dark`    | Dark-theme stops for `kleri-border`; use as `dark:kleri-border-dark` alongside it  |
+| `kleri-hit`            | Grows a compact control's hit area to 44px on touch screens (uses `::after`)       |
+| `bg-kleri_blur`        | 30% background with 40px blur                                                      |
+| `kleri-calendar`       | Calendar surface tokens (grid lines, today…)                                       |
+| `kleri-event`          | Event tinted by `--event-color`, RSVP states                                       |
+
+`kleri-border` and `kleri-border-dark` make their element a positioning context (`position: relative`) and draw the ring over the element's own border, so give the host a 2px border (`border-2`), as the field shell does.
+
+### Colour Tokens
+
+Besides the shadcn-style semantic tokens (`background`, `primary`, `accent`, `muted`, `border`, `ring`, …), Kleri adds:
+
+| Token       | Light        | Dark      | Use                                                            |
+| ----------- | ------------ | --------- | -------------------------------------------------------------- |
+| `brand`     | Deep Harbour | Sea Glass | Brand-coloured text and icons on the page (links, today, done) |
+| `kleri-ink` | near-black   | same      | Text and edges on brand fills (`kleri-bg`, `bg-primary`)       |
+
+`ring` is a solid teal (Lagoon on light, Sea Glass on dark), and every element without its own focus style gets a 2px `:focus-visible` outline in it.
 
 ### Border Radius
 
-The `rounded-kleri` utility maps to `--radius-xl` (default `0.625rem + 4px = 1rem`).
+The `rounded-kleri` utility maps to `--radius-xl` (default `0.625rem + 4px = 14px`).
 
 ---
 

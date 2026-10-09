@@ -31,10 +31,10 @@ export type DropzoneBaseProps = {
 	 */
 	multiple?: boolean;
 
-	/** Text shown above the dropzone. */
+	/** Text shown above the dropzone. Also names it for screen readers. */
 	label?: string;
 
-	/** Validation errors. Shown next to the label. */
+	/** Validation errors. Shown under the label and announced. */
 	errors?: string[];
 
 	/**
@@ -45,7 +45,7 @@ export type DropzoneBaseProps = {
 
 	/**
 	 * Main heading text displayed when the dropzone is idle.
-	 * @default "Drag and Drop Your file here"
+	 * @default "Drop files here or click to browse"
 	 */
 	mainText?: string;
 

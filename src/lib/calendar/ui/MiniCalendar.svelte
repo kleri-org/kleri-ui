@@ -163,8 +163,8 @@
 									'relative mx-auto flex size-7 items-center justify-center rounded-full text-xs transition-colors focus-visible:ring-2 focus-visible:ring-kleri-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-30',
 									outside && !inRange && 'text-muted-foreground',
 									!selected && !isToday && 'hover:bg-muted/60',
-									isToday && !selected && 'font-semibold text-kleri-1 dark:text-kleri-2',
-									selected && 'font-semibold text-black kleri-bg'
+									isToday && !selected && 'font-semibold text-brand',
+									selected && 'font-semibold text-kleri-ink kleri-bg'
 								)}
 								onfocus={() => (focusedKey = key)}
 								onclick={() => onSelect(day)}

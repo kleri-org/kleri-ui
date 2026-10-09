@@ -83,7 +83,7 @@
 
 	<button
 		type="button"
-		class="h-9 shrink-0 rounded-kleri border-2 border-border px-3.5 text-sm font-medium transition-colors hover:border-kleri-2 hover:bg-kleri-2/10 focus-visible:ring-2 focus-visible:ring-kleri-2 focus-visible:outline-none"
+		class="h-9 shrink-0 rounded-kleri border border-border px-3.5 text-sm font-medium transition-colors hover:border-kleri-2 hover:bg-kleri-2/10 focus-visible:ring-2 focus-visible:ring-kleri-2 focus-visible:outline-none"
 		title="{ctx.formatters.fullDate(ctx.today)} (T)"
 		onclick={onToday}
 	>
@@ -132,7 +132,7 @@
 
 		{#if showSearch}
 			<div
-				class="flex h-9 w-44 items-center gap-1.5 rounded-kleri border-2 border-border px-2.5 transition-colors focus-within:kleri-border @4xl:w-56 dark:focus-within:kleri-border-dark"
+				class="relative flex h-9 w-44 items-center gap-1.5 rounded-kleri border border-border px-2.5 transition-colors focus-within:kleri-border @4xl:w-56 dark:focus-within:kleri-border-dark"
 			>
 				<Search class="size-4 shrink-0 text-muted-foreground" />
 				<!-- svelte-ignore a11y_autofocus -->
@@ -184,7 +184,7 @@
 			title={busy ? ctx.labels.syncing : ctx.labels.refresh}
 			onclick={() => ctx.store.refresh()}
 		>
-			<RefreshCw class={cn('size-[18px]', busy && 'animate-spin text-kleri-1 dark:text-kleri-2')} />
+			<RefreshCw class={cn('size-[18px]', busy && 'animate-spin text-brand')} />
 		</button>
 		<button
 			type="button"
@@ -230,7 +230,7 @@
 		{#if !sidebarOpen && canCreate}
 			<button
 				type="button"
-				class="flex h-9 shrink-0 items-center gap-1.5 rounded-kleri border-2 border-black bg-primary px-3 text-sm font-medium text-black transition-colors hover:kleri-bg focus-visible:ring-2 focus-visible:ring-kleri-2 focus-visible:outline-none"
+				class="flex h-9 shrink-0 items-center gap-1.5 rounded-kleri border border-kleri-ink bg-primary px-3 text-sm font-medium text-kleri-ink transition-colors hover:kleri-bg focus-visible:ring-2 focus-visible:ring-kleri-2 focus-visible:outline-none"
 				aria-label={ctx.labels.create}
 				title="{ctx.labels.create} (C)"
 				onclick={(e) => onCreate(e.currentTarget)}

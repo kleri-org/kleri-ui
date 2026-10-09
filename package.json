@@ -75,7 +75,7 @@
 		}
 	},
 	"peerDependencies": {
-		"svelte": "^5.0.0",
+		"svelte": "^5.20.0",
 		"bits-ui": "^2.18.0",
 		"@lucide/svelte": "^1.14.0",
 		"tailwindcss": "^4.2.0",

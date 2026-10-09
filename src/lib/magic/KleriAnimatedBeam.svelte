@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { motion } from 'motion-sv';
+	import { prefersReducedMotion } from 'svelte/motion';
 	import { cn } from '$lib/utils';
 	import { KLERI_COLOR_1, KLERI_COLOR_2 } from '$lib/constants';
 	import { usePathCalculator } from './animated-beam/use-path-calculator.svelte';
@@ -56,7 +57,9 @@
 		y1: gradientCoordinates.y1[0],
 		y2: gradientCoordinates.y2[0]
 	});
-	const isContinuous = $derived(interval <= 0);
+	// Reduced motion draws one still beam along the whole path instead of looping.
+	const isStill = $derived(prefersReducedMotion.current);
+	const isContinuous = $derived(interval <= 0 && !isStill);
 	const repeatDelay = $derived(Math.max(interval, 0));
 	const trailingDelay = $derived(delay <= 0 ? -duration / 2 : delay + duration / 2);
 
@@ -115,30 +118,44 @@
 		/>
 	{/if}
 	<defs>
-		<motion.linearGradient
-			class="transform-gpu"
-			id={uid}
-			gradientUnits="userSpaceOnUse"
-			initial={initialGradientCoordinates}
-			animate={{
-				x1: gradientCoordinates.x1,
-				x2: gradientCoordinates.x2,
-				y1: gradientCoordinates.y1,
-				y2: gradientCoordinates.y2
-			}}
-			transition={{
-				delay,
-				duration,
-				ease: 'linear',
-				repeat: Infinity,
-				repeatDelay
-			}}
-		>
-			<stop stop-color={gradientStartColor} stop-opacity="0"></stop>
-			<stop stop-color={gradientStartColor}></stop>
-			<stop offset="32.5%" stop-color={gradientStopColor}></stop>
-			<stop offset="100%" stop-color={gradientStopColor} stop-opacity="0"></stop>
-		</motion.linearGradient>
+		{#if isStill}
+			<linearGradient
+				id={uid}
+				gradientUnits="userSpaceOnUse"
+				x1={reverse ? pathCalculator.endX : pathCalculator.startX}
+				y1={reverse ? pathCalculator.endY : pathCalculator.startY}
+				x2={reverse ? pathCalculator.startX : pathCalculator.endX}
+				y2={reverse ? pathCalculator.startY : pathCalculator.endY}
+			>
+				<stop stop-color={gradientStartColor}></stop>
+				<stop offset="100%" stop-color={gradientStopColor}></stop>
+			</linearGradient>
+		{:else}
+			<motion.linearGradient
+				class="transform-gpu"
+				id={uid}
+				gradientUnits="userSpaceOnUse"
+				initial={initialGradientCoordinates}
+				animate={{
+					x1: gradientCoordinates.x1,
+					x2: gradientCoordinates.x2,
+					y1: gradientCoordinates.y1,
+					y2: gradientCoordinates.y2
+				}}
+				transition={{
+					delay,
+					duration,
+					ease: 'linear',
+					repeat: Infinity,
+					repeatDelay
+				}}
+			>
+				<stop stop-color={gradientStartColor} stop-opacity="0"></stop>
+				<stop stop-color={gradientStartColor}></stop>
+				<stop offset="32.5%" stop-color={gradientStopColor}></stop>
+				<stop offset="100%" stop-color={gradientStopColor} stop-opacity="0"></stop>
+			</motion.linearGradient>
+		{/if}
 		{#if isContinuous}
 			<motion.linearGradient
 				class="transform-gpu"

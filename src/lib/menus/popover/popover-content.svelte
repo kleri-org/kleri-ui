@@ -23,7 +23,7 @@
 		{sideOffset}
 		{align}
 		class={cn(
-			'kleri-dropdown z-50 flex w-72 flex-col gap-2.5 rounded-kleri bg-background p-2.5 text-sm text-foreground shadow-md ring-1 ring-border outline-hidden',
+			'kleri-dropdown z-50 flex w-72 flex-col gap-2.5 rounded-kleri kleri-glass p-2.5 text-sm text-popover-foreground shadow-md ring-1 ring-border/50 outline-hidden',
 			className
 		)}
 		{...restProps}

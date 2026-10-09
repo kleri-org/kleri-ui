@@ -101,9 +101,9 @@
 	<!-- Page header -->
 	<div class="space-y-2">
 		<div class="mb-2 flex items-center gap-2 font-spacemono text-sm text-muted-foreground">
-			<a href="/" class="transition-colors hover:text-kleri-2">Kleri UI</a>
+			<a href="/" class="transition-colors hover:text-brand">Kleri UI</a>
 			<span>/</span>
-			<a href="/components" class="transition-colors hover:text-kleri-2">Components</a>
+			<a href="/components" class="transition-colors hover:text-brand">Components</a>
 			<span>/</span>
 			<span class="text-foreground">Button</span>
 		</div>
@@ -124,7 +124,7 @@
 		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
 			<div class="space-y-4 lg:col-span-2">
 				<div
-					class="flex min-h-60 items-center justify-center rounded-xl border-2 border-border/50 bg-card/30 p-12"
+					class="flex min-h-60 items-center justify-center rounded-xl border border-border/50 bg-card/30 p-12"
 				>
 					<KleriButton
 						showSuccess={kleriButtonProps.showSuccess}
@@ -138,7 +138,7 @@
 				</div>
 				<CodePreview component="KleriButton" props={kleriButtonProps} />
 			</div>
-			<div class="h-fit rounded-xl border-2 border-border/50 bg-card/30 p-6">
+			<div class="h-fit rounded-xl border border-border/50 bg-card/30 p-6">
 				<h2
 					class="mb-4 font-spacemono text-sm font-semibold tracking-wider text-foreground uppercase"
 				>
@@ -160,7 +160,7 @@
 		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
 			<div class="space-y-4 lg:col-span-2">
 				<div
-					class="flex min-h-60 items-center justify-center rounded-xl border-2 border-border/50 bg-card/30 p-12"
+					class="flex min-h-60 items-center justify-center rounded-xl border border-border/50 bg-card/30 p-12"
 				>
 					<KleriUtilityButton tooltip={utilityProps.tooltip}>
 						{utilityProps.children}
@@ -168,7 +168,7 @@
 				</div>
 				<CodePreview component="KleriUtilityButton" props={utilityProps} />
 			</div>
-			<div class="h-fit rounded-xl border-2 border-border/50 bg-card/30 p-6">
+			<div class="h-fit rounded-xl border border-border/50 bg-card/30 p-6">
 				<h2
 					class="mb-4 font-spacemono text-sm font-semibold tracking-wider text-foreground uppercase"
 				>
@@ -191,7 +191,7 @@
 		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
 			<div class="space-y-4 lg:col-span-2">
 				<div
-					class="flex min-h-60 items-center justify-center gap-x-2 rounded-xl border-2 border-border/50 bg-card/30 p-12"
+					class="flex min-h-60 items-center justify-center gap-x-2 rounded-xl border border-border/50 bg-card/30 p-12"
 				>
 					<KleriButtonGroup
 						orientation={groupProps.orientation}
@@ -200,9 +200,14 @@
 						items={groupCodeProps.items}
 					/>
 				</div>
-				<CodePreview component="KleriButtonGroup" props={groupCodeProps} symbols={groupSymbols} />
+				<CodePreview
+					component="KleriButtonGroup"
+					props={groupCodeProps}
+					symbols={groupSymbols}
+					imports={["import { Copy, Delete, Save } from '@lucide/svelte';"]}
+				/>
 			</div>
-			<div class="h-fit rounded-xl border-2 border-border/50 bg-card/30 p-6">
+			<div class="h-fit rounded-xl border border-border/50 bg-card/30 p-6">
 				<h2
 					class="mb-4 font-spacemono text-sm font-semibold tracking-wider text-foreground uppercase"
 				>
@@ -225,7 +230,7 @@
 		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
 			<div class="space-y-4 lg:col-span-2">
 				<div
-					class="flex min-h-60 items-center justify-center rounded-xl border-2 border-border/50 bg-card/30 p-12"
+					class="flex min-h-60 items-center justify-center rounded-xl border border-border/50 bg-card/30 p-12"
 				>
 					<KleriMagicButton
 						gradientSize={magicButtonProps.gradientSize}
@@ -239,7 +244,7 @@
 				</div>
 				<CodePreview component="KleriMagicButton" props={magicButtonProps} />
 			</div>
-			<div class="h-fit rounded-xl border-2 border-border/50 bg-card/30 p-6">
+			<div class="h-fit rounded-xl border border-border/50 bg-card/30 p-6">
 				<h2
 					class="mb-4 font-spacemono text-sm font-semibold tracking-wider text-foreground uppercase"
 				>

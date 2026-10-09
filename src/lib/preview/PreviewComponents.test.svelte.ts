@@ -15,9 +15,11 @@ describe('CodePreview', () => {
 		});
 
 		expect(screen.getByText('Usage')).toBeInTheDocument();
-		expect(screen.getByText(/<KleriButton/)).toHaveTextContent('disabled={true}');
-		expect(screen.getByText(/<KleriButton/)).toHaveTextContent('count={2}');
-		expect(screen.getByText(/<KleriButton/)).toHaveTextContent('label="Save"');
+		const code = screen.getByText(/<KleriButton/);
+		expect(code).toHaveTextContent("import { KleriButton } from '@kleri/ui';");
+		expect(code).toHaveTextContent('disabled={true}');
+		expect(code).toHaveTextContent('count={2}');
+		expect(code).toHaveTextContent('label="Save"');
 	});
 
 	it('copies the generated code and shows success state', async () => {
@@ -31,7 +33,8 @@ describe('CodePreview', () => {
 		await fireEvent.click(screen.getByRole('button', { name: 'Copy' }));
 
 		expect(writeText).toHaveBeenCalledWith(expect.stringContaining('<KleriButton'));
-		expect(screen.getByRole('button', { name: /Copied!/ })).toBeDisabled();
+		expect(await screen.findByRole('button', { name: 'Copied' })).toBeInTheDocument();
+		expect(screen.getByText('Code copied to the clipboard')).toHaveAttribute('aria-live', 'polite');
 	});
 });
 

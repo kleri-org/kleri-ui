@@ -2,11 +2,11 @@
 	import { Loader2, UserPlus, X } from '@lucide/svelte';
 	import { cn } from '$lib/utils.js';
 	import KleriFieldLabel from '$lib/input/KleriFieldLabel.svelte';
-	import { FIELD_ROOT, fieldShell } from '$lib/input/field.js';
+	import { FIELD_ROOT, describedBy, fieldErrorId, fieldShell } from '$lib/input/field.js';
 	import { getCalendarContext } from '../../context.js';
 	import type { CalendarAttendee, CalendarPerson, TimeInterval } from '../../types.js';
 	import { isBusy } from '../../core/availability.js';
-	import { avatarColor, initials, isValidEmail, parsePerson } from '../people.js';
+	import { avatarColor, avatarInk, initials, isValidEmail, parsePerson } from '../people.js';
 
 	/**
 	 * Guest list editor: type or paste emails (commas, semicolons and
@@ -40,6 +40,7 @@
 
 	const ctx = getCalendarContext();
 	const uid = $props.id();
+	const errorId = fieldErrorId(uid);
 
 	let query = $state('');
 	let open = $state(false);
@@ -123,7 +124,7 @@
 </script>
 
 <div class={FIELD_ROOT}>
-	<KleriFieldLabel label={ctx.labels.guestsField} {errors} for={uid} />
+	<KleriFieldLabel label={ctx.labels.guestsField} {errors} {errorId} for={uid} />
 	<div class="relative">
 		<div class={cn(fieldShell({ hasErrors: errors.length > 0 }), 'flex-wrap gap-1.5 py-1.5')}>
 			<UserPlus class="size-5 shrink-0" strokeWidth={2.2} aria-hidden="true" />
@@ -139,6 +140,8 @@
 				aria-expanded={open && suggestions.length > 0}
 				aria-controls="{uid}-listbox"
 				aria-autocomplete="list"
+				aria-invalid={errors.length > 0 || undefined}
+				aria-describedby={describedBy(errors.length > 0 && errorId)}
 				aria-activedescendant={open && suggestions.length ? `${uid}-opt-${highlighted}` : undefined}
 				class="min-w-40 flex-1 border-0 bg-transparent px-1 py-1 text-sm outline-none placeholder:text-muted-foreground focus:ring-0"
 				oninput={() => {
@@ -163,7 +166,7 @@
 			<ul
 				id="{uid}-listbox"
 				role="listbox"
-				class="kleri-dropdown absolute inset-x-0 top-full z-20 mt-1 overflow-hidden rounded-kleri border-2 border-border bg-popover p-1 shadow-xl"
+				class="kleri-dropdown absolute inset-x-0 top-full z-20 mt-1 overflow-hidden rounded-kleri border border-border/50 kleri-glass p-1 shadow-xl"
 				data-state="open"
 				data-side="bottom"
 			>
@@ -185,8 +188,9 @@
 						onpointerenter={() => (highlighted = i)}
 					>
 						<span
-							class="flex size-7 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold text-white"
+							class="flex size-7 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold"
 							style:background-color={avatarColor(person.email)}
+							style:color={avatarInk(person.email)}
 						>
 							{initials(person)}
 						</span>
@@ -210,8 +214,9 @@
 				<li class="group/guest flex items-center gap-2.5 rounded-lg px-2 py-1 hover:bg-muted/30">
 					<span class="relative shrink-0">
 						<span
-							class="flex size-7 items-center justify-center rounded-full text-[11px] font-semibold text-white"
+							class="flex size-7 items-center justify-center rounded-full text-[11px] font-semibold"
 							style:background-color={avatarColor(attendee.email)}
+							style:color={avatarInk(attendee.email)}
 						>
 							{initials(attendee)}
 						</span>
@@ -243,10 +248,10 @@
 							type="button"
 							aria-pressed={Boolean(attendee.optional)}
 							class={cn(
-								'rounded-full border px-2 py-0.5 text-[11px] transition-colors',
+								'kleri-hit rounded-full border px-2 py-0.5 text-[11px] transition-colors',
 								attendee.optional
-									? 'border-kleri-2 text-kleri-1 dark:text-kleri-2'
-									: 'border-transparent text-muted-foreground opacity-0 group-focus-within/guest:opacity-100 group-hover/guest:opacity-100 hover:border-(--kc-line-strong)'
+									? 'border-kleri-2 text-brand'
+									: 'border-transparent text-muted-foreground opacity-0 group-focus-within/guest:opacity-100 group-hover/guest:opacity-100 hover:border-(--kc-line-strong) pointer-coarse:opacity-100'
 							)}
 							onclick={() => toggleOptional(attendee.email)}
 						>
@@ -254,7 +259,7 @@
 						</button>
 						<button
 							type="button"
-							class="rounded-md p-1 text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+							class="kleri-hit rounded-md p-1 text-muted-foreground hover:bg-muted/60 hover:text-foreground"
 							aria-label={ctx.labels.removeGuest(attendee.name ?? attendee.email)}
 							onclick={() => remove(attendee.email)}
 						>

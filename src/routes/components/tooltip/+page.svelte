@@ -21,9 +21,9 @@
 	<!-- Page header -->
 	<div class="space-y-2">
 		<div class="mb-2 flex items-center gap-2 font-spacemono text-sm text-muted-foreground">
-			<a href="/" class="transition-colors hover:text-kleri-2">Kleri UI</a>
+			<a href="/" class="transition-colors hover:text-brand">Kleri UI</a>
 			<span>/</span>
-			<a href="/components" class="transition-colors hover:text-kleri-2">Components</a>
+			<a href="/components" class="transition-colors hover:text-brand">Components</a>
 			<span>/</span>
 			<span class="text-foreground">Tooltip</span>
 		</div>
@@ -42,7 +42,7 @@
 		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
 			<div class="space-y-4 lg:col-span-2">
 				<div
-					class="flex min-h-60 items-center justify-center rounded-xl border-2 border-border/50 bg-card/30 p-12"
+					class="flex min-h-60 items-center justify-center rounded-xl border border-border/50 bg-card/30 p-12"
 				>
 					<KleriTooltip
 						side={tooltipProps.side}
@@ -53,7 +53,7 @@
 						{#snippet trigger(triggerProps)}
 							<button
 								{...triggerProps}
-								class="rounded-kleri border-2 border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-kleri-2"
+								class="rounded-kleri border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-kleri-2"
 							>
 								Hover me
 							</button>
@@ -63,7 +63,7 @@
 				</div>
 				<CodePreview component="KleriTooltip" props={tooltipProps} />
 			</div>
-			<div class="h-fit rounded-xl border-2 border-border/50 bg-card/30 p-6">
+			<div class="h-fit rounded-xl border border-border/50 bg-card/30 p-6">
 				<h2
 					class="mb-4 font-spacemono text-sm font-semibold tracking-wider text-foreground uppercase"
 				>

@@ -42,7 +42,7 @@ describe('KleriDragNDrop file selection', () => {
 	it('replaces the selection instead of appending when multiple is false', async () => {
 		const onDrop = vi.fn();
 		const { container } = render(KleriDragNDrop, { props: { multiple: false, onDrop } });
-		const zone = within(container).getByLabelText('File Upload Dropzone');
+		const zone = within(container).getByLabelText('Upload files');
 
 		const a = new File(['a'], 'a.pdf', { type: 'application/pdf' });
 		const b = new File(['b'], 'b.pdf', { type: 'application/pdf' });
@@ -58,7 +58,7 @@ describe('KleriDragNDrop file selection', () => {
 	it('ignores drops while disabled', async () => {
 		const onDrop = vi.fn();
 		const { container } = render(KleriDragNDrop, { props: { disabled: true, onDrop } });
-		const zone = within(container).getByLabelText('File Upload Dropzone');
+		const zone = within(container).getByLabelText('Upload files');
 
 		const pdf = new File(['x'], 'doc.pdf', { type: 'application/pdf' });
 		await fireEvent.drop(zone, { dataTransfer: makeDataTransfer([pdf]) });
@@ -72,7 +72,7 @@ describe('KleriDragNDrop file selection', () => {
 describe('KleriDragNDrop image preview', () => {
 	it('renders an image preview thumbnail when an image is dropped', async () => {
 		const { container } = render(KleriDragNDrop);
-		const zone = within(container).getByLabelText('File Upload Dropzone');
+		const zone = within(container).getByLabelText('Upload files');
 
 		const image = new File(['fake-bytes'], 'photo.png', { type: 'image/png' });
 		await fireEvent.drop(zone, { dataTransfer: makeDataTransfer([image]) });
@@ -88,7 +88,7 @@ describe('KleriDragNDrop image preview', () => {
 
 	it('falls back to the file-count label (no preview) for non-image files', async () => {
 		const { container } = render(KleriDragNDrop);
-		const zone = within(container).getByLabelText('File Upload Dropzone');
+		const zone = within(container).getByLabelText('Upload files');
 
 		const pdf = new File(['fake-bytes'], 'doc.pdf', { type: 'application/pdf' });
 		await fireEvent.drop(zone, { dataTransfer: makeDataTransfer([pdf]) });
@@ -100,7 +100,7 @@ describe('KleriDragNDrop image preview', () => {
 
 	it('revokes the previous object URL when a new image replaces it', async () => {
 		const { container } = render(KleriDragNDrop);
-		const zone = within(container).getByLabelText('File Upload Dropzone');
+		const zone = within(container).getByLabelText('Upload files');
 
 		const a = new File(['x'], 'a.png', { type: 'image/png' });
 		const b = new File(['y'], 'b.png', { type: 'image/png' });

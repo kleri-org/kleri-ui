@@ -111,7 +111,7 @@
 		<Dialog.Trigger
 			bind:ref={triggerElement}
 			class={cn(
-				'w-full rounded-kleri border-2 border-black bg-primary p-2 px-4 text-base font-normal text-background ring-0 hover:text-black hover:ring-0 hover:shadow-black/50 hover:kleri-bg disabled:cursor-not-allowed disabled:border-none disabled:bg-primary/50 disabled:text-black disabled:shadow-none disabled:ring-0',
+				'w-full rounded-kleri border border-kleri-ink bg-primary p-2 px-4 text-base font-normal text-kleri-ink ring-0 hover:text-kleri-ink hover:ring-0 hover:shadow-black/50 hover:kleri-bg disabled:cursor-not-allowed disabled:border-none disabled:bg-primary/50 disabled:text-kleri-ink disabled:shadow-none disabled:ring-0',
 				triggerClass
 			)}
 		>
@@ -130,14 +130,14 @@
 
 	<Dialog.Portal>
 		<Dialog.Overlay
-			class="fixed inset-0 z-50 bg-black/60 data-closed:animate-out data-closed:duration-200 data-closed:ease-in data-closed:fade-out-0 data-open:animate-in data-open:duration-300 data-open:ease-out data-open:fade-in-0 motion-reduce:duration-150"
+			class="fixed inset-0 z-50 kleri-scrim data-closed:animate-out data-closed:duration-200 data-closed:ease-in data-closed:fade-out-0 data-open:animate-in data-open:duration-300 data-open:ease-out data-open:fade-in-0 motion-reduce:duration-150"
 		/>
 		<Dialog.Content
 			bind:ref={panelElement}
 			preventScroll={false}
 			{...contentProps}
 			class={cn(
-				'kleri-morph-panel fixed inset-0 z-50 m-auto flex h-fit max-h-[calc(100dvh-2rem)] w-fit max-w-[calc(100vw-2rem)] flex-col rounded-kleri border border-border bg-background shadow-2xl shadow-black/50 outline-none',
+				'kleri-morph-panel fixed inset-0 z-50 m-auto flex h-fit max-h-[calc(100dvh-2rem)] w-fit max-w-[calc(100vw-2rem)] flex-col rounded-kleri border border-border/50 bg-background shadow-2xl shadow-black/50 outline-none',
 				className
 			)}
 		>
@@ -146,7 +146,7 @@
 					{@render panel()}
 				{:else}
 					<Dialog.Title
-						class="flex w-full shrink-0 flex-row flex-nowrap items-center justify-between border-b border-border/50 px-8 py-4"
+						class="flex w-full shrink-0 flex-row flex-nowrap items-center justify-between border-b border-border/30 px-8 py-4"
 					>
 						<div class="w-full text-nowrap select-none">
 							{@render title?.()}

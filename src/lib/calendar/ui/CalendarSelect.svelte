@@ -59,7 +59,7 @@
 		<Select.Portal>
 			<Select.Content
 				sideOffset={6}
-				class="kleri-dropdown z-[60] w-[var(--bits-select-anchor-width)] min-w-56 overflow-hidden rounded-kleri border-2 border-border bg-popover p-1 text-popover-foreground shadow-xl outline-hidden"
+				class="kleri-dropdown z-[60] w-[var(--bits-select-anchor-width)] min-w-56 overflow-hidden rounded-kleri border border-border/50 kleri-glass p-1 text-popover-foreground shadow-xl outline-hidden"
 			>
 				<Select.Viewport class="kleri-scrollbar max-h-64 overflow-y-auto p-1">
 					{#each calendars as calendar (calendar.id)}
@@ -77,10 +77,7 @@
 										>{accountOf(calendar)}</span
 									>
 								</span>
-								{#if isSelected}<Check
-										class="size-4 shrink-0 text-kleri-1 dark:text-kleri-2"
-										strokeWidth={2.75}
-									/>{/if}
+								{#if isSelected}<Check class="size-4 shrink-0 text-brand" strokeWidth={2.75} />{/if}
 							{/snippet}
 						</Select.Item>
 					{/each}
