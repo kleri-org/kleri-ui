@@ -11,10 +11,10 @@
 		Search,
 		X
 	} from '@lucide/svelte';
-	import { cn } from '$lib/utils.js';
-	import KleriToggleGroup from '$lib/toggle/KleriToggleGroup.svelte';
-	import KleriToggleGroupItem from '$lib/toggle/KleriToggleGroupItem.svelte';
-	import KleriSelect from '$lib/input/KleriSelect.svelte';
+	import { cn } from '#lib/utils.js';
+	import KleriToggleGroup from '#lib/toggle/KleriToggleGroup.svelte';
+	import KleriToggleGroupItem from '#lib/toggle/KleriToggleGroupItem.svelte';
+	import KleriSelect from '#lib/input/KleriSelect.svelte';
 	import { getCalendarContext } from '../context.js';
 	import type { CalendarViewDefinition } from '../views/types.js';
 

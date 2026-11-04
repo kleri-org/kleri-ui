@@ -10,7 +10,7 @@
 		RotateCcw,
 		Unplug
 	} from '@lucide/svelte';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '#lib/utils.js';
 	import { getCalendarContext } from '../context.js';
 	import { readableInk } from '../core/color.js';
 	import { KLERI_CALENDAR_PALETTE, type CalendarSource } from '../store/calendar-store.svelte.js';

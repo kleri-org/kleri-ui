@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { cn } from '$lib/utils.js';
+	import { cn } from '#lib/utils.js';
 	import { Dialog as DialogPrimitive } from 'bits-ui';
 	import DialogPortal from './dialog-portal.svelte';
 	import type { ComponentProps } from 'svelte';
-	import type { WithoutChildrenOrChild } from '$lib/utils.js';
+	import type { WithoutChildrenOrChild } from '#lib/utils.js';
 
 	let {
 		ref = $bindable(null),

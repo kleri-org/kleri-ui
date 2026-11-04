@@ -44,7 +44,7 @@ E2E specs live in `tests/e2e/*.e2e.ts` and run against the demo routes across de
 
 ### Library vs. demo site
 
-- `src/lib/**` is the published package. `src/routes/**` is only the demo site; each `src/routes/components/<area>/+page.svelte` showcases an area using `PropControls` + `CodePreview` from `$lib/preview`. When adding or changing a component, update its demo page (e2e tests drive these pages) and the README's prop tables.
+- `src/lib/**` is the published package. `src/routes/**` is only the demo site; each `src/routes/components/<area>/+page.svelte` showcases an area using `PropControls` + `CodePreview` from `#lib/preview`. When adding or changing a component, update its demo page (e2e tests drive these pages) and the README's prop tables.
 - Entry points are defined by `package.json` `exports`: `.` → `src/lib/index.ts`, plus subpaths `./calendar`, `./popover`, `./dragndrop`, `./magic`, `./tauri`, `./preview`, `./styles.css`. Each subpath has its own `index.ts`. A new subpath needs an `exports` entry; heavy or optional-peer-dependency code (Tauri, shiki-based preview) stays out of the root entry.
 - Relative imports inside `src/lib` use explicit `.js` extensions (required by `svelte-package` output).
 - `src/lib/styles/kleri-ui.css` is the consumer stylesheet (fonts, `kleri-theme.css` brand tokens like `--color-kleri-1..3`, tw-animate-css, light/dark tokens). `prepack` copies `src/lib/styles` to `dist/styles` verbatim. Brand colors are also exported as JS constants from `constants.ts`.

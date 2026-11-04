@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
-	import { KleriButton } from '$lib';
-	import { PropControls } from '$lib/preview';
-	import { getHighlighter } from '$lib/utils/highlighter';
-	import { CalendarStore, KleriCalendar, isValidTimeZone } from '$lib/calendar/index.js';
+	import { KleriButton } from '#lib';
+	import { PropControls } from '#lib/preview/index.js';
+	import { getHighlighter } from '#lib/utils/highlighter.js';
+	import { CalendarStore, KleriCalendar, isValidTimeZone } from '#lib/calendar/index.js';
 	import {
 		buildDemoProviders,
 		CONTACTS,
@@ -273,15 +273,15 @@
 		</div>
 
 		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-			<div class="lg:col-span-2">
+			<div class="min-w-0 lg:col-span-2">
 				{@render codeBlock('usage', usageCode, 'Usage')}
 			</div>
-			<div class="h-fit rounded-xl border border-border/50 bg-card/30 p-6">
-				<h2
+			<div class="h-fit min-w-0 rounded-kleri border border-border/50 bg-card/30 p-6">
+				<h3
 					class="mb-4 font-spacemono text-sm font-semibold tracking-wider text-foreground uppercase"
 				>
 					Props
-				</h2>
+				</h3>
 				<PropControls schema={calendarSchema} bind:values={calendarProps} />
 			</div>
 		</div>

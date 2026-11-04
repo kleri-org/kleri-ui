@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { Dialog, type WithoutChild } from 'bits-ui';
 	import { untrack, type Component, type Snippet } from 'svelte';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '#lib/utils.js';
 	import { type ClassValue } from 'clsx';
-	import KleriTooltip from '$lib/tooltip/KleriTooltip.svelte';
+	import KleriTooltip from '#lib/tooltip/KleriTooltip.svelte';
 	import { X, Eraser } from '@lucide/svelte';
 	import { DialogMorph } from './morph.js';
 

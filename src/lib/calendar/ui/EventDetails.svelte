@@ -21,7 +21,7 @@
 		Video,
 		X
 	} from '@lucide/svelte';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '#lib/utils.js';
 	import { getCalendarContext } from '../context.js';
 	import type { AttendeeResponse, CalendarAttendee, DisplayOccurrence } from '../types.js';
 	import { addDays, isSameDay } from '../core/date.js';

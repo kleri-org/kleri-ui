@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { AlertTriangle, CheckCircle2, Loader2, Sparkles } from '@lucide/svelte';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '#lib/utils.js';
 	import { getCalendarContext } from '../../context.js';
 	import type { TimeInterval } from '../../types.js';
 	import { findAvailableSlots } from '../../core/availability.js';

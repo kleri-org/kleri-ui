@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { CalendarPlus, MapPin, Repeat, Users, Video } from '@lucide/svelte';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '#lib/utils.js';
 	import { getCalendarContext } from '../context.js';
 	import type { DisplayOccurrence } from '../types.js';
 	import type { CalendarViewProps } from './types.js';

@@ -22,11 +22,15 @@ test.describe('Landing page', () => {
 });
 
 test.describe('Navigation', () => {
-	test('sidebar lists all 10 component categories', async ({ page }) => {
+	test('navigation lists all 10 component categories', async ({ page }) => {
 		await gotoHydrated(page, '/components');
 
 		const sidebar = page.locator('aside');
-		await expect(sidebar).toBeVisible();
+		let navigation = sidebar;
+		if (!(await sidebar.isVisible())) {
+			await page.getByRole('button', { name: 'Open navigation' }).click();
+			navigation = page.getByRole('dialog', { name: 'Kleri UI' });
+		}
 
 		const categories = [
 			'Heading',
@@ -41,7 +45,7 @@ test.describe('Navigation', () => {
 			'Window Controls'
 		];
 		for (const name of categories) {
-			await expect(sidebar.getByRole('link', { name, exact: true })).toBeVisible();
+			await expect(navigation.getByRole('link', { name, exact: true })).toBeVisible();
 		}
 	});
 
@@ -112,9 +116,9 @@ test.describe('Navigation', () => {
 		await expect(page).toHaveURL('/components');
 	});
 
-	test('sidebar logo links back to home', async ({ page }) => {
+	test('brand logo links back to home', async ({ page }) => {
 		await gotoHydrated(page, '/components');
-		const logoLink = page.locator('aside a[href="/"]');
+		const logoLink = page.locator('a[href="/"]:visible');
 		await expect(logoLink).toBeVisible();
 
 		await logoLink.click();
@@ -159,11 +163,43 @@ test.describe('Responsive layout', () => {
 		await expect(page.locator('main')).toBeVisible();
 	});
 
-	test('sidebar is visible on tablet viewports', async ({ page }) => {
-		await page.setViewportSize({ width: 768, height: 1024 });
+	test('navigation drawer supports keyboard dismissal and routing on narrow viewports', async ({
+		page
+	}) => {
+		await page.setViewportSize({ width: 390, height: 844 });
 		await gotoHydrated(page, '/components');
-		await expect(page.locator('aside')).toBeVisible();
+
+		await expect(page.locator('aside')).toBeHidden();
 		await expect(page.locator('main')).toBeVisible();
+		expect(await page.locator('main').evaluate((main) => main.clientWidth)).toBe(390);
+
+		const trigger = page.getByRole('button', { name: 'Open navigation' });
+		const dialog = page.getByRole('dialog', { name: 'Kleri UI' });
+		await trigger.click();
+		await expect(dialog).toBeVisible();
+		await page.keyboard.press('Escape');
+		await expect(dialog).toBeHidden();
+		await expect(trigger).toBeFocused();
+
+		await trigger.click();
+		await dialog.getByRole('link', { name: 'Button', exact: true }).click();
+		await expect(page).toHaveURL('/components/button');
+		await expect(dialog).toHaveCount(0);
+		await expect(trigger).not.toBeFocused();
+	});
+
+	test('resizing an open drawer to desktop restores visible navigation focus', async ({ page }) => {
+		await page.setViewportSize({ width: 390, height: 844 });
+		await gotoHydrated(page, '/components');
+
+		await page.getByRole('button', { name: 'Open navigation' }).click();
+		await expect(page.getByRole('dialog', { name: 'Kleri UI' })).toBeVisible();
+
+		await page.setViewportSize({ width: 1280, height: 800 });
+		const sidebar = page.locator('aside');
+		await expect(sidebar).toBeVisible();
+		await expect(page.getByRole('dialog', { name: 'Kleri UI' })).toHaveCount(0);
+		await expect(sidebar.locator('a[href="/"]')).toBeFocused();
 	});
 
 	test('page renders without sidebar on landing page', async ({ page }) => {

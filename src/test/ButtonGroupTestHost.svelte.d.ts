@@ -1,5 +1,5 @@
 import type { Component } from 'svelte';
-import type { ButtonGroupItem } from '$lib/button/KleriButtonGroup/types.js';
+import type { ButtonGroupItem } from '#lib/button/KleriButtonGroup/types.js';
 interface Props {
 	orientation?: 'horizontal' | 'vertical';
 	size?: 'sm' | 'lg';

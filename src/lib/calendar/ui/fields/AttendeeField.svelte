@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { Loader2, UserPlus, X } from '@lucide/svelte';
-	import { cn } from '$lib/utils.js';
-	import KleriFieldLabel from '$lib/input/KleriFieldLabel.svelte';
-	import { FIELD_ROOT, describedBy, fieldErrorId, fieldShell } from '$lib/input/field.js';
+	import { cn } from '#lib/utils.js';
+	import KleriFieldLabel from '#lib/input/KleriFieldLabel.svelte';
+	import { FIELD_ROOT, describedBy, fieldErrorId, fieldShell } from '#lib/input/field.js';
 	import { getCalendarContext } from '../../context.js';
 	import type { CalendarAttendee, CalendarPerson, TimeInterval } from '../../types.js';
 	import { isBusy } from '../../core/availability.js';

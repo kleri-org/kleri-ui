@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { Popover } from 'bits-ui';
 	import { CalendarDays } from '@lucide/svelte';
-	import { cn } from '$lib/utils.js';
-	import KleriFieldLabel from '$lib/input/KleriFieldLabel.svelte';
-	import { FIELD_ROOT, describedBy, fieldErrorId, fieldShell } from '$lib/input/field.js';
+	import { cn } from '#lib/utils.js';
+	import KleriFieldLabel from '#lib/input/KleriFieldLabel.svelte';
+	import { FIELD_ROOT, describedBy, fieldErrorId, fieldShell } from '#lib/input/field.js';
 	import { getCalendarContext } from '../../context.js';
 	import MiniCalendar from '../MiniCalendar.svelte';
 

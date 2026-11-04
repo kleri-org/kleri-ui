@@ -1,6 +1,6 @@
 import type { HTMLAttributes } from 'svelte/elements';
 import type { ClassValue } from 'clsx';
-import type { WithElementRef } from '$lib/utils.js';
+import type { WithElementRef } from '#lib/utils.js';
 import type { FileTypeName } from './dragndrop-utils.js';
 
 /**

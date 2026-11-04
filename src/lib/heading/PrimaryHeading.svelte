@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { ClassValue } from 'clsx';
-	import { cn } from '$lib/utils';
+	import { cn } from '#lib/utils.js';
 
 	interface Props {
 		children: import('svelte').Snippet;

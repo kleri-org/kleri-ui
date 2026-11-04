@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Clock, X } from '@lucide/svelte';
-	import KleriButton from '$lib/button/KleriButton/KleriButton.svelte';
+	import KleriButton from '#lib/button/KleriButton/KleriButton.svelte';
 	import { getCalendarContext, type WallRange } from '../context.js';
 	import { addDays, isSameDay } from '../core/date.js';
 	import CalendarSelect from './CalendarSelect.svelte';

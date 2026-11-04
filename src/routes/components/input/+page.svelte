@@ -12,17 +12,21 @@
 </script>
 
 <script lang="ts">
-	import KleriSwitch from '$lib/input/KleriSwitch.svelte';
-	import KleriInput from '$lib/input/KleriInput.svelte';
-	import KleriCombobox from '$lib/input/KleriCombobox.svelte';
-	import KleriSelect from '$lib/input/KleriSelect.svelte';
-	import KleriTextarea from '$lib/input/KleriTextarea.svelte';
-	import KleriSlider from '$lib/input/KleriSlider.svelte';
-	import KleriDragNDrop from '$lib/input/dragndrop/KleriDragNDrop.svelte';
-	import type { FileTypeName } from '$lib/input/dragndrop/dragndrop-utils.js';
-	import PrimaryHeading from '$lib/heading/PrimaryHeading.svelte';
-	import { KleriToggleGroup, KleriToggleGroupItem, kleriToggleActiveClass } from '$lib/toggle';
-	import { PropControls, CodePreview, type PropSchema } from '$lib/preview';
+	import KleriSwitch from '#lib/input/KleriSwitch.svelte';
+	import KleriInput from '#lib/input/KleriInput.svelte';
+	import KleriCombobox from '#lib/input/KleriCombobox.svelte';
+	import KleriSelect from '#lib/input/KleriSelect.svelte';
+	import KleriTextarea from '#lib/input/KleriTextarea.svelte';
+	import KleriSlider from '#lib/input/KleriSlider.svelte';
+	import KleriDragNDrop from '#lib/input/dragndrop/KleriDragNDrop.svelte';
+	import type { FileTypeName } from '#lib/input/dragndrop/dragndrop-utils.js';
+	import PrimaryHeading from '#lib/heading/PrimaryHeading.svelte';
+	import {
+		KleriToggleGroup,
+		KleriToggleGroupItem,
+		kleriToggleActiveClass
+	} from '#lib/toggle/index.js';
+	import { PropControls, CodePreview, type PropSchema } from '#lib/preview/index.js';
 	import { Check, Landmark, NotebookPen, Scale, X } from '@lucide/svelte';
 	import DemoSection from './DemoSection.svelte';
 	import StateTile from './StateTile.svelte';

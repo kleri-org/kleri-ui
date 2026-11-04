@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { HTMLButtonAttributes } from 'svelte/elements';
-	import type { WithElementRef } from '$lib/utils';
-	import { cn } from '$lib/utils';
+	import type { WithElementRef } from '#lib/utils.js';
+	import { cn } from '#lib/utils.js';
 	import { CircleCheckBig } from '@lucide/svelte';
 
 	type ButtonProps = WithElementRef<HTMLButtonAttributes, HTMLButtonElement>;

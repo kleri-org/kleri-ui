@@ -1,9 +1,14 @@
 <script lang="ts">
 	import { Repeat, Video } from '@lucide/svelte';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '#lib/utils.js';
 	import { getCalendarContext } from '../../context.js';
 	import type { DisplayOccurrence } from '../../types.js';
-	import { eventStateAttributes, occurrenceAriaLabel, occurrenceTitle } from '../utils.js';
+	import {
+		eventStateAttributes,
+		occurrenceAriaLabel,
+		occurrenceTitle,
+		type ShownText
+	} from '../utils.js';
 
 	/**
 	 * A timed event inside a time-grid column. Positioning is the parent's job;
@@ -55,6 +60,14 @@
 	let roomy = $derived(height >= 64);
 	let editable = $derived(!ghost && ctx.actions.canModify(occurrence));
 	let timeText = $derived(ctx.formatters.timeRange(displayStart, displayEnd));
+	// What the block renders after the title, so its accessible name can contain it.
+	let shown = $derived<ShownText | undefined>(
+		ctx.eventContent || occurrence.allDay
+			? undefined
+			: compact
+				? { time: ctx.formatters.time(displayStart, true) }
+				: { time: timeText, fullRange: true, location: roomy && !!occurrence.event.location }
+	);
 	let state = $derived(eventStateAttributes(occurrence, ctx.now, ctx.config.dimPastEvents));
 </script>
 
@@ -66,7 +79,7 @@
 	{...state}
 	tabindex={ghost ? -1 : 0}
 	aria-hidden={ghost || undefined}
-	aria-label={occurrenceAriaLabel(occurrence, ctx.labels, ctx.formatters)}
+	aria-label={occurrenceAriaLabel(occurrence, ctx.labels, ctx.formatters, shown)}
 	aria-roledescription="event"
 	style="--event-color: {occurrence.color}; {style ?? ''}"
 	class={cn(

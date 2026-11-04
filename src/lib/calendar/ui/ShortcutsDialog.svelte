@@ -1,5 +1,5 @@
 <script lang="ts">
-	import KleriMorphDialog from '$lib/dialog/KleriMorphDialog.svelte';
+	import KleriMorphDialog from '#lib/dialog/KleriMorphDialog.svelte';
 	import { getCalendarContext } from '../context.js';
 	import type { CalendarViewDefinition } from '../views/types.js';
 

@@ -48,15 +48,15 @@
 		X
 	} from '@lucide/svelte';
 	import { Dialog as DialogPrimitive } from 'bits-ui';
-	import { cn } from '$lib/utils.js';
-	import KleriButton from '$lib/button/KleriButton/KleriButton.svelte';
-	import KleriMorphDialog from '$lib/dialog/KleriMorphDialog.svelte';
-	import KleriInput from '$lib/input/KleriInput.svelte';
-	import KleriTextarea from '$lib/input/KleriTextarea.svelte';
-	import KleriSwitch from '$lib/input/KleriSwitch.svelte';
-	import KleriSelect from '$lib/input/KleriSelect.svelte';
-	import KleriToggleGroup from '$lib/toggle/KleriToggleGroup.svelte';
-	import KleriToggleGroupItem from '$lib/toggle/KleriToggleGroupItem.svelte';
+	import { cn } from '#lib/utils.js';
+	import KleriButton from '#lib/button/KleriButton/KleriButton.svelte';
+	import KleriMorphDialog from '#lib/dialog/KleriMorphDialog.svelte';
+	import KleriInput from '#lib/input/KleriInput.svelte';
+	import KleriTextarea from '#lib/input/KleriTextarea.svelte';
+	import KleriSwitch from '#lib/input/KleriSwitch.svelte';
+	import KleriSelect from '#lib/input/KleriSelect.svelte';
+	import KleriToggleGroup from '#lib/toggle/KleriToggleGroup.svelte';
+	import KleriToggleGroupItem from '#lib/toggle/KleriToggleGroupItem.svelte';
 	import { getCalendarContext } from '../context.js';
 	import type { CalendarPerson, ConferenceKind, TimeInterval } from '../types.js';
 	import {

@@ -9,7 +9,7 @@
 
 <script lang="ts">
 	import { AlertCircle, CheckCircle2, X } from '@lucide/svelte';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '#lib/utils.js';
 	import { getCalendarContext } from '../context.js';
 
 	interface Props {

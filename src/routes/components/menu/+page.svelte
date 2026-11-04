@@ -7,11 +7,11 @@
 		PopoverTitle,
 		PopoverDescription,
 		PopoverClose
-	} from '$lib/menus/popover';
-	import { KleriMorphDialog } from '$lib';
-	import { PropControls } from '$lib/preview';
-	import { KleriButton } from '$lib';
-	import { getHighlighter } from '$lib/utils/highlighter';
+	} from '#lib/menus/popover/index.js';
+	import { KleriMorphDialog } from '#lib';
+	import { PropControls } from '#lib/preview/index.js';
+	import { KleriButton } from '#lib';
+	import { getHighlighter } from '#lib/utils/highlighter.js';
 	import { X, Settings } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 
@@ -223,9 +223,9 @@
 			</p>
 		</div>
 		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-			<div class="space-y-4 lg:col-span-2">
+			<div class="min-w-0 space-y-4 lg:col-span-2">
 				<div
-					class="flex min-h-60 items-center justify-center rounded-xl border border-border/50 bg-card/30 p-12"
+					class="flex min-h-60 min-w-0 items-center justify-center rounded-kleri border border-border/50 bg-card/30 p-6 sm:p-12"
 				>
 					<Popover>
 						<PopoverTrigger
@@ -286,12 +286,12 @@
 					</div>
 				</div>
 			</div>
-			<div class="h-fit rounded-xl border border-border/50 bg-card/30 p-6">
-				<h2
+			<div class="h-fit min-w-0 rounded-kleri border border-border/50 bg-card/30 p-6">
+				<h3
 					class="mb-4 font-spacemono text-sm font-semibold tracking-wider text-foreground uppercase"
 				>
 					Props
-				</h2>
+				</h3>
 				<PropControls schema={popoverSchema} bind:values={popoverProps} />
 			</div>
 		</div>
@@ -307,9 +307,9 @@
 			</p>
 		</div>
 		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-			<div class="space-y-4 lg:col-span-2">
+			<div class="min-w-0 space-y-4 lg:col-span-2">
 				<div
-					class="flex min-h-60 items-center justify-center rounded-xl border border-border/50 bg-card/30 p-12"
+					class="flex min-h-60 min-w-0 items-center justify-center rounded-kleri border border-border/50 bg-card/30 p-6 sm:p-12"
 				>
 					{#snippet dialogDescription()}
 						Configure your preferences and application settings.
@@ -376,12 +376,12 @@
 					</div>
 				</div>
 			</div>
-			<div class="h-fit rounded-xl border border-border/50 bg-card/30 p-6">
-				<h2
+			<div class="h-fit min-w-0 rounded-kleri border border-border/50 bg-card/30 p-6">
+				<h3
 					class="mb-4 font-spacemono text-sm font-semibold tracking-wider text-foreground uppercase"
 				>
 					Props
-				</h2>
+				</h3>
 				<PropControls schema={dialogSchema} bind:values={dialogProps} />
 			</div>
 		</div>

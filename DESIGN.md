@@ -198,7 +198,7 @@ Components are full-width by default (`FIELD_ROOT` is `block w-full`) and the co
 
 The field shell is asymmetric on purpose: 16px leading, 12px trailing, 8px vertical. That leaves room for a leading icon (22px, stroke 2.5) and a trailing affordance without changing the height. Settings rows are a 3-column grid, with the label spanning two columns and the control in the third, at 48px row height.
 
-Breakpoints are Tailwind's defaults (sm 640, md 768, lg 1024, xl 1280). The docs site uses a fixed 256px sidebar beside a scrolling content column. The calendar collapses its sidebar and adapts its views on mobile and tablet. The e2e suite covers Pixel 5, iPhone 13 and iPad Mini viewports.
+Breakpoints are Tailwind's defaults (sm 640, md 768, lg 1024, xl 1280). The docs site uses a fixed 256px sidebar beside a scrolling content column on desktop; below `lg`, a compact header opens the same navigation in an accessible drawer. The calendar collapses its sidebar and adapts its views on mobile and tablet. The e2e suite covers Pixel 5, iPhone 13 and iPad Mini viewports.
 
 ## Elevation & Depth
 

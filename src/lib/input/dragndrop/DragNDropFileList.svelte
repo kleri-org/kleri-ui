@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
 	import { FileText, Files, X } from '@lucide/svelte';
-	import { Popover, PopoverContent, PopoverTrigger } from '$lib/menus/popover/index.js';
-	import { KleriButtonGroup } from '$lib/button/KleriButtonGroup/index.js';
+	import { Popover, PopoverContent, PopoverTrigger } from '#lib/menus/popover/index.js';
+	import { KleriButtonGroup } from '#lib/button/KleriButtonGroup/index.js';
 	import type { DropzoneEntry } from './dragndrop-props.js';
 
 	/**

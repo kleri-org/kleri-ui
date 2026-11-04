@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { motion } from 'motion-sv';
 	import { prefersReducedMotion } from 'svelte/motion';
-	import { cn } from '$lib/utils';
-	import { KLERI_COLOR_1, KLERI_COLOR_2 } from '$lib/constants';
+	import { cn } from '#lib/utils.js';
+	import { KLERI_COLOR_1, KLERI_COLOR_2 } from '#lib/constants.js';
 	import { usePathCalculator } from './animated-beam/use-path-calculator.svelte';
 	import { useGradientCoordinates } from './animated-beam/use-gradient-coordinates.svelte';
 	import { useResizeObserver } from './animated-beam/use-resize-observer.svelte';

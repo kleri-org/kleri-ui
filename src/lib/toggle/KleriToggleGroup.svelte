@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { ToggleGroup as ToggleGroupPrimitive } from 'bits-ui';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '#lib/utils.js';
 	import { setToggleGroupCtx } from './toggle-group-context.js';
 	import { kleriToggleActiveClass, type ToggleVariants } from './toggle-variants.js';
 

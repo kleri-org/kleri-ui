@@ -8,7 +8,7 @@ import {
 	type CalendarPerson,
 	type ConferenceProvider,
 	type ProviderEvent
-} from '$lib/calendar/index.js';
+} from '#lib/calendar/index.js';
 
 /**
  * Seed data for the preview page, anchored to the current week so the demo

@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { HTMLButtonAttributes } from 'svelte/elements';
-	import type { WithElementRef } from '$lib/utils';
-	import { cn } from '$lib/utils';
+	import type { WithElementRef } from '#lib/utils.js';
+	import { cn } from '#lib/utils.js';
 	import { mergeProps } from 'bits-ui';
-	import KleriTooltip from '$lib/tooltip/KleriTooltip.svelte';
+	import KleriTooltip from '#lib/tooltip/KleriTooltip.svelte';
 	import { getButtonGroupContext } from '../KleriButtonGroup/context.js';
 
 	type ButtonProps = WithElementRef<HTMLButtonAttributes, HTMLButtonElement>;

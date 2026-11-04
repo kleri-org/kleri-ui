@@ -127,7 +127,7 @@ test.describe('Calendar', () => {
 		await title.fill('E2E focus block');
 		await page.keyboard.press('Enter');
 
-		const created = calendar.getByRole('button', { name: /^E2E focus block, Saturday/ });
+		const created = calendar.getByRole('button', { name: /^E2E focus block, .*Saturday/ });
 		await expect(created).toBeVisible();
 		await expect(created).toHaveAccessibleName(/4:00\s*–\s*5:00\s*PM/);
 		await expect(page.getByRole('status').filter({ hasText: 'Event created' })).toBeVisible();

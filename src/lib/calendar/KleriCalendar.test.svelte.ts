@@ -85,7 +85,7 @@ describe('KleriCalendar', () => {
 		).toBeInTheDocument();
 		await waitFor(() =>
 			expect(
-				screen.getByRole('button', { name: /^Design review, Wednesday, September 23/ })
+				screen.getByRole('button', { name: /^Design review, .*Wednesday, September 23/ })
 			).toBeInTheDocument()
 		);
 		// A five-instance daily series expands into the visible week.

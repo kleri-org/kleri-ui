@@ -1,7 +1,7 @@
 <script lang="ts">
-	import SettingsOption from '$lib/settings/SettingsOption.svelte';
-	import KleriSwitch from '$lib/input/KleriSwitch.svelte';
-	import { PropControls, CodePreview } from '$lib/preview';
+	import SettingsOption from '#lib/settings/SettingsOption.svelte';
+	import KleriSwitch from '#lib/input/KleriSwitch.svelte';
+	import { PropControls, CodePreview } from '#lib/preview/index.js';
 
 	let settingsProps = $state({
 		name: 'Dark Mode',
@@ -38,9 +38,9 @@
 			</p>
 		</div>
 		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-			<div class="space-y-4 lg:col-span-2">
+			<div class="min-w-0 space-y-4 lg:col-span-2">
 				<div
-					class="flex min-h-60 items-center justify-center rounded-xl border border-border/50 bg-card/30 p-12"
+					class="flex min-h-60 min-w-0 items-center justify-center rounded-kleri border border-border/50 bg-card/30 p-6 sm:p-12"
 				>
 					<div class="w-full max-w-md">
 						<SettingsOption optionAtEnd={settingsProps.optionAtEnd}>
@@ -55,12 +55,12 @@
 				</div>
 				<CodePreview component="SettingsOption" props={settingsProps} />
 			</div>
-			<div class="h-fit rounded-xl border border-border/50 bg-card/30 p-6">
-				<h2
+			<div class="h-fit min-w-0 rounded-kleri border border-border/50 bg-card/30 p-6">
+				<h3
 					class="mb-4 font-spacemono text-sm font-semibold tracking-wider text-foreground uppercase"
 				>
 					Props
-				</h2>
+				</h3>
 				<PropControls schema={settingsSchema} bind:values={settingsProps} />
 			</div>
 		</div>

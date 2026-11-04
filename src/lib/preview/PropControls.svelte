@@ -5,7 +5,7 @@
 		KleriSwitch,
 		KleriToggleGroup,
 		KleriToggleGroupItem
-	} from '$lib';
+	} from '#lib';
 	import { Type, Hash } from '@lucide/svelte';
 
 	export type PropType = 'boolean' | 'string' | 'number' | 'choice';

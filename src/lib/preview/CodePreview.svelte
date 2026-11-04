@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Check, Copy } from '@lucide/svelte';
-	import KleriUtilityButton from '$lib/button/KleriUtilityButton/KleriUtilityButton.svelte';
-	import { getHighlighter } from '$lib/utils/highlighter';
+	import KleriUtilityButton from '#lib/button/KleriUtilityButton/KleriUtilityButton.svelte';
+	import { getHighlighter } from '#lib/utils/highlighter.js';
 	import { formatSnippet } from './snippet.js';
 
 	interface Props {

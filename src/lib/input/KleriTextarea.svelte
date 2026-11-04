@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { FormEventHandler, HTMLTextareaAttributes } from 'svelte/elements';
 	import type { ClassValue } from 'clsx';
-	import type { WithElementRef } from '$lib/utils.js';
+	import type { WithElementRef } from '#lib/utils.js';
 
-	import { cn } from '$lib/utils.js';
+	import { cn } from '#lib/utils.js';
 	import KleriFieldLabel from './KleriFieldLabel.svelte';
 	import {
 		FIELD_CONTROL,

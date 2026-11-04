@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { cn } from '$lib/utils.js';
-	import KleriButton from '$lib/button/KleriButton/KleriButton.svelte';
-	import KleriMorphDialog from '$lib/dialog/KleriMorphDialog.svelte';
+	import { cn } from '#lib/utils.js';
+	import KleriButton from '#lib/button/KleriButton/KleriButton.svelte';
+	import KleriMorphDialog from '#lib/dialog/KleriMorphDialog.svelte';
 	import { getCalendarContext } from '../context.js';
 	import type { EditScope } from '../types.js';
 

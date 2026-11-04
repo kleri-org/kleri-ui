@@ -12,11 +12,11 @@
 		FILE_TYPE_REGISTRY,
 		IMAGE_EXTENSIONS,
 		type DropzoneStatus
-	} from '$lib/input/dragndrop/dragndrop-utils.js';
-	import type { DropzoneBaseProps, DropzoneEntry } from '$lib/input/dragndrop/dragndrop-props.js';
-	import DragNDropChrome from '$lib/input/dragndrop/DragNDropChrome.svelte';
-	import DragNDropFileList from '$lib/input/dragndrop/DragNDropFileList.svelte';
-	import { syncDropzoneStatus } from '$lib/input/dragndrop/use-dropzone-status.svelte.js';
+	} from '#lib/input/dragndrop/dragndrop-utils.js';
+	import type { DropzoneBaseProps, DropzoneEntry } from '#lib/input/dragndrop/dragndrop-props.js';
+	import DragNDropChrome from '#lib/input/dragndrop/DragNDropChrome.svelte';
+	import DragNDropFileList from '#lib/input/dragndrop/DragNDropFileList.svelte';
+	import { syncDropzoneStatus } from '#lib/input/dragndrop/use-dropzone-status.svelte.js';
 
 	type Props = DropzoneBaseProps & {
 		/**

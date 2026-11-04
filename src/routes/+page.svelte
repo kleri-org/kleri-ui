@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { motion } from 'motion-sv';
 	import KleriUiLogo from '../assets/KleriUiLogo.svelte';
-	import AnimatedGridPattern from '$lib/animation/AnimatedGridPattern.svelte';
+	import AnimatedGridPattern from '#lib/animation/AnimatedGridPattern.svelte';
 </script>
 
 <!-- Full-page Hero -->
-<section class="relative flex h-screen flex-col items-center justify-center overflow-hidden">
+<section class="relative flex h-dvh flex-col items-center justify-center overflow-hidden">
 	<AnimatedGridPattern
 		numSquares={40}
 		maxOpacity={0.6}
@@ -21,19 +21,13 @@
 			animate={{ opacity: 1, scale: 1 }}
 			transition={{ duration: 0.8, ease: 'easeOut' }}
 		>
-			<span
+			<h1
 				class="kleri-text-animation font-spacemono text-xl leading-tight font-extrabold tracking-tight sm:text-3xl md:text-5xl"
-				>Kleri
-			</span>
+			>
+				Kleri
+			</h1>
 			<KleriUiLogo class="h-32 w-auto sm:h-40 md:h-48" />
 		</motion.div>
-
-		<!-- Title slides up -->
-		<motion.h1
-			initial={{ opacity: 0, y: 24 }}
-			animate={{ opacity: 1, y: 0 }}
-			transition={{ duration: 0.7, delay: 0.3, ease: 'easeOut' }}
-		></motion.h1>
 
 		<!-- Subtitle slides up -->
 		<motion.p

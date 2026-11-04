@@ -1,9 +1,9 @@
 <script lang="ts">
-	import KleriButton from '$lib/button/KleriButton/KleriButton.svelte';
-	import KleriUtilityButton from '$lib/button/KleriUtilityButton/KleriUtilityButton.svelte';
-	import KleriButtonGroup from '$lib/button/KleriButtonGroup/KleriButtonGroup.svelte';
-	import KleriMagicButton from '$lib/magic/KleriMagicButton.svelte';
-	import { PropControls, CodePreview } from '$lib/preview';
+	import KleriButton from '#lib/button/KleriButton/KleriButton.svelte';
+	import KleriUtilityButton from '#lib/button/KleriUtilityButton/KleriUtilityButton.svelte';
+	import KleriButtonGroup from '#lib/button/KleriButtonGroup/KleriButtonGroup.svelte';
+	import KleriMagicButton from '#lib/magic/KleriMagicButton.svelte';
+	import { PropControls, CodePreview } from '#lib/preview/index.js';
 	import { Copy, Delete, Save } from '@lucide/svelte';
 
 	// --------------------------------------------------------------------------
@@ -122,9 +122,9 @@
 			</p>
 		</div>
 		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-			<div class="space-y-4 lg:col-span-2">
+			<div class="min-w-0 space-y-4 lg:col-span-2">
 				<div
-					class="flex min-h-60 items-center justify-center rounded-xl border border-border/50 bg-card/30 p-12"
+					class="flex min-h-60 min-w-0 items-center justify-center rounded-kleri border border-border/50 bg-card/30 p-6 sm:p-12"
 				>
 					<KleriButton
 						showSuccess={kleriButtonProps.showSuccess}
@@ -138,12 +138,12 @@
 				</div>
 				<CodePreview component="KleriButton" props={kleriButtonProps} />
 			</div>
-			<div class="h-fit rounded-xl border border-border/50 bg-card/30 p-6">
-				<h2
+			<div class="h-fit min-w-0 rounded-kleri border border-border/50 bg-card/30 p-6">
+				<h3
 					class="mb-4 font-spacemono text-sm font-semibold tracking-wider text-foreground uppercase"
 				>
 					Props
-				</h2>
+				</h3>
 				<PropControls schema={kleriButtonSchema} bind:values={kleriButtonProps} />
 			</div>
 		</div>
@@ -158,9 +158,9 @@
 			</p>
 		</div>
 		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-			<div class="space-y-4 lg:col-span-2">
+			<div class="min-w-0 space-y-4 lg:col-span-2">
 				<div
-					class="flex min-h-60 items-center justify-center rounded-xl border border-border/50 bg-card/30 p-12"
+					class="flex min-h-60 min-w-0 items-center justify-center rounded-kleri border border-border/50 bg-card/30 p-6 sm:p-12"
 				>
 					<KleriUtilityButton tooltip={utilityProps.tooltip}>
 						{utilityProps.children}
@@ -168,12 +168,12 @@
 				</div>
 				<CodePreview component="KleriUtilityButton" props={utilityProps} />
 			</div>
-			<div class="h-fit rounded-xl border border-border/50 bg-card/30 p-6">
-				<h2
+			<div class="h-fit min-w-0 rounded-kleri border border-border/50 bg-card/30 p-6">
+				<h3
 					class="mb-4 font-spacemono text-sm font-semibold tracking-wider text-foreground uppercase"
 				>
 					Props
-				</h2>
+				</h3>
 				<PropControls schema={utilitySchema} bind:values={utilityProps} />
 			</div>
 		</div>
@@ -189,9 +189,9 @@
 			</p>
 		</div>
 		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-			<div class="space-y-4 lg:col-span-2">
+			<div class="min-w-0 space-y-4 lg:col-span-2">
 				<div
-					class="flex min-h-60 items-center justify-center gap-x-2 rounded-xl border border-border/50 bg-card/30 p-12"
+					class="flex min-h-60 min-w-0 items-center justify-center gap-x-2 rounded-kleri border border-border/50 bg-card/30 p-6 sm:p-12"
 				>
 					<KleriButtonGroup
 						orientation={groupProps.orientation}
@@ -207,12 +207,12 @@
 					imports={["import { Copy, Delete, Save } from '@lucide/svelte';"]}
 				/>
 			</div>
-			<div class="h-fit rounded-xl border border-border/50 bg-card/30 p-6">
-				<h2
+			<div class="h-fit min-w-0 rounded-kleri border border-border/50 bg-card/30 p-6">
+				<h3
 					class="mb-4 font-spacemono text-sm font-semibold tracking-wider text-foreground uppercase"
 				>
 					Props
-				</h2>
+				</h3>
 				<PropControls schema={groupSchema} bind:values={groupProps} />
 			</div>
 		</div>
@@ -228,9 +228,9 @@
 			</p>
 		</div>
 		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-			<div class="space-y-4 lg:col-span-2">
+			<div class="min-w-0 space-y-4 lg:col-span-2">
 				<div
-					class="flex min-h-60 items-center justify-center rounded-xl border border-border/50 bg-card/30 p-12"
+					class="flex min-h-60 min-w-0 items-center justify-center rounded-kleri border border-border/50 bg-card/30 p-6 sm:p-12"
 				>
 					<KleriMagicButton
 						gradientSize={magicButtonProps.gradientSize}
@@ -244,12 +244,12 @@
 				</div>
 				<CodePreview component="KleriMagicButton" props={magicButtonProps} />
 			</div>
-			<div class="h-fit rounded-xl border border-border/50 bg-card/30 p-6">
-				<h2
+			<div class="h-fit min-w-0 rounded-kleri border border-border/50 bg-card/30 p-6">
+				<h3
 					class="mb-4 font-spacemono text-sm font-semibold tracking-wider text-foreground uppercase"
 				>
 					Props
-				</h2>
+				</h3>
 				<PropControls schema={magicButtonSchema} bind:values={magicButtonProps} />
 			</div>
 		</div>

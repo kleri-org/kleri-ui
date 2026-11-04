@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { Plus } from '@lucide/svelte';
-	import KleriButton from '$lib/button/KleriButton/KleriButton.svelte';
+	import KleriButton from '#lib/button/KleriButton/KleriButton.svelte';
 	import { getCalendarContext } from '../context.js';
 	import type { CalendarSource } from '../store/calendar-store.svelte.js';
 	import { addDays, startOfMonth, toDateKey } from '../core/date.js';

@@ -25,7 +25,7 @@
 		{
 			name: 'Button',
 			description: 'Interactive buttons, groups, and magic effects',
-			count: 3,
+			count: 4,
 			comingSoon: false,
 			route: '/components/button',
 			icon: MousePointerClick
@@ -33,7 +33,7 @@
 		{
 			name: 'Input',
 			description: 'Switches, text inputs, and form controls',
-			count: 4,
+			count: 8,
 			comingSoon: false,
 			route: '/components/input',
 			icon: TextCursorInput
@@ -117,58 +117,73 @@
 	});
 </script>
 
-<section class="px-8 pt-8 pb-16">
+<section class="pb-16">
 	<div bind:this={cardsContainer} class="mx-auto max-w-6xl">
-		<div class="mb-8 flex items-center gap-3">
-			<div class="h-px flex-1 bg-border/30"></div>
-			<span class="font-spacemono text-xs tracking-wider text-muted-foreground uppercase">
+		<div class="mb-8 flex items-center gap-2 sm:gap-3">
+			<h1
+				class="shrink-0 text-2xl leading-tight font-bold tracking-tight text-foreground sm:text-3xl"
+			>
+				Components
+			</h1>
+			<div class="h-px min-w-4 flex-1 bg-border/30"></div>
+			<span
+				class="shrink-0 font-spacemono text-xs tracking-wider whitespace-nowrap text-muted-foreground uppercase"
+			>
 				{categories.reduce((acc, c) => acc + c.count, 0)} Components
 			</span>
-			<div class="h-px flex-1 bg-border/30"></div>
+			<div class="h-px min-w-4 flex-1 bg-border/30"></div>
 		</div>
 
-		<div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+		<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
 			{#each categories as category, i (category.name)}
 				{#if category.comingSoon}
 					<div
-						class="card-enter group relative rounded-xl border border-border/50 bg-card/50 p-6 opacity-60"
-						class:visible={cardsVisible}
+						class={[
+							'card-enter group relative flex h-full flex-col rounded-kleri border border-border/50 bg-card/50 p-5 opacity-60 sm:p-6',
+							{ visible: cardsVisible }
+						]}
 						style="transition-delay: {i * 80}ms;"
 					>
-						<div class="mb-3 flex items-center justify-between">
-							<div class="flex items-center gap-2">
-								<category.icon class="h-5 w-5 text-muted-foreground" />
-								<h3 class="font-semibold text-foreground">{category.name}</h3>
+						<div class="mb-3 flex items-start justify-between gap-3">
+							<div class="flex min-w-0 items-center gap-2">
+								<category.icon class="h-5 w-5 shrink-0 text-muted-foreground" />
+								<h3 class="min-w-0 leading-snug font-semibold text-foreground">{category.name}</h3>
 							</div>
 							<span
-								class="rounded-full bg-muted/50 px-2 py-1 font-spacemono text-[10px] text-muted-foreground"
+								class="shrink-0 rounded-full bg-muted/50 px-2 py-1 font-spacemono text-[10px] whitespace-nowrap text-muted-foreground"
 							>
 								Coming Soon
 							</span>
 						</div>
-						<p class="text-sm text-foreground/80">{category.description}</p>
+						<p class="flex-1 text-sm leading-relaxed text-foreground/80">{category.description}</p>
 					</div>
 				{:else}
 					<a
 						href={category.route}
-						class="card-enter group relative rounded-xl border border-border/50 bg-card/50 p-6 transition-all hover:border-kleri-2/50 hover:bg-card"
-						class:visible={cardsVisible}
+						class={[
+							'card-enter group relative flex h-full flex-col rounded-kleri border border-border/50 bg-card/50 p-5 transition-all hover:border-kleri-2/50 hover:bg-card sm:p-6',
+							{ visible: cardsVisible }
+						]}
 						style="transition-delay: {i * 80}ms;"
 					>
-						<div class="mb-3 flex items-center justify-between">
-							<div class="flex items-center gap-2">
+						<div class="mb-3 flex items-start justify-between gap-3">
+							<div class="flex min-w-0 items-center gap-2">
 								<category.icon
-									class="h-5 w-5 text-muted-foreground transition-colors group-hover:text-brand"
+									class="h-5 w-5 shrink-0 text-muted-foreground transition-colors group-hover:text-brand"
 								/>
-								<h3 class="font-semibold text-foreground transition-colors group-hover:text-brand">
+								<h3
+									class="min-w-0 leading-snug font-semibold text-foreground transition-colors group-hover:text-brand"
+								>
 									{category.name}
 								</h3>
 							</div>
-							<span class="rounded-full bg-kleri-3/20 px-2 py-1 font-spacemono text-xs text-brand">
+							<span
+								class="shrink-0 rounded-full bg-kleri-3/20 px-2 py-1 font-spacemono text-xs whitespace-nowrap text-brand"
+							>
 								{category.count} component{category.count !== 1 ? 's' : ''}
 							</span>
 						</div>
-						<p class="text-sm text-foreground/80">{category.description}</p>
+						<p class="flex-1 text-sm leading-relaxed text-foreground/80">{category.description}</p>
 					</a>
 				{/if}
 			{/each}
@@ -187,5 +202,13 @@
 	.card-enter.visible {
 		opacity: 1;
 		transform: translateY(0);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.card-enter {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
 	}
 </style>

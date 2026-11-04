@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { ClassValue } from 'clsx';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '#lib/utils.js';
 
 	/**
 	 * The label block shared by every Kleri input component: the label and an

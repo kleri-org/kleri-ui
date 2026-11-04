@@ -33,18 +33,44 @@ export function eventStateAttributes(occurrence: DisplayOccurrence, now: Date, d
 	};
 }
 
-/** Accessible name: title, time and calendar in one sentence. */
+/** What a control renders after the event title, so its accessible name can contain it. */
+export interface ShownText {
+	/** The time text as rendered. */
+	time: string;
+	/** True when `time` is the full range, so only the date needs adding to the name. */
+	fullRange?: boolean;
+	/** True when the location is rendered after the time. */
+	location?: boolean;
+}
+
+/**
+ * Accessible name: title, time and calendar in one sentence. Pass `shown` when the control
+ * renders more than "title, time range" so the name still contains the visible text in
+ * order (WCAG 2.5.3, label in name).
+ */
 export function occurrenceAriaLabel(
 	occurrence: DisplayOccurrence,
 	labels: CalendarLabels,
-	formatters: CalendarFormatters
+	formatters: CalendarFormatters,
+	shown?: ShownText
 ): string {
-	const parts = [
-		occurrenceTitle(occurrence, labels),
-		formatters.occurrenceLabel(occurrence.displayStart, occurrence.displayEnd, occurrence.allDay),
-		occurrence.calendar.name
-	];
-	if (occurrence.event.location) parts.push(occurrence.event.location);
+	const title = occurrenceTitle(occurrence, labels);
+	const location = occurrence.event.location;
+	const when = formatters.occurrenceLabel(
+		occurrence.displayStart,
+		occurrence.displayEnd,
+		occurrence.allDay
+	);
+	const parts: string[] = [];
+	if (shown) {
+		parts.push(title, shown.time);
+		if (shown.location && location) parts.push(location);
+		parts.push(shown.fullRange ? formatters.fullDate(occurrence.displayStart) : when);
+	} else {
+		parts.push(title, when);
+	}
+	parts.push(occurrence.calendar.name);
+	if (location && !(shown?.location ?? false)) parts.push(location);
 	const response = selfResponse(occurrence.event);
 	if (response === 'declined') parts.push(labels.no);
 	else if (response === 'tentative') parts.push(labels.maybe);

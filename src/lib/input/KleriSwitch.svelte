@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Switch } from 'bits-ui';
 	import type { ClassValue } from 'clsx';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '#lib/utils.js';
 	import KleriFieldLabel from './KleriFieldLabel.svelte';
 	import { FIELD_ROOT, describedBy, fieldErrorId } from './field.js';
 

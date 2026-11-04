@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { Repeat } from '@lucide/svelte';
-	import { cn } from '$lib/utils.js';
-	import KleriSelect from '$lib/input/KleriSelect.svelte';
-	import KleriToggleGroup from '$lib/toggle/KleriToggleGroup.svelte';
-	import KleriToggleGroupItem from '$lib/toggle/KleriToggleGroupItem.svelte';
+	import { cn } from '#lib/utils.js';
+	import KleriSelect from '#lib/input/KleriSelect.svelte';
+	import KleriToggleGroup from '#lib/toggle/KleriToggleGroup.svelte';
+	import KleriToggleGroupItem from '#lib/toggle/KleriToggleGroupItem.svelte';
 	import { getCalendarContext } from '../../context.js';
 	import { addMonths, weekdayOrder } from '../../core/date.js';
 	import {

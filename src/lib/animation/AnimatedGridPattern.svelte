@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { motion } from 'motion-sv';
 	import { prefersReducedMotion } from 'svelte/motion';
-	import { cn } from '$lib/utils';
+	import { cn } from '#lib/utils.js';
 	import type { HTMLAttributes } from 'svelte/elements';
 
 	interface AnimatedGridPatternProps extends HTMLAttributes<SVGElement> {

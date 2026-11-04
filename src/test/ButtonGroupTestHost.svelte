@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { Tooltip } from 'bits-ui';
 	import type { Component } from 'svelte';
-	import KleriButtonGroup from '$lib/button/KleriButtonGroup/KleriButtonGroup.svelte';
-	import type { ButtonGroupItem } from '$lib/button/KleriButtonGroup/types.js';
+	import KleriButtonGroup from '#lib/button/KleriButtonGroup/KleriButtonGroup.svelte';
+	import type { ButtonGroupItem } from '#lib/button/KleriButtonGroup/types.js';
 
 	interface Props {
 		orientation?: 'horizontal' | 'vertical';

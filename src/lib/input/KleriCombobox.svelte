@@ -2,7 +2,7 @@
 	import { Combobox } from 'bits-ui';
 	import { Check, ChevronsUpDown, Search } from '@lucide/svelte';
 	import type { ClassValue } from 'clsx';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '#lib/utils.js';
 	import KleriFieldLabel from './KleriFieldLabel.svelte';
 	import {
 		FIELD_CONTROL,

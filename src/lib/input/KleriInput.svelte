@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { FormEventHandler, HTMLInputAttributes } from 'svelte/elements';
 	import type { ClassValue } from 'clsx';
-	import type { WithElementRef } from '$lib/utils.js';
+	import type { WithElementRef } from '#lib/utils.js';
 
-	import { cn } from '$lib/utils.js';
+	import { cn } from '#lib/utils.js';
 	import { Eye, EyeOff } from '@lucide/svelte';
 	import KleriFieldLabel from './KleriFieldLabel.svelte';
 	import {

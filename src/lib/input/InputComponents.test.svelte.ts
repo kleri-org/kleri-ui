@@ -159,7 +159,7 @@ describe('KleriSelect', () => {
 	];
 
 	async function choose(name: string) {
-		await fireEvent.pointerDown(screen.getByRole('button', { name: /^Theme/ }), {
+		await fireEvent.pointerDown(screen.getByRole('combobox', { name: /^Theme/ }), {
 			button: 0,
 			pointerType: 'mouse'
 		});
@@ -177,7 +177,7 @@ describe('KleriSelect', () => {
 		expect(screen.getByText('Theme')).toBeInTheDocument();
 
 		await choose('Dark');
-		expect(screen.getByRole('button', { name: /^Theme/ })).toHaveTextContent('Dark');
+		expect(screen.getByRole('combobox', { name: /^Theme/ })).toHaveTextContent('Dark');
 	});
 
 	it('reports the new value and runs the picked option action', async () => {
@@ -224,7 +224,7 @@ describe('KleriSelect', () => {
 
 		await choose('Light');
 
-		const trigger = screen.getByRole('button', { name: /^Theme/ });
+		const trigger = screen.getByRole('combobox', { name: /^Theme/ });
 		expect(trigger.querySelector('svg')).toHaveClass('lucide-star');
 	});
 
@@ -238,7 +238,7 @@ describe('KleriSelect', () => {
 			}
 		});
 
-		const trigger = screen.getByRole('button', { name: /^Theme/ });
+		const trigger = screen.getByRole('combobox', { name: /^Theme/ });
 		expect(trigger).toHaveAttribute('data-fs-control', 'true');
 		expect(trigger).toHaveAttribute('aria-describedby', 'theme-desc');
 	});
@@ -246,9 +246,9 @@ describe('KleriSelect', () => {
 	it('names the trigger by its label and current value', async () => {
 		render(KleriSelect, { props: { label: 'Theme', placeholder: 'Pick a theme', items } });
 
-		expect(screen.getByRole('button', { name: 'Theme Pick a theme' })).toBeInTheDocument();
+		expect(screen.getByRole('combobox', { name: 'Theme Pick a theme' })).toBeInTheDocument();
 		await choose('Dark');
-		expect(screen.getByRole('button', { name: 'Theme Dark' })).toBeInTheDocument();
+		expect(screen.getByRole('combobox', { name: 'Theme Dark' })).toBeInTheDocument();
 	});
 
 	it('shows errors and blocks the trigger when disabled', () => {
@@ -257,7 +257,7 @@ describe('KleriSelect', () => {
 		});
 
 		expect(screen.getByText('Pick one')).toBeInTheDocument();
-		expect(screen.getByRole('button', { name: /^Theme/ })).toBeDisabled();
+		expect(screen.getByRole('combobox', { name: /^Theme/ })).toBeDisabled();
 	});
 });
 

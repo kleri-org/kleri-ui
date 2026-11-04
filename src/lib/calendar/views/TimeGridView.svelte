@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, tick } from 'svelte';
 	import { ChevronDown, ChevronUp } from '@lucide/svelte';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '#lib/utils.js';
 	import { getCalendarContext } from '../context.js';
 	import type { DisplayOccurrence } from '../types.js';
 	import type { CalendarViewProps } from './types.js';
@@ -501,11 +501,12 @@
 						isSingleDay && 'pointer-events-none'
 					)}
 					tabindex={isSingleDay ? -1 : 0}
-					aria-label={ctx.formatters.fullDate(day)}
 					aria-current={isToday ? 'date' : undefined}
 					onclick={() => ctx.actions.navigate(day, 'day')}
 				>
+					<span class="sr-only">{ctx.formatters.fullDate(day)}</span>
 					<span
+						aria-hidden="true"
 						class={cn(
 							'font-spacemono text-[11px] tracking-wider uppercase',
 							isToday ? 'text-brand' : 'text-muted-foreground'
@@ -514,6 +515,7 @@
 						{ctx.formatters.weekdayShort(day)}
 					</span>
 					<span
+						aria-hidden="true"
 						class={cn(
 							'flex size-8 items-center justify-center rounded-full text-lg leading-none font-semibold',
 							isToday && 'text-kleri-ink shadow-sm shadow-kleri-1/40 kleri-bg',

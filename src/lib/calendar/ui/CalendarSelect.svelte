@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { Select } from 'bits-ui';
 	import { Check, ChevronDown } from '@lucide/svelte';
-	import { cn } from '$lib/utils.js';
-	import KleriFieldLabel from '$lib/input/KleriFieldLabel.svelte';
-	import { FIELD_ROOT, fieldShell } from '$lib/input/field.js';
+	import { cn } from '#lib/utils.js';
+	import KleriFieldLabel from '#lib/input/KleriFieldLabel.svelte';
+	import { FIELD_ROOT, fieldShell } from '#lib/input/field.js';
 	import type { CalendarInfo } from '../types.js';
 	import { getCalendarContext } from '../context.js';
 

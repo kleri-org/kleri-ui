@@ -1,6 +1,6 @@
 import type { Component } from 'svelte';
 import type { ClassValue } from 'clsx';
-import { cn } from '$lib/utils.js';
+import { cn } from '#lib/utils.js';
 
 /**
  * Shared building blocks for the Kleri input family (KleriInput, KleriTextarea,

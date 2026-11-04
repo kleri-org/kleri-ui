@@ -151,7 +151,9 @@ export function createFormatters(locale: string, hour12: boolean): CalendarForma
 				isSameDay(start, end) ||
 				(minutesOfDay(end) === 0 && isSameDay(start, addMinutes(end, -1)))
 			) {
-				return `${longDateNoYear.format(start)}, ${timeRange(start, end)}`;
+				// Time first, so a name built as "title + this label" still contains the visible
+				// "title time" text (WCAG 2.5.3, label in name).
+				return `${timeRange(start, end)}, ${longDateNoYear.format(start)}`;
 			}
 			return `${longDateNoYear.format(start)} ${time(start)} to ${longDateNoYear.format(end)} ${time(end)}`;
 		},

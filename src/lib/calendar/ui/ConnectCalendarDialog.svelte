@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { ChevronRight, Link2, Loader2 } from '@lucide/svelte';
-	import KleriMorphDialog from '$lib/dialog/KleriMorphDialog.svelte';
-	import KleriInput from '$lib/input/KleriInput.svelte';
-	import KleriSelect from '$lib/input/KleriSelect.svelte';
-	import KleriDragNDrop from '$lib/input/dragndrop/KleriDragNDrop.svelte';
+	import KleriMorphDialog from '#lib/dialog/KleriMorphDialog.svelte';
+	import KleriInput from '#lib/input/KleriInput.svelte';
+	import KleriSelect from '#lib/input/KleriSelect.svelte';
+	import KleriDragNDrop from '#lib/input/dragndrop/KleriDragNDrop.svelte';
 	import { getCalendarContext } from '../context.js';
 	import type { CalendarIntegration } from '../types.js';
 	import type { CalendarProvider } from '../providers/types.js';

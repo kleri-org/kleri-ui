@@ -1,22 +1,17 @@
 import adapter from '@sveltejs/adapter-cloudflare';
+import type { Config } from '@sveltejs/kit/vite';
 
-/** @type {import('@sveltejs/kit').Config} */
 const config = {
 	compilerOptions: {
 		// Force runes mode for the project, except for libraries. Can be removed in svelte 6.
 		runes: ({ filename }) => (filename.split(/[/\\]/).includes('node_modules') ? undefined : true)
 	},
-	kit: {
-		adapter: adapter({
-			routes: {
-				include: ['/*'],
-				exclude: ['<all>']
-			}
-		}),
-		alias: {
-			$lib: 'src/lib'
+	adapter: adapter({
+		routes: {
+			include: ['/*'],
+			exclude: ['<all>']
 		}
-	}
-};
+	})
+} satisfies Config;
 
 export default config;

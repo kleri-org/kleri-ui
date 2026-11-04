@@ -5,13 +5,13 @@
 		KeyboardEventHandler,
 		DragEventHandler
 	} from 'svelte/elements';
-	import type { WithElementRef } from '$lib/utils.js';
+	import type { WithElementRef } from '#lib/utils.js';
 	import { Upload, Check, FileText } from '@lucide/svelte';
 	import type { Snippet } from 'svelte';
 	import type { ClassValue } from 'clsx';
-	import { cn } from '$lib/utils.js';
-	import KleriFieldLabel from '$lib/input/KleriFieldLabel.svelte';
-	import { describedBy, fieldErrorId } from '$lib/input/field.js';
+	import { cn } from '#lib/utils.js';
+	import KleriFieldLabel from '#lib/input/KleriFieldLabel.svelte';
+	import { describedBy, fieldErrorId } from '#lib/input/field.js';
 
 	import type { DropzoneStatus } from './dragndrop-utils.js';
 

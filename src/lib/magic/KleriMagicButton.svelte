@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { motion, useMotionTemplate } from 'motion-sv';
-	import { cn } from '$lib/utils';
-	import { KLERI_COLOR_1, KLERI_COLOR_2 } from '$lib/constants';
+	import { cn } from '#lib/utils.js';
+	import { KLERI_COLOR_1, KLERI_COLOR_2 } from '#lib/constants.js';
 	import { useSpotlight, parkSpotlightsOnWindowExit } from './use-spotlight.svelte.js';
 	import type { HTMLButtonAttributes } from 'svelte/elements';
 	import type { Snippet } from 'svelte';

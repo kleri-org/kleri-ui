@@ -3,7 +3,8 @@
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import { Tooltip } from 'bits-ui';
+	import { MediaQuery } from 'svelte/reactivity';
+	import { Dialog, Tooltip } from 'bits-ui';
 	import KleriUiLogo from '../assets/KleriUiLogo.svelte';
 	import {
 		Heading1,
@@ -31,7 +32,9 @@
 		SquareStack,
 		CalendarDays,
 		Plug,
-		LayoutPanelTop
+		LayoutPanelTop,
+		Menu,
+		X
 	} from '@lucide/svelte';
 
 	const { children } = $props();
@@ -136,7 +139,13 @@
 		return page.url.pathname === route || page.url.pathname === route + '/';
 	}
 
+	const desktopMedia = new MediaQuery('min-width: 1024px', false);
+
 	let mainEl: HTMLElement;
+	let desktopBrandLink = $state<HTMLAnchorElement | null>(null);
+	let mobileNavOpen = $state(false);
+	let mobileNavTrigger = $state<HTMLButtonElement | null>(null);
+	let mobileNavOpenPathname = $state<string | null>(null);
 	let currentHash = $state(page.url.hash);
 	let isScrollingProgrammatically = $state(false);
 
@@ -283,6 +292,7 @@
 	}
 
 	function handleHashNav(e: MouseEvent, route: string, id: string) {
+		mobileNavOpen = false;
 		if (isActivePath(route)) {
 			e.preventDefault();
 			scrollToId(id);
@@ -291,7 +301,39 @@
 		}
 	}
 
+	function handleMobileNavOpenChange(open: boolean) {
+		if (open) mobileNavOpenPathname = page.url.pathname;
+	}
+
+	function handleMobileNavCloseAutoFocus(event: Event) {
+		if (mobileNavOpenPathname !== page.url.pathname) {
+			event.preventDefault();
+			return;
+		}
+
+		if (desktopMedia.current) {
+			event.preventDefault();
+			desktopBrandLink?.focus({ preventScroll: true });
+		}
+	}
+
+	function handleMobileNavOpenChangeComplete(open: boolean) {
+		const openPathname = mobileNavOpenPathname;
+		if (open || desktopMedia.current || openPathname !== page.url.pathname) return;
+
+		requestAnimationFrame(() => {
+			if (!desktopMedia.current && !mobileNavOpen && openPathname === page.url.pathname) {
+				mobileNavTrigger?.focus({ preventScroll: true });
+			}
+		});
+	}
+
+	$effect(() => {
+		if (desktopMedia.current && mobileNavOpen) mobileNavOpen = false;
+	});
+
 	afterNavigate(({ to }) => {
+		mobileNavOpen = false;
 		if (to?.url?.hash && mainEl) {
 			currentHash = to.url.hash;
 			requestAnimationFrame(() => {
@@ -333,77 +375,146 @@
 	<meta name="description" content="Interactive component preview for @kleri/ui" />
 </svelte:head>
 
+{#snippet brand(dialogTitle = false)}
+	<KleriUiLogo class="h-8 w-auto shrink-0" />
+	<div class="min-w-0">
+		{#if dialogTitle}
+			<Dialog.Title class="text-lg leading-tight font-bold">Kleri UI</Dialog.Title>
+		{:else}
+			<div class="text-lg leading-tight font-bold">Kleri UI</div>
+		{/if}
+		<p class="font-spacemono text-xs whitespace-nowrap text-muted-foreground">Component Preview</p>
+	</div>
+{/snippet}
+
+{#snippet docsNavigation()}
+	<nav
+		aria-label="Component navigation"
+		class="custom-scrollbar min-h-0 flex-1 overflow-y-auto p-4"
+	>
+		<p class="mb-3 px-2 font-spacemono text-xs tracking-wider text-muted-foreground uppercase">
+			Components
+		</p>
+		<ul class="space-y-1">
+			{#each categories as category (category.name)}
+				<li>
+					<a
+						href={category.route}
+						onclick={() => (mobileNavOpen = false)}
+						class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors {isActivePath(
+							category.route
+						)
+							? 'bg-kleri-3/20 text-brand'
+							: 'text-foreground hover:bg-muted/30'}"
+					>
+						<category.icon class="h-4 w-4" />
+						{category.name}
+					</a>
+					{#if category.items.length > 0}
+						<ul class="mt-1 ml-3 space-y-0.5 border-l border-border/30 pl-3">
+							{#each category.items as item (item.id)}
+								<li>
+									<a
+										href="{category.route}#{item.id}"
+										onclick={(e) => handleHashNav(e, category.route, item.id)}
+										class="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors {isActiveHash(
+											item.id
+										)
+											? 'bg-kleri-3/20 font-medium text-brand'
+											: 'text-muted-foreground hover:bg-muted/30 hover:text-foreground'}"
+									>
+										<item.icon class="h-3.5 w-3.5" />
+										{item.name}
+									</a>
+								</li>
+							{/each}
+						</ul>
+					{/if}
+				</li>
+			{/each}
+		</ul>
+	</nav>
+{/snippet}
+
+{#snippet docsFooter()}
+	<div class="shrink-0 border-t border-border/20 p-4">
+		<p class="text-center font-spacemono text-[10px] text-muted-foreground">
+			© {new Date().getFullYear()} Kleri
+		</p>
+	</div>
+{/snippet}
+
 <!-- Layout -->
-<div class="relative z-10 flex h-screen overflow-hidden">
+<div class="relative z-10 flex h-dvh w-full flex-col overflow-hidden lg:flex-row">
 	{#if !isHome}
 		<!-- Sidebar -->
 		<aside
-			class="sticky top-0 flex h-screen w-64 flex-col border-r border-border/20 bg-background/80 backdrop-blur-xl"
+			class="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r border-border/20 bg-background/80 backdrop-blur-xl lg:flex"
 		>
 			<div class="border-b border-border/20 p-6">
-				<a href="/" class="flex items-center gap-3">
-					<KleriUiLogo class="h-8 w-auto" />
-					<div>
-						<h1 class="text-lg leading-tight font-bold">Kleri UI</h1>
-						<p class="font-spacemono text-xs text-muted-foreground">Component Preview</p>
-					</div>
+				<a bind:this={desktopBrandLink} href="/" class="flex items-center gap-3">
+					{@render brand()}
 				</a>
 			</div>
 
-			<nav class="custom-scrollbar flex-1 overflow-y-auto p-4">
-				<p class="mb-3 px-2 font-spacemono text-xs tracking-wider text-muted-foreground uppercase">
-					Components
-				</p>
-				<ul class="space-y-1">
-					{#each categories as category (category.name)}
-						<li>
-							<a
-								href={category.route}
-								class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors {isActivePath(
-									category.route
-								)
-									? 'bg-kleri-3/20 text-brand'
-									: 'text-foreground hover:bg-muted/30'}"
-							>
-								<category.icon class="h-4 w-4" />
-								{category.name}
-							</a>
-							{#if category.items.length > 0}
-								<ul class="mt-1 ml-3 space-y-0.5 border-l border-border/30 pl-3">
-									{#each category.items as item (item.id)}
-										<li>
-											<a
-												href="{category.route}#{item.id}"
-												onclick={(e) => handleHashNav(e, category.route, item.id)}
-												class="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors {isActiveHash(
-													item.id
-												)
-													? 'bg-kleri-3/20 font-medium text-brand'
-													: 'text-muted-foreground hover:bg-muted/30 hover:text-foreground'}"
-											>
-												<item.icon class="h-3.5 w-3.5" />
-												{item.name}
-											</a>
-										</li>
-									{/each}
-								</ul>
-							{/if}
-						</li>
-					{/each}
-				</ul>
-			</nav>
-
-			<div class="border-t border-border/20 p-4">
-				<p class="text-center font-spacemono text-[10px] text-muted-foreground">
-					© {new Date().getFullYear()} Kleri
-				</p>
-			</div>
+			{@render docsNavigation()}
+			{@render docsFooter()}
 		</aside>
+
+		<Dialog.Root
+			bind:open={mobileNavOpen}
+			onOpenChange={handleMobileNavOpenChange}
+			onOpenChangeComplete={handleMobileNavOpenChangeComplete}
+		>
+			<header
+				class="flex h-16 w-full shrink-0 items-center justify-between border-b border-border/20 bg-background/80 px-4 backdrop-blur-xl lg:hidden"
+			>
+				<a href="/" class="flex min-w-0 items-center gap-3">
+					{@render brand()}
+				</a>
+				<Dialog.Trigger
+					bind:ref={mobileNavTrigger}
+					type="button"
+					aria-label="Open navigation"
+					class="kleri-hit inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-foreground transition-colors hover:bg-muted/30"
+				>
+					<Menu class="h-5 w-5" />
+				</Dialog.Trigger>
+			</header>
+
+			<Dialog.Portal>
+				<Dialog.Overlay
+					class="fixed inset-0 z-50 kleri-scrim data-closed:animate-out data-closed:duration-200 data-closed:ease-in data-closed:fade-out-0 data-open:animate-in data-open:duration-300 data-open:ease-out data-open:fade-in-0 motion-reduce:duration-150 lg:hidden"
+				/>
+				<Dialog.Content
+					onCloseAutoFocus={handleMobileNavCloseAutoFocus}
+					class="fixed inset-y-0 left-0 z-50 flex h-dvh w-72 max-w-[calc(100vw-2rem)] flex-col border-r border-border/20 bg-background/80 shadow-lg shadow-black/40 backdrop-blur-xl outline-none data-closed:animate-out data-closed:duration-200 data-closed:ease-in data-closed:slide-out-to-left data-open:animate-in data-open:duration-300 data-open:ease-out data-open:slide-in-from-left motion-reduce:animate-none lg:hidden"
+				>
+					<div
+						class="flex h-16 shrink-0 items-center justify-between gap-3 border-b border-border/20 px-4"
+					>
+						<div class="flex min-w-0 items-center gap-3">
+							{@render brand(true)}
+						</div>
+						<Dialog.Close
+							type="button"
+							aria-label="Close navigation"
+							class="kleri-hit inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-foreground transition-colors hover:bg-muted/30"
+						>
+							<X class="h-5 w-5" />
+						</Dialog.Close>
+					</div>
+
+					{@render docsNavigation()}
+					{@render docsFooter()}
+				</Dialog.Content>
+			</Dialog.Portal>
+		</Dialog.Root>
 	{/if}
 
 	<!-- Main Content -->
-	<main bind:this={mainEl} class="flex-1 overflow-y-auto">
-		<div class="mx-auto {isHome ? '' : 'max-w-5xl p-8'}">
+	<main bind:this={mainEl} class="min-h-0 w-full min-w-0 flex-1 overflow-y-auto">
+		<div class="mx-auto min-w-0 {isHome ? '' : 'max-w-5xl p-4 sm:p-6 lg:p-8'}">
 			<Tooltip.Provider>
 				{@render children()}
 			</Tooltip.Provider>
