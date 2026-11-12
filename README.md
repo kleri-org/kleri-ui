@@ -331,6 +331,52 @@ Keyboard-navigable option picker for short lists, sharing the Kleri field shell.
 
 ---
 
+#### KleriDatePicker
+
+Single-date picker: a Kleri field that opens a calendar in a popover. Dates are `@internationalized/date` values (a peer dependency), so there is no timezone drift between what is shown and what is stored.
+
+```svelte
+<script>
+	import { KleriDatePicker } from '@kleri/ui';
+	import { CalendarDate, getLocalTimeZone, today, type DateValue } from '@internationalized/date';
+	let hearing = $state<DateValue | undefined>(new CalendarDate(2026, 11, 12));
+</script>
+
+<KleriDatePicker
+	bind:value={hearing}
+	label="Next hearing"
+	minValue={today(getLocalTimeZone())}
+	isDateDisabled={(date) => [0, 6].includes(date.toDate(getLocalTimeZone()).getDay())}
+/>
+```
+
+| Prop              | Type                                                             | Default                 | Description                                                                       |
+| ----------------- | ---------------------------------------------------------------- | ----------------------- | --------------------------------------------------------------------------------- |
+| `value`           | `DateValue` (bindable)                                           | —                       | Selected date                                                                     |
+| `open`            | `boolean` (bindable)                                             | `false`                 | Whether the calendar popover is open                                              |
+| `label`           | `string`                                                         | —                       | Label text                                                                        |
+| `placeholder`     | `string`                                                         | `"Pick a date"`         | Text shown while no date is picked                                                |
+| `errors`          | `string[]`                                                       | `[]`                    | Error messages, shown under the label and announced (shakes the field)            |
+| `name`            | `string`                                                         | —                       | Hidden input name; submits the ISO date (`2026-11-12`)                            |
+| `disabled`        | `boolean`                                                        | `false`                 | Disabled state                                                                    |
+| `withBorder`      | `boolean`                                                        | `true`                  | Show border                                                                       |
+| `shake`           | `boolean`                                                        | `false`                 | Trigger shake animation                                                           |
+| `minValue`        | `DateValue`                                                      | —                       | Earliest selectable date                                                          |
+| `maxValue`        | `DateValue`                                                      | —                       | Latest selectable date                                                            |
+| `isDateDisabled`  | `(date: DateValue) => boolean`                                   | —                       | Return `true` to disable a date                                                   |
+| `locale`          | `string`                                                         | `"en-US"`               | BCP 47 locale for the trigger text and the calendar                               |
+| `formatOptions`   | `Intl.DateTimeFormatOptions`                                     | `{ dateStyle: "long" }` | How the selected date reads in the trigger                                        |
+| `captionLayout`   | `"label" \| "dropdown" \| "dropdown-months" \| "dropdown-years"` | `"label"`               | Month/year header: plain text, or dropdowns for fast jumps                        |
+| `weekStartsOn`    | `0 \| 1 \| 2 \| 3 \| 4 \| 5 \| 6`                                | locale                  | First day of the week (`0` = Sunday)                                              |
+| `preventDeselect` | `boolean`                                                        | `false`                 | Keep the date selected when it is clicked again, instead of clearing it           |
+| `onValueChange`   | `(value?: DateValue) => void`                                    | —                       | Called when the selection changes                                                 |
+| `onOpenChange`    | `(open: boolean) => void`                                        | —                       | Called when the popover opens or closes                                           |
+| `ariaLabel`       | `string`                                                         | —                       | Accessible name. Without it a labelled picker is named by its label plus the date |
+| `id`              | `string`                                                         | auto                    | Control id, also used to link the label                                           |
+| `class`           | `ClassValue`                                                     | —                       | Additional CSS classes                                                            |
+
+---
+
 ### Headings
 
 #### PrimaryHeading

@@ -38,6 +38,7 @@ export { default as KleriSelect } from './input/KleriSelect.svelte';
 export type { KleriSelectItem } from './input/KleriSelect.svelte';
 export { default as KleriTextarea } from './input/KleriTextarea.svelte';
 export { default as KleriSlider } from './input/KleriSlider.svelte';
+export { default as KleriDatePicker } from './input/datepicker/KleriDatePicker.svelte';
 export { default as KleriDragNDrop } from './input/dragndrop/KleriDragNDrop.svelte';
 export {
 	FILE_TYPE_REGISTRY,

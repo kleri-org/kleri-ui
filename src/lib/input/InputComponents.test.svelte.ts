@@ -7,6 +7,8 @@ import KleriSelect from './KleriSelect.svelte';
 import KleriTextarea from './KleriTextarea.svelte';
 import KleriSwitch from './KleriSwitch.svelte';
 import KleriSlider from './KleriSlider.svelte';
+import KleriDatePicker from './datepicker/KleriDatePicker.svelte';
+import { CalendarDate } from '@internationalized/date';
 
 describe('KleriInput', () => {
 	afterEach(() => {
@@ -432,6 +434,94 @@ describe('KleriSwitch', () => {
 		expect(screen.getByText('Notifications')).toBeInTheDocument();
 		expect(screen.getByText('Required')).toBeInTheDocument();
 		expect(screen.getByRole('switch', { name: 'Notifications' })).toBeInTheDocument();
+		expect(container.querySelector('.kleri-shake')).not.toBeNull();
+	});
+});
+
+describe('KleriDatePicker', () => {
+	afterEach(() => {
+		cleanup();
+	});
+
+	const trigger = (name: string | RegExp) => screen.getByRole('button', { name });
+
+	async function open(name: string | RegExp = /^Hearing/) {
+		await fireEvent.click(trigger(name));
+	}
+
+	it('shows the placeholder and names the trigger by label and value', () => {
+		render(KleriDatePicker, { props: { label: 'Hearing', placeholder: 'Pick a date' } });
+
+		expect(screen.getByText('Hearing')).toBeInTheDocument();
+		expect(trigger('Hearing Pick a date')).toBeInTheDocument();
+	});
+
+	it('formats a provided value in the trigger', () => {
+		render(KleriDatePicker, {
+			props: { label: 'Hearing', value: new CalendarDate(2026, 11, 12) }
+		});
+
+		expect(trigger('Hearing November 12, 2026')).toBeInTheDocument();
+	});
+
+	it('picks a day, reports it and closes the calendar', async () => {
+		const onValueChange = vi.fn();
+		render(KleriDatePicker, {
+			props: {
+				label: 'Hearing',
+				value: new CalendarDate(2026, 11, 12),
+				onValueChange
+			}
+		});
+
+		await open();
+		expect(screen.getByRole('grid')).toBeInTheDocument();
+
+		const day = document.querySelector<HTMLElement>('[data-bits-day][data-value="2026-11-20"]')!;
+		await fireEvent.click(day);
+
+		expect(onValueChange).toHaveBeenCalledTimes(1);
+		expect(onValueChange.mock.calls[0][0].toString()).toBe('2026-11-20');
+		expect(trigger('Hearing November 20, 2026')).toBeInTheDocument();
+		// The popover unmounts after its exit animation; `aria-expanded` flips straight away.
+		expect(trigger(/^Hearing/)).toHaveAttribute('aria-expanded', 'false');
+	});
+
+	it('does not let disabled days be picked', async () => {
+		const onValueChange = vi.fn();
+		render(KleriDatePicker, {
+			props: {
+				label: 'Hearing',
+				value: new CalendarDate(2026, 11, 12),
+				minValue: new CalendarDate(2026, 11, 10),
+				onValueChange
+			}
+		});
+
+		await open();
+		const day = document.querySelector<HTMLElement>('[data-bits-day][data-value="2026-11-05"]')!;
+		expect(day).toHaveAttribute('data-disabled');
+
+		await fireEvent.click(day);
+		expect(onValueChange).not.toHaveBeenCalled();
+	});
+
+	it('submits the ISO date through a hidden input', () => {
+		const { container } = render(KleriDatePicker, {
+			props: { label: 'Hearing', name: 'hearing', value: new CalendarDate(2026, 11, 12) }
+		});
+
+		expect(container.querySelector('input[name="hearing"]')).toHaveValue('2026-11-12');
+	});
+
+	it('shows errors and blocks the trigger when disabled', () => {
+		const { container } = render(KleriDatePicker, {
+			props: { label: 'Hearing', errors: ['Pick a date'], disabled: true }
+		});
+
+		expect(screen.getByText('Pick a date', { selector: 'p' })).toBeInTheDocument();
+		expect(trigger(/^Hearing/)).toBeDisabled();
+		expect(trigger(/^Hearing/)).toHaveAttribute('aria-invalid', 'true');
 		expect(container.querySelector('.kleri-shake')).not.toBeNull();
 	});
 });
