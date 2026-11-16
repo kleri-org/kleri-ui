@@ -16,6 +16,8 @@
 	import KleriInput from '#lib/input/KleriInput.svelte';
 	import KleriCombobox from '#lib/input/KleriCombobox.svelte';
 	import KleriSelect from '#lib/input/KleriSelect.svelte';
+	import KleriDatePicker from '#lib/input/datepicker/KleriDatePicker.svelte';
+	import { CalendarDate, getLocalTimeZone, today, type DateValue } from '@internationalized/date';
 	import KleriTextarea from '#lib/input/KleriTextarea.svelte';
 	import KleriSlider from '#lib/input/KleriSlider.svelte';
 	import KleriDragNDrop from '#lib/input/dragndrop/KleriDragNDrop.svelte';
@@ -69,7 +71,8 @@
 			id: 'choice',
 			items: [
 				{ name: 'KleriSelect', id: 'kleri-select' },
-				{ name: 'KleriCombobox', id: 'kleri-combobox' }
+				{ name: 'KleriCombobox', id: 'kleri-combobox' },
+				{ name: 'KleriDatePicker', id: 'kleri-date-picker' }
 			]
 		},
 		{
@@ -163,6 +166,32 @@
 		errorText: ERROR_TEXT,
 		shake: SHAKE
 	};
+
+	// ------------------------------------------------------------ KleriDatePicker
+	let datePickerProps = $state({
+		label: 'Hearing date',
+		placeholder: 'Pick a date',
+		disabled: false,
+		withBorder: true,
+		errorText: '',
+		shake: false
+	});
+	let hearingDate = $state<DateValue | undefined>();
+	const datePickerSchema: PropSchema = {
+		label: { type: 'string', label: 'Label' },
+		placeholder: { type: 'string', label: 'Placeholder' },
+		disabled: DISABLED,
+		withBorder: WITH_BORDER,
+		errorText: ERROR_TEXT,
+		shake: SHAKE
+	};
+	/** Courts do not sit on weekends. */
+	const isWeekend = (date: DateValue) => {
+		const day = date.toDate(getLocalTimeZone()).getDay();
+		return day === 0 || day === 6;
+	};
+	const todayDate = today(getLocalTimeZone());
+	const filedOn = new CalendarDate(2026, 11, 12);
 
 	// ------------------------------------------------------------- KleriCombobox
 	const clientOptions = [
@@ -692,6 +721,62 @@
 						emptyText: 'No matching options.',
 						allowDeselect: false
 					}}
+				/>
+			{/snippet}
+		</DemoSection>
+
+		<DemoSection
+			id="kleri-date-picker"
+			title="KleriDatePicker"
+			description="Pick a single date from a calendar, such as the next hearing in a matter. Built on the same field shell as the other inputs, with the calendar in a popover."
+		>
+			{#snippet states()}
+				<StateTile caption="Rest">
+					<KleriDatePicker label="Next hearing" />
+				</StateTile>
+				<StateTile caption="Focus" focus>
+					<KleriDatePicker label="Filed on" value={filedOn} />
+				</StateTile>
+				<StateTile caption="Error">
+					<KleriDatePicker
+						label="Limitation expires"
+						errors={['Choose a date inside the limitation period.']}
+					/>
+				</StateTile>
+				<StateTile caption="Disabled">
+					<KleriDatePicker label="Decree date" value={filedOn} disabled />
+				</StateTile>
+			{/snippet}
+			{#snippet stage()}
+				<div class="w-full max-w-sm">
+					<KleriDatePicker
+						bind:value={hearingDate}
+						label={datePickerProps.label}
+						placeholder={datePickerProps.placeholder}
+						disabled={datePickerProps.disabled}
+						withBorder={datePickerProps.withBorder}
+						errors={errorsOf(datePickerProps.errorText)}
+						shake={datePickerProps.shake}
+						minValue={todayDate}
+						isDateDisabled={isWeekend}
+					/>
+				</div>
+			{/snippet}
+			{#snippet controls()}
+				<PropControls schema={datePickerSchema} bind:values={datePickerProps} />
+			{/snippet}
+			{#snippet code()}
+				<CodePreview
+					component="KleriDatePicker"
+					props={{
+						label: datePickerProps.label,
+						placeholder: datePickerProps.placeholder,
+						disabled: datePickerProps.disabled,
+						withBorder: datePickerProps.withBorder,
+						errors: errorsOf(datePickerProps.errorText),
+						shake: datePickerProps.shake
+					}}
+					defaults={{ ...FIELD_DEFAULTS, placeholder: 'Pick a date' }}
 				/>
 			{/snippet}
 		</DemoSection>

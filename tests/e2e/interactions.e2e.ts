@@ -228,3 +228,47 @@ test.describe('PropControls', () => {
 		await expect(tooltip).toContainText('Updated content', { timeout: 3000 });
 	});
 });
+
+test.describe('KleriDatePicker', () => {
+	test.beforeEach(async ({ page }) => {
+		await gotoHydrated(page, '/components/input');
+		await page.locator('#kleri-date-picker').scrollIntoViewIfNeeded();
+	});
+
+	test('opens, picks a day, closes and shows the date', async ({ page }) => {
+		const trigger = page
+			.locator('#kleri-date-picker')
+			.getByRole('button', { name: /^Hearing date/ });
+		await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+
+		await trigger.click();
+		const grid = page.getByRole('grid');
+		await expect(grid).toBeVisible();
+
+		// Next month, so there is always an enabled weekday whatever today is.
+		await page.getByRole('button', { name: 'Next', exact: true }).click();
+		await page
+			.locator('[data-bits-day]:not([data-disabled]):not([data-outside-month])')
+			.first()
+			.click();
+
+		await expect(grid).toBeHidden();
+		await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+		await expect(trigger).not.toContainText('Pick a date');
+	});
+
+	test('keyboard: Enter opens, Escape closes and returns focus to the trigger', async ({
+		page
+	}) => {
+		const trigger = page
+			.locator('#kleri-date-picker')
+			.getByRole('button', { name: /^Hearing date/ });
+		await trigger.focus();
+		await page.keyboard.press('Enter');
+		await expect(page.getByRole('grid')).toBeVisible();
+
+		await page.keyboard.press('Escape');
+		await expect(page.getByRole('grid')).toBeHidden();
+		await expect(trigger).toBeFocused();
+	});
+});

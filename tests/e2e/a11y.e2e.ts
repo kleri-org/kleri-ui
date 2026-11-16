@@ -59,6 +59,23 @@ test.describe('Accessibility audits', () => {
 		expect(results.violations).toEqual([]);
 	});
 
+	test('open date picker calendar has no critical a11y violations', async ({ page }) => {
+		await gotoHydrated(page, '/components/input');
+		await page.locator('#kleri-date-picker').scrollIntoViewIfNeeded();
+		await page
+			.locator('#kleri-date-picker')
+			.getByRole('button', { name: /^Hearing date/ })
+			.click();
+		await expect(page.getByRole('grid')).toBeVisible();
+		await page.waitForTimeout(400); // Let the dropdown's entrance animation settle so contrast is measured at rest.
+
+		const results = await new AxeBuilder({ page })
+			.withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+			.analyze();
+
+		expect(results.violations).toEqual([]);
+	});
+
 	test('tooltip component page has no critical a11y violations', async ({ page }) => {
 		await gotoHydrated(page, '/components/tooltip');
 
